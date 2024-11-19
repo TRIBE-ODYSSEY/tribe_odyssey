@@ -1,0 +1,55 @@
+services:
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+  backend:
+    container_name: backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - DATABASE_URL=postgresql://tribe_user:tribe_dev_password_123@db:5432/tribe_dev_db
+    depends_on:
+      - db
+
+  db:
+    container_name: db
+    image: postgres:17.1-alpine
+    environment:
+      - POSTGRES_USER=tribe_user
+      - POSTGRES_PASSWORD=tribe_dev_password_123
+      - POSTGRES_DB=tribe_dev_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    container_name: redis
+    image: redis:7.0.10-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  
+
+volumes:
+  postgres_data:
+  redis_data:
+  caddy_data:
+  caddy_config:

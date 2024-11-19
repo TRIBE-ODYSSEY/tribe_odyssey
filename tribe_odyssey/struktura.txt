@@ -1,0 +1,257 @@
+.
+├── eslint.config.js
+├── index.html
+├── package.json
+├── package-lock.json
+├── postcss.config.js
+├── public
+│   ├── home
+│   │   ├── 25 1 (1).png
+│   │   ├── banner.png
+│   │   ├── bluem.png
+│   │   ├── blue.png
+│   │   ├── dark.png
+│   │   ├── eight.png
+│   │   ├── fighter
+│   │   │   ├── 0.png
+│   │   │   ├── 1.png
+│   │   │   ├── 2.png
+│   │   │   ├── 3.png
+│   │   │   ├── 4.png
+│   │   │   └── 5.png
+│   │   ├── fighting.png
+│   │   ├── fire.png
+│   │   ├── five.png
+│   │   ├── four.png
+│   │   ├── hero-bg.webp
+│   │   ├── image 3.png
+│   │   ├── image 7.png
+│   │   ├── musle.png
+│   │   ├── news.png
+│   │   ├── nfl
+│   │   │   ├── 0.jpg
+│   │   │   ├── 2.jpg
+│   │   │   ├── 3.jpg
+│   │   │   ├── 4.jpg
+│   │   │   └── 5.jpg
+│   │   ├── one.png
+│   │   ├── orangem.png
+│   │   ├── purple.png
+│   │   ├── seven.png
+│   │   ├── six.png
+│   │   ├── three.png
+│   │   └── two.png
+│   ├── images
+│   │   ├── 10169.png
+│   │   ├── 11362.png
+│   │   ├── 11968.png
+│   │   ├── 1726.png
+│   │   ├── 3103.png
+│   │   ├── 4906.png
+│   │   ├── bidMain2.jpg
+│   │   ├── Ellipse 9.svg
+│   │   ├── fireape.avif
+│   │   ├── Lab.png
+│   │   ├── Loud.png
+│   │   ├── Play.svg
+│   │   ├── ShinnyButton.svg
+│   │   ├── silver.png
+│   │   ├── special-button-core.svg
+│   │   ├── star-1.svg
+│   │   ├── star-2.svg
+│   │   ├── star-3.svg
+│   │   ├── star-4.svg
+│   │   ├── star-5.svg
+│   │   ├── star-6.svg
+│   │   ├── star-7.svg
+│   │   ├── star-8.svg
+│   │   ├── StarIcon.svg
+│   │   ├── star.svg
+│   │   └── Vyron.jpg
+│   ├── logo.png
+│   └── music
+│       ├── Forest_Dweller_Ringtone (2).mp3
+│       ├── Shamen_Ringtone (2).mp3
+│       └── TRIBE_Evolution_ringtone (2).mp3
+├── README.md
+├── repos.txt
+├── scripts
+├── src
+│   ├── App.tsx
+│   ├── assets
+│   │   └── images
+│   │       ├── arrow-right-2.svg
+│   │       ├── card-bid-main-10.svg
+│   │       ├── card-bid-main-11.svg
+│   │       ├── card-bid-main-12.svg
+│   │       ├── card-bid-main-1.svg
+│   │       ├── card-bid-main-2.svg
+│   │       ├── card-bid-main-3.svg
+│   │       ├── card-bid-main-4.svg
+│   │       ├── card-bid-main-5.svg
+│   │       ├── card-bid-main-6.svg
+│   │       ├── card-bid-main-7.svg
+│   │       ├── card-bid-main-8.svg
+│   │       ├── card-bid-main-9.svg
+│   │       ├── card-bid-main.svg
+│   │       ├── card.png
+│   │       ├── Ellipse-9.svg
+│   │       ├── footer.svg
+│   │       ├── hero-bg.webp
+│   │       ├── hero-pic.png
+│   │       ├── icon-3.svg
+│   │       ├── icon-container-1.svg
+│   │       ├── icon-container-2.svg
+│   │       ├── icon-container-3.svg
+│   │       ├── icon-container-4.svg
+│   │       ├── icon-container-5.svg
+│   │       ├── icon-container-6.svg
+│   │       ├── icon-container-7.svg
+│   │       ├── icon-container.svg
+│   │       ├── IG.svg
+│   │       ├── line-3.svg
+│   │       ├── line-6.svg
+│   │       ├── line-9.svg
+│   │       ├── logo.png
+│   │       ├── nav-bar.png
+│   │       ├── polygon-2.svg
+│   │       ├── profile-1.png
+│   │       ├── profile-2.png
+│   │       ├── profile.png
+│   │       ├── rectangle-65-2.png
+│   │       ├── section-title.png
+│   │       ├── socials.png
+│   │       ├── special-button-core-10.svg
+│   │       ├── special-button-core-11.svg
+│   │       ├── special-button-core-1.svg
+│   │       ├── special-button-core-2.svg
+│   │       ├── special-button-core-3.svg
+│   │       ├── special-button-core-4.svg
+│   │       ├── special-button-core-5.svg
+│   │       ├── special-button-core-6.svg
+│   │       ├── special-button-core-7.svg
+│   │       ├── special-button-core-8.svg
+│   │       ├── special-button-core-9.svg
+│   │       ├── special-button-core.svg
+│   │       └── Twitter.svg
+│   ├── components
+│   │   ├── Card
+│   │   │   └── CardBidMain.tsx
+│   │   ├── CheckerPopup
+│   │   │   └── index.tsx
+│   │   ├── ErrorBoundary
+│   │   │   └── index.tsx
+│   │   ├── ErrorBoundary.tsx
+│   │   ├── Footer
+│   │   │   └── index.tsx
+│   │   ├── icons
+│   │   │   └── Discord.tsx
+│   │   ├── Layout
+│   │   │   ├── index.tsx
+│   │   │   └── SkakingDropdown
+│   │   │       └── index.tsx
+│   │   ├── LoadingSpinner.tsx
+│   │   ├── NavBar
+│   │   │   ├── DesktopMenu.tsx
+│   │   │   ├── Header.tsx
+│   │   │   ├── MobileMenu.tsx
+│   │   │   └── StyledComponents.tsx
+│   │   ├── Profile
+│   │   │   └── ProfileCard.tsx
+│   │   ├── ProtectedRoute.tsx
+│   │   ├── Raffle
+│   │   │   └── RaffleCard.tsx
+│   │   ├── shared
+│   │   │   ├── ConnectWallet.tsx
+│   │   │   └── LoadingSpinner.tsx
+│   │   ├── StakingContent
+│   │   │   └── index.tsx
+│   │   └── Winners
+│   │       └── WinnersList.tsx
+│   ├── config
+│   │   ├── abi
+│   │   │   ├── erc20.json
+│   │   │   ├── erc721.json
+│   │   │   ├── EthRegistrarSubdomainRegistrar.json
+│   │   │   ├── Multicall.json
+│   │   │   ├── staking.json
+│   │   │   └── tribe.json
+│   │   ├── chains.ts
+│   │   ├── constants.ts
+│   │   └── wagmi.ts
+│   ├── contexts
+│   │   ├── AuthContext.tsx
+│   │   ├── GlobalContext.ts
+│   │   └── RefreshContext.tsx
+│   ├── hooks
+│   │   ├── useAuth.tsx
+│   │   ├── useAxios.ts
+│   │   ├── useCollectionState.tsx
+│   │   └── useWeb3React.tsx
+│   ├── index.scss
+│   ├── main.tsx
+│   ├── pages
+│   │   ├── about
+│   │   │   └── index.tsx
+│   │   ├── beats
+│   │   │   └── index.tsx
+│   │   ├── checker
+│   │   │   └── index.tsx
+│   │   ├── claim
+│   │   │   └── index.tsx
+│   │   ├── council
+│   │   │   └── index.tsx
+│   │   ├── ens
+│   │   │   └── index.tsx
+│   │   ├── faq
+│   │   │   └── index.tsx
+│   │   ├── fun
+│   │   │   └── index.tsx
+│   │   ├── home
+│   │   │   └── index.tsx
+│   │   ├── profile
+│   │   │   └── index.tsx
+│   │   ├── raffles
+│   │   │   └── index.tsx
+│   │   ├── rafflesadmin
+│   │   │   └── index.tsx
+│   │   ├── rafflesopened
+│   │   │   └── index.tsx
+│   │   ├── staking
+│   │   │   └── index.tsx
+│   │   ├── wallpaper
+│   │   │   └── index.tsx
+│   │   └── winners
+│   │       └── index.tsx
+│   ├── reportWebVitals.ts
+│   ├── routes
+│   │   └── index.tsx
+│   ├── services
+│   │   └── opensea.ts
+│   ├── setupTests.ts
+│   ├── types
+│   │   ├── index.ts
+│   │   ├── nav.ts
+│   │   └── styled.d.ts
+│   ├── utils
+│   │   ├── addressHelpers.tsx
+│   │   ├── contracts.tsx
+│   │   ├── merkle
+│   │   │   ├── account-tree.ts
+│   │   │   ├── index.ts
+│   │   │   └── markle-tree.ts
+│   │   └── web3React.tsx
+│   └── vite-env.d.ts
+├── struct.txt
+├── struktura.txt
+├── tailwind.config.js
+├── Todo.json
+├── tsconfig.app.json
+├── tsconfig.app.tsbuildinfo
+├── tsconfig.json
+├── tsconfig.node.json
+├── tsconfig.node.tsbuildinfo
+├── vite.config.ts
+└── workflow.md
+
+51 directories, 204 files

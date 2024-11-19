@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-color: #ff512f;
+  --secondary-color: #dd2476;
+  --background-dark: #14121b;
+  --background-paper: #1a1825;
+}
+
+body {
+  margin: 0;
+  background: #14121b;
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+}
+
+.gradient-text {
+  background: linear-gradient(180deg, #EBEBEB 0%, rgba(235, 235, 235, 0.8) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.btn {
+  background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  color: white;
+  &:hover {
+    opacity: 0.9;
+  }
+}

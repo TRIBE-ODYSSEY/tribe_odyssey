@@ -1,0 +1,37 @@
+# Stage 1: Dependencies
+FROM node:23-alpine AS deps
+WORKDIR /app
+
+# Kopiuj tylko package files
+COPY package*.json ./
+
+# Instaluj zależności
+RUN npm ci
+
+# Stage 2: Builder
+FROM node:20-alpine AS builder
+WORKDIR /app
+
+# Kopiuj node_modules i source
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+# Build
+RUN npm run build
+
+# Stage 3: Runner
+FROM node:23-alpine AS runner
+WORKDIR /app
+
+# Kopiuj build i produkcyjne zależności
+COPY --from=builder /app/dist ./dist
+COPY --from=deps /app/node_modules ./node_modules
+COPY package*.json ./
+
+# Bezpieczeństwo
+USER node
+
+EXPOSE 5173
+ENV NODE_ENV=production
+
+CMD ["npm", "run", "start"]
