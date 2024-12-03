@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-backgroundDark text-white font-sans;
+}
+/****************************
+*                             *
+*                             *
+*                             *
+*                             *
+******************************/
+@layer utilities {
+  .container {
+    @apply max-w-screen-lg mx-auto;
+  }
+}
