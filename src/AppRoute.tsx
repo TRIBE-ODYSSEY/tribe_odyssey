@@ -4,7 +4,9 @@ import { Route, Routes } from 'react-router-dom';
 
 // // Lazy loaded pages
 const HomePage = React.lazy(() => import('@src/pages/HomePage'));
-
+const HealtChecker = React.lazy(
+  () => import('@src/pages/health/health_checker')
+);
 // const AboutPage = lazy(() => import('@pages/main/about'));
 // const BeatsPage = lazy(() => import('@pages/assets/beats'));
 // const CheckerPage = lazy(() => import('@pages/assets/checker'));
@@ -29,8 +31,8 @@ const AppRoutes: React.FC = () => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <Routes>
-        {/* Dodaj inne trasy tutaj */}
         <Route path="/" element={<HomePage />} />
+        <Route path="/health" element={<HealtChecker />} />
       </Routes>
     </Suspense>
   );

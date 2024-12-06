@@ -1,7 +1,7 @@
 import { config } from '@config/wagmiClient';
 import React from 'react';
 
-const WagmiCheckHealth: React.FC = () => {
+const HealtChecker: React.FC = () => {
   const checkHealth = config && config.chains && config.chains.length > 0;
 
   return (
@@ -19,4 +19,4 @@ const WagmiCheckHealth: React.FC = () => {
   );
 };
 
-export default WagmiCheckHealth;
+export default HealtChecker;
