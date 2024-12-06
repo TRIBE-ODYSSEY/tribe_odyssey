@@ -1,0 +1,40 @@
+{
+  "prizeTitles": {
+    "longer": [
+      [
+        "tribe-ordinals",
+        "Tribe Ordinals"
+      ],
+      [
+        "tribe-eth",
+        "Tribe ETH"
+      ],
+      [
+        "doge-punks",
+        "Doge Punks"
+      ],
+      [
+        "bulls",
+        "Bitcoin Bulls"
+      ]
+    ],
+    "shorter": [
+      [
+        "bitcoin-vikings",
+        "Bitcoin Vikings"
+      ],
+      [
+        "doge-punks",
+        "Doge Punks"
+      ],
+      [
+        "tribe-ordinals",
+        "Tribe Ordinals"
+      ],
+      [
+        "0xapes-eth",
+        "0xApes ETH"
+      ]
+    ]
+  }
+}
