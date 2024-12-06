@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
 import { Menu as MenuIcon } from "@mui/icons-material";
 import { Twitter, Telegram, Instagram, Wallet } from "@mui/icons-material";
-import { Discord } from "../../../assets/icons/Discord";
+import { Discord } from "../../../../.TODO/NEW/assets/icons/Discord";
 import { useConnectKit } from "connectkit";
 import { MobileMenu } from "./MobileMenu";
 import { GradientText } from "./StyledComponents";

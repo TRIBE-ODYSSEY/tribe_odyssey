@@ -1,11 +1,21 @@
+// src/main.tsx
+// import React from 'react';
+import ErrorBoundary from '@src/components/common/errors/ErrorBoundary.tsx';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
 import '../index.css';
-
 import App from './App.tsx';
+import { Web3Provider } from './lib/config/web3Provider';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <BrowserRouter>
+      <Web3Provider>
+        <ErrorBoundary>
+          <App />
+        </ErrorBoundary>
+      </Web3Provider>
+    </BrowserRouter>
   </StrictMode>
 );
