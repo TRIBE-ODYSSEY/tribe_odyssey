@@ -25,3 +25,11 @@ body {
 .btn:hover {
   @apply opacity-90;
 }
+
+.button-tribe {
+  @apply bg-gradient-to-r from-[#ff512f] to-[#dd2476] text-white;
+}
+
+.gradient-background {
+  background: linear-gradient(90deg, #1b1a1a, #dd2476);
+}

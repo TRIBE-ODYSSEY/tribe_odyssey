@@ -1,44 +1,44 @@
-                                                                                                            
- {                                                                                                                                                                                 
-  "compilerOptions": {                                                                                                                                                            
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",                                                                                                                
-    "target": "ES2022",                                                                                                                                                           
-    "forceConsistentCasingInFileNames": true,                                                                                                                                     
-    "useDefineForClassFields": true,                                                                                                                                              
-    "lib": ["ESNext", "ES2020", "DOM", "DOM.Iterable"],                                                                                                                           
-    "module": "ESNext",                                                                                                                                                           
-    "skipLibCheck": true,                                                                                                                                                         
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
+    "target": "ES2022",
+    "forceConsistentCasingInFileNames": true,
+    "useDefineForClassFields": true,
+    "lib": ["ESNext", "ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
     "moduleResolution": "Bundler",
 
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "types":["node" ],                                                                                                                                                
-    "allowImportingTsExtensions": true,                                                                                                                                           
-    "isolatedModules": true,                                                                                                                                                      
-    "moduleDetection": "force",                                                                                                                                                   
-    "noEmit": true,                                                                                                                                                               
-    "jsx": "react-jsx",                                                                                                                                                           
-    "strict": true,                                                                                                                                                               
-    "noUnusedLocals": true,                                                                                                                                                       
-    "noUnusedParameters": true,                                                                                                                                                   
-    "noFallthroughCasesInSwitch": true,                                                                                                                                           
-    "noUncheckedSideEffectImports": true,                                                                                                                                         
-    "baseUrl": "./src",                                                                                                                                                           
-    "paths": {                                                                                                                                                                    
-      "@src/*": ["*"],                                                                                                                                                            
+    "types": ["node"],
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@src/*": ["*"],
       "@pages/*": ["pages/*"],
       "@lib/*": ["lib/*"],
-      "@config/*": ["lib/config/*"],                                                                                                                                                   
-    }                                                                                                                                                                             
-  },                                                                                                                                                                              
-  "include": [                                                                                                                                                                    
-    "src/**/*.ts",                                                                                                                                                                
-    "src/**/*.tsx",                                                                                                                                                               
-    "vite.config.ts",                                                                                                                                                             
-    "contracts/**/*"                                                                                                                                                              
-  ],                                                                                                                                                                              
-  "buildOptions": {                                                                                                                                                               
-    "outDir": "./build"                                                                                                                                                           
-  }                                                                                                                                                                               
-}                                                                                                                                                                                 
-                                                                                                                                                                                  
+      "@config/*": ["lib/config/*"],
+      "@assets/*": ["assets/*"]
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "vite.config.ts",
+    "contracts/**/*",
+    ".TODO/OLD/Layout/MobileMenu.tsx"
+  ],
+  "buildOptions": {
+    "outDir": "./build"
+  }
+}

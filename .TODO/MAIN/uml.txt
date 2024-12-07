@@ -1,0 +1,57 @@
+@startuml
+package Backend {
+    class User {
+        +id: string
+        +name: string
+        +email: string
+        +password: string
+    }
+    
+    class Goal {
+        +id: string
+        +userId: string
+        +title: string
+        +description: string
+        +category: string
+        +dueDate: Date
+        +isCompleted: boolean
+    }
+    
+    class Task {
+        +id: string
+        +goalId: string
+        +title: string
+        +description: string
+        +dueDate: Date
+        +isCompleted: boolean
+    }
+    
+    class Event {
+        +id: string
+        +userId: string
+        +title: string
+        +description: string
+        +startTime: Date
+        +endTime: Date
+    }
+    
+    User "1" --> "*" Goal
+    Goal "1" --> "*" Task
+    User "1" --> "*" Event
+}
+
+package Frontend {
+    class App
+    class Dashboard
+    class Goals
+    class Tasks
+    class Calendar
+    class Notes
+}
+
+App --> Dashboard
+App --> Goals
+App --> Tasks
+App --> Calendar
+App --> Notes
+@enduml
