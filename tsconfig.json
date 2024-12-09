@@ -4,7 +4,7 @@
     "target": "ES2022",
     "forceConsistentCasingInFileNames": true,
     "useDefineForClassFields": true,
-    "lib": ["ESNext", "ES2020", "DOM", "DOM.Iterable"],
+    "lib": ["ESNext", "ES2020", "DOM", "DOM.Iterable", "ES6"],
     "module": "ESNext",
     "skipLibCheck": true,
     "moduleResolution": "Bundler",
@@ -31,13 +31,7 @@
       "@assets/*": ["assets/*"]
     }
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "vite.config.ts",
-    "contracts/**/*",
-    ".TODO/OLD/Layout/MobileMenu.tsx"
-  ],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts"],
   "buildOptions": {
     "outDir": "./build"
   }

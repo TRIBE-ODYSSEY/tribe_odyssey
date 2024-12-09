@@ -1,7 +1,6 @@
 // src/AppRoutes.tsx
 import React, { Suspense, lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
-
 // Lazy loaded pages
 const HomePage = lazy(() => import('@src/pages/HomePage'));
 const HealthChecker = lazy(() => import('@src/pages/health/health_checker'));

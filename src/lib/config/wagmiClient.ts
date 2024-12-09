@@ -1,6 +1,6 @@
-import { http, createConfig } from 'wagmi'
-import { mainnet, sepolia } from 'wagmi/chains'
 import { getDefaultConfig } from 'connectkit';
+import { createConfig, http } from 'wagmi';
+import { mainnet, sepolia } from 'wagmi/chains';
 import { WALLET_CONNECT_PROJECT_ID } from './constants';
 
 
@@ -10,7 +10,7 @@ export const config = createConfig(
     walletConnectProjectId: WALLET_CONNECT_PROJECT_ID,
     chains: [mainnet, sepolia],
     transports: {
-      [mainnet.id]: http(),//TODO: base chain 
+      [mainnet.id]: http(),
       [sepolia.id]: http(),
   },
 })
