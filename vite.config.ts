@@ -18,6 +18,7 @@ export default defineConfig({
     exclude: ["@tanstack/react-query", "wagmi"],
   },
   build: {
+    target:'es2022',
     commonjsOptions: {
       include: [/node_modules/],
     },  
@@ -29,5 +30,6 @@ export default defineConfig({
   },
   esbuild: {
     logOverride: { 'use client': 'silent' },
+    target: "es2022"
   }
 });
