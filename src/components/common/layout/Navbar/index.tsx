@@ -1,13 +1,12 @@
-import logo from '@assets/images/logo.png';
 import React from 'react';
-import Menu from './menu'; 
+import Menu from './menu';
 
 const Navbar: React.FC = () => {
   const menus = [
     {
-      label: 'Elementi9',
+      label: 'Element19',
       items: [
-        { label: 'Option 1', href: '#' },
+        { label: 'Drops', href: '#' },
         { label: 'Option 2', href: '#' },
       ],
     },
@@ -44,7 +43,7 @@ const Navbar: React.FC = () => {
   return (
     <nav className="bg-black text-white px-4 py-3 flex items-center justify-between">
       {/* Logo */}
-      <img src={logo} alt="Logo" loading="lazy" />
+      <img data-src="images/logo.png" alt="Logo" loading="lazy" />
 
       <ul className="hidden md:flex space-x-6">
         {menus.map((menu, index) => (

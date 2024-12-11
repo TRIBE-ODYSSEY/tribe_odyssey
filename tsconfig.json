@@ -28,7 +28,8 @@
       "@pages/*": ["pages/*"],
       "@lib/*": ["lib/*"],
       "@config/*": ["lib/config/*"],
-      "@assets/*": ["assets/*"]
+      "@assets/*": ["assets/*"],
+      "@hooks/*": ["lib/hooks/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts"],

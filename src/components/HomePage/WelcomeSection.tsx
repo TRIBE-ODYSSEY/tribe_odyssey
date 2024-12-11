@@ -1,7 +1,6 @@
 import { IMAGES } from '@assets/index';
 import { ImageCategories } from '@assets/types';
 import React from 'react';
-import LazyImage from '../common/LazyImage';
 
 const WelcomeSection: React.FC = () => {
   const moltenThrone = IMAGES[ImageCategories.MOLTEN_THRONE];
@@ -30,11 +29,7 @@ const WelcomeSection: React.FC = () => {
 
       {/* Right Content */}
       <div className="flex-1 p-4">
-        <LazyImage
-          src={moltenThrone}
-          alt="Molten Throne"
-          classNameCSS="w-full h-auto min-h-[300px]"
-        />
+        <img data-src={moltenThrone} alt="Molten Throne" />
       </div>
     </div>
   );

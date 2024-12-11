@@ -8,6 +8,7 @@ import '../index.css';
 import App from './AppRoutes.tsx';
 import Layout from './components/common/layout/Layout';
 import { Web3Provider } from './lib/config/web3Provider';
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>

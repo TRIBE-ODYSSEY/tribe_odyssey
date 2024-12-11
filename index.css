@@ -5,12 +5,12 @@
 :root {
   --primary-color: #ff512f;
   --secondary-color: #dd2476;
-  --background-dark: #14121b;
+  --background-dark: #181818;
   --background-paper: #1a1825;
 }
 
 body {
-  @apply m-0 bg-[#14121b] text-white font-sans;
+  @apply m-0 bg-backgroundPaper text-white font-sans;
   font-family: 'Inter', sans-serif;
 }
 
