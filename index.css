@@ -1,7 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
 
 :root {
   --primary-color: #ff512f;
@@ -13,11 +13,9 @@
 
 body {
   @apply m-0 bg-backgroundPaper text-white font-sans;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Monstserrat', sans-serif;
 }
-.font-montserrat {
-  font-family: 'Montserrat', sans-serif !important;
-}
+
 .gradient-text {
   @apply bg-gradient-to-b from-[#EBEBEB] to-[#EBEBEBCC] bg-clip-text text-transparent;
 }

@@ -17,7 +17,6 @@ module.exports = {
         ethAddress: '#ebebeb',
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
         montserrat: ['Montserrat', 'sans-serif'],
       },
       backgroundImage: {

@@ -10,6 +10,7 @@ interface CardProps {
     alt?: string;
   };
   children?: React.ReactNode;
+  h1?: string;
 }
 
 const Card: React.FC<CardProps> = ({

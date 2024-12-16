@@ -50,7 +50,7 @@ const Navbar: React.FC = () => {
   ];
 
   return (
-    <nav className="bg-backgroundPaper text-white px-4 py-3 m-4 h-16 flex items-center justify-between">
+    <nav className="bg-backgroundPaper  text-white   m-4 h-16 flex  justify-center items-center ">
       {/* Logo */}
       <img
         data-src="images/logo.png"
@@ -62,7 +62,7 @@ const Navbar: React.FC = () => {
       <ul className="hidden md:flex space-x-6 ">
         {menus.map((menu, index) => (
           <li key={index} className="group relative">
-            <button className="hover:text-gray-700 border  border-gray-600 p-2 w-36">
+            <button className="hover:text-gray-700 border  border-gray-600 p-2  w-36">
               {menu.label}
             </button>
             <Menu items={menu.items} className="group-hover:block hidden" />

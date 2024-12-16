@@ -1,61 +1,40 @@
-import { IMAGES } from '@assets/index';
-import { ImageCategories } from '@assets/types';
+import useLazyLoading from '@hooks/useLazyLoading';
 import React from 'react';
+import Card from '../common/card/Card';
 
 const TribeOdysseySection: React.FC = () => {
+  useLazyLoading();
   const sideImages = [
-    IMAGES[ImageCategories.ODYSSEY].nft1,
-    IMAGES[ImageCategories.ODYSSEY].nft2,
-    IMAGES[ImageCategories.ODYSSEY].nft3,
+    'images/tribunus.png',
+    'images/shaman1.jpeg',
+    'images/molten-throne.png',
   ];
 
   return (
-    <div>
-      <div>
-        <div></div>
-        <div>
-          {/* Main Image */}
-          <div>
-            <img
-              src={IMAGES[ImageCategories.ODYSSEY].nft1}
-              alt="Tribe NFT"
-              style={{ width: '100%', height: '500px' }}
-            />
-          </div>
-
-          {/* Side Images Container */}
-          <div>
-            {sideImages.map((image, index) => (
-              <div key={index}>
-                <img
-                  src={image}
-                  alt={`Side NFT ${index + 1}`}
-                  style={{ width: '142px', height: '142px' }}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <div>
-          <div>
-            <h2>Tribe Odyssey</h2>
-
-            <p>
-              A collection of 9400 badass and entirely original ape NFT
-              characters that live on the Ethereum Blockchain.
-            </p>
-
-            <p>
-              The collection's lore is based in an alternate dimension. Within
-              this dimension exists a futuristic world, a harsh and barren
-              wasteland ruled by a tech advanced ape civilisation.
-            </p>
-
-            <button>View on Opensea</button>
-          </div>
+    <div className="">
+      {/* Main Image */}
+      <div className="flex flex-row justify-center  ">
+        <Card
+          width="60vw"
+          height="60vw"
+          image={{
+            'data-src': 'images/molten-throne.png',
+            alt: 'Tribe Odyssey',
+          }}
+          className=""
+        />
+        {/* Side Images Container */}
+        <div className=" top-0 left-0 flex flex-col  space-y-4 justify-between h-full">
+          {sideImages.map((image, index) => (
+            <div key={index} className="mb-2.5">
+              <Card
+                width="20vw"
+                height="20vw"
+                image={{ 'data-src': image, alt: `Side NFT ${index + 1}` }}
+                className="w-[142px] h-[142px]"
+              />
+            </div>
+          ))}
         </div>
       </div>
     </div>

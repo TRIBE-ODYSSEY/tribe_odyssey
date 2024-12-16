@@ -46,6 +46,7 @@
   "name": "tribe-odyssey",
   "private": true,
   "scripts": {
+    "start": "vite",
     "build": "tsc -b && vite build",
     "dev": "vite",
     "lint": "eslint .",
