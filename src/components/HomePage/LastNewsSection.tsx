@@ -1,12 +1,6 @@
 import { IMAGES } from '@assets/index';
-import { useInView } from 'react-intersection-observer';
 
 const LatestNewsSection = () => {
-  const [ref, inView] = useInView({
-    threshold: 0.1,
-    triggerOnce: true,
-  });
-
   const newsItems = [
     {
       id: 1,
@@ -37,7 +31,7 @@ const LatestNewsSection = () => {
 
   return (
     <div>
-      <div ref={ref}>
+      <div>
         <h2>Latest Updates</h2>
 
         <div>

@@ -1,10 +1,19 @@
+import { useWalletDiscordButtonStore } from '@src/lib/store/walletdiscordStore';
+import { ConnectKitButton } from 'connectkit';
 import React from 'react';
+import { useAccount } from 'wagmi';
 import Menu from './menu';
-
 const Navbar: React.FC = () => {
+  const { address, isConnected } = useAccount();
+  const { setIsConnected } = useWalletDiscordButtonStore();
+
+  React.useEffect(() => {
+    setIsConnected(isConnected);
+  }, [isConnected, setIsConnected]);
+
   const menus = [
     {
-      label: 'Element19',
+      label: 'Element',
       items: [
         { label: 'Drops', href: '#' },
         { label: 'Option 2', href: '#' },
@@ -41,14 +50,21 @@ const Navbar: React.FC = () => {
   ];
 
   return (
-    <nav className="bg-black text-white px-4 py-3 flex items-center justify-between">
+    <nav className="bg-backgroundPaper text-white px-4 py-3 m-4 h-16 flex items-center justify-between">
       {/* Logo */}
-      <img data-src="images/logo.png" alt="Logo" loading="lazy" />
+      <img
+        data-src="images/logo.png"
+        alt="Logo"
+        loading="lazy"
+        className="p-6 m-4"
+      />
 
-      <ul className="hidden md:flex space-x-6">
+      <ul className="hidden md:flex space-x-6 ">
         {menus.map((menu, index) => (
           <li key={index} className="group relative">
-            <button className="hover:text-gray-400">{menu.label}</button>
+            <button className="hover:text-gray-700 border  border-gray-600 p-2 w-36">
+              {menu.label}
+            </button>
             <Menu items={menu.items} className="group-hover:block hidden" />
           </li>
         ))}
@@ -68,13 +84,30 @@ const Navbar: React.FC = () => {
       </div>
 
       {/* Discord Button */}
+
+      {/* Przyciski */}
+      {isConnected && <div className="text-sm text-gray-400">{address}</div>}
       <div>
-        <a
-          href="#"
-          className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-full text-sm"
-        >
-          Join Discord
-        </a>
+        {isConnected ? (
+          <a
+            href="https://discord.gg/"
+            className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-full text-sm transition duration-300"
+          >
+            Discord
+          </a>
+        ) : (
+          <ConnectKitButton.Custom>
+            {({ show }) => (
+              <button
+                onClick={show}
+                className="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded-full text-sm transition duration-300"
+              >
+                Connect Wallet
+                {address}
+              </button>
+            )}
+          </ConnectKitButton.Custom>
+        )}
       </div>
     </nav>
   );

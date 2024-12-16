@@ -47,7 +47,7 @@ const GoldApesSection = () => {
         <div>
           <div>
             <img
-              src={goldApes[prev].image}
+              data-src={goldApes[prev].image}
               alt={goldApes[prev].alt}
               height="200px"
               width="200px"

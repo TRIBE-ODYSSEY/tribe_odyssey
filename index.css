@@ -1,19 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
 
 :root {
   --primary-color: #ff512f;
   --secondary-color: #dd2476;
   --background-dark: #181818;
   --background-paper: #1a1825;
+  --background-navbar: #14121b;
 }
 
 body {
   @apply m-0 bg-backgroundPaper text-white font-sans;
   font-family: 'Inter', sans-serif;
 }
-
+.font-montserrat {
+  font-family: 'Montserrat', sans-serif !important;
+}
 .gradient-text {
   @apply bg-gradient-to-b from-[#EBEBEB] to-[#EBEBEBCC] bg-clip-text text-transparent;
 }
@@ -22,6 +26,9 @@ body {
   @apply bg-gradient-to-r from-[var(--primary-color)] to-[var(--secondary-color)] text-white;
 }
 
+.tribe-button-nav {
+  @apply border border-gray-400;
+}
 .btn:hover {
   @apply opacity-90;
 }
@@ -32,4 +39,21 @@ body {
 
 .gradient-background {
   background: linear-gradient(90deg, #1b1a1a, #dd2476);
+}
+
+.error-bg {
+  background-image: url('images/error-bg.png');
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh; /* Pełna wysokość ekranu */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white; /* Kolor tekstu dla czytelności */
+  text-align: center;
+}
+
+.bg-herobg {
+  opacity: 50%;
 }

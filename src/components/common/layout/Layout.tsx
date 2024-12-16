@@ -10,7 +10,7 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   useLazyLoading();
   return (
-    <div className="flex flex-col ">
+    <div className="flex flex-col min-h-screen">
       <Navbar />
       <main className="flex-grow">{children}</main>
       <Footer />

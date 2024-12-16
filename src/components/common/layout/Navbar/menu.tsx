@@ -18,6 +18,8 @@ const Menu: React.FC<MenuProps> = ({
   className = '',
 }) => {
   const [open, setOpen] = useState(false);
+  
+  
   useEffect(() => {
     if (open) {
       const closeMenu = () => {
@@ -27,6 +29,8 @@ const Menu: React.FC<MenuProps> = ({
       document.addEventListener('click', closeMenu);
     }
   }, [open]);
+  
+  
   return (
     <ul
       className={`absolute bg-white shadow-lg rounded-lg ${className}`}

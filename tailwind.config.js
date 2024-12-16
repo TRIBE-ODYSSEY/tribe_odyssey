@@ -18,13 +18,15 @@ module.exports = {
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
+        montserrat: ['Montserrat', 'sans-serif'],
       },
       backgroundImage: {
         gradientText:
           'linear-gradient(180deg, #EBEBEB 0%, rgba(235, 235, 235, 0.8) 100%)',
         gradientButton:
           'linear-gradient(90deg, var(--tw-color-primary) 0%, var(--tw-color-secondary) 100%)',
-        errorBg: "url('/src/assets/images/error-bg.png')",
+        herobg: "url('images/hero-bg.webp')",
+        errorBg: "url('images/error-bg.png')",
       },
       keyframes: {
         fadeInUp: {

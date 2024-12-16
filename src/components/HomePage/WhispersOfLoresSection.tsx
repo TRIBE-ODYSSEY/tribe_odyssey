@@ -35,7 +35,7 @@ const WhispersOfLoresSection: React.FC = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-4">
+      <div className="flex flexbox-row gap-4">
         {lores.map((lore) => (
           <div
             key={lore.id}
@@ -43,7 +43,7 @@ const WhispersOfLoresSection: React.FC = () => {
           >
             <div className="relative h-60 overflow-hidden">
               <img
-                src={lore.image}
+                data-src={lore.image}
                 alt={lore.title}
                 className="w-full h-full object-cover transition-transform duration-300 ease-out hover:scale-105"
               />

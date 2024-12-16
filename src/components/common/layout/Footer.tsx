@@ -1,7 +1,6 @@
 import { Discord } from '@src/assets/icons/Discord';
 import React from 'react';
 import { Link } from 'react-router-dom';
-const logo = '/logored.png';
 
 export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -12,7 +11,7 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-2 md:grid-cols-6 gap-5">
           <div className="col-span-2 md:col-span-1">
             <img
-              src={logo}
+              data-src="images/logored.png"
               alt="Tribe Logo"
               className="w-20 h-8 object-cover mb-6"
             />

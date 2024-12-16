@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 
-interface LazyImage extends HTMLImageElement {
+export interface LazyImage extends HTMLImageElement {
     dataset: {
         src: string;
     };

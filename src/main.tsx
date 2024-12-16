@@ -1,6 +1,6 @@
 // src/main.tsx
 // import React from 'react';
-import ErrorBoundary from '@src/components/errors/ErrorBoundary.tsx';
+import ErrorBoundary from '@src/components/common/errors/ErrorBoundary.tsx';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
