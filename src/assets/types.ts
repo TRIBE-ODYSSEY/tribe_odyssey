@@ -55,6 +55,9 @@ export interface LoreSection {
 
 export interface Icons {
   specialButtonCore: string;
+  specialButtonCore2: string;
+  specialButtonCore5: string;
+  specialButtonCore4: string;
   starIcon: string;
   hexGrid: string;
 }

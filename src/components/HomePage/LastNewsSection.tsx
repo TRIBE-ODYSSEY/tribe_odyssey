@@ -30,9 +30,9 @@ const LatestNewsSection = () => {
   ];
 
   return (
-    <div>
-      <div>
-        <h2>Latest Updates</h2>
+    <>
+      <div className="g-center  ">
+        <h2 className=" text-4xl">Latest Updates</h2>
 
         <div>
           {newsItems.map((item) => (
@@ -46,7 +46,7 @@ const LatestNewsSection = () => {
           ))}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -38,6 +38,9 @@ const IMAGE_PATHS = {
   DIGITAL: 'images/digital.png',
   // Icons
   SPECIAL_BUTTON_CORE: 'images/special-button-core.svg',
+  SPECIAL_BUTTON_CORE_2: 'images/special-button-core.svg',
+  SPECIAL_BUTTON_CORE_5: 'images/special-button-core.svg',
+  SPECIAL_BUTTON_CORE_4: 'images/special-button-core.svg',
   STAR_ICON: 'images/StarIcon.svg',
   HEX_GRID: 'images/hex-grid.svg',
   // Others
@@ -72,4 +75,5 @@ export const IMAGES: Images = {
   [ImageCategories.SHAMAN]: IMAGE_PATHS.SHAMAN,
   [ImageCategories.PLACEHOLDER]: IMAGE_PATHS.PLACEHOLDER
 } as const;
-export { ImageCategories  };
+export { ImageCategories };
+

@@ -7,34 +7,45 @@ const TribeOdysseySection: React.FC = () => {
   const sideImages = [
     'images/tribunus.png',
     'images/shaman1.jpeg',
-    'images/molten-throne.png',
+    'images/monkey.jpg',
   ];
 
   return (
     <div className="">
       {/* Main Image */}
-      <div className="flex flex-row justify-center  ">
+      <div className="flex flex-row justify-center items-center">
         <Card
-          width="60vw"
-          height="60vw"
           image={{
-            'data-src': 'images/molten-throne.png',
+            'data-src': 'images/monkey.jpg',
             alt: 'Tribe Odyssey',
           }}
-          className=""
+          className="w-24 h-auto"
         />
         {/* Side Images Container */}
-        <div className=" top-0 left-0 flex flex-col  space-y-4 justify-between h-full">
+        <div className="relative  top-5 left-5 flex flex-col space-y-14 justify-between h-full">
           {sideImages.map((image, index) => (
             <div key={index} className="mb-2.5">
               <Card
-                width="20vw"
-                height="20vw"
                 image={{ 'data-src': image, alt: `Side NFT ${index + 1}` }}
-                className="w-[142px] h-[142px]"
+                className="w-16 h-auto"
+                width="40%"
+                isSquare="200px"
+                height="20%"
               />
             </div>
           ))}
+        </div>
+        <div className="g-center flex-1 flex flex-col justify-center p-4 max-w-lg">
+          <h2 className="text-2xl font-bold mb-4">Tribe Odyssey</h2>
+          <p className="text-center">
+            A collection of 9400 badass and entirely original ape NFT characters
+            that live on the Ethereum Blockchain.
+          </p>
+          <span>
+            The collection's lore is based in an alternate dimension. Within
+            this dimension exists a futuristic world, a harsh and barren ruled
+            by a tech advanced ape civilisation.
+          </span>
         </div>
       </div>
     </div>

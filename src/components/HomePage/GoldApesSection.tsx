@@ -1,6 +1,6 @@
 import { IMAGES } from '@assets/index';
+import Card from '@src/components/common/card/Card';
 import { useMemo, useState } from 'react';
-
 const GoldApesSection = () => {
   const goldApes = useMemo(
     () => [
@@ -32,7 +32,7 @@ const GoldApesSection = () => {
   const { prev, current, next } = getDisplayImages();
 
   return (
-    <div>
+    <div className="g-center ">
       {/* Title Section */}
       <div>
         <h2>24 Carats Apes</h2>
@@ -44,37 +44,37 @@ const GoldApesSection = () => {
 
       {/* Apes Display */}
       <div>
-        <div>
-          <div>
-            <img
-              data-src={goldApes[prev].image}
-              alt={goldApes[prev].alt}
-              height="200px"
-              width="200px"
-            />
-          </div>
+        <div className="flex flex-row justify-center items-center space-x-4">
+          <Card
+            image={{
+              'data-src': goldApes[prev].image,
+              alt: goldApes[prev].alt,
+            }}
+            height="200px"
+            width="200px"
+          />
 
-          <div>
-            <img
-              src={goldApes[current].image}
-              alt={goldApes[current].alt}
-              height="300px"
-              width="300px"
-            />
-          </div>
+          <Card
+            image={{
+              'data-src': goldApes[current].image,
+              alt: goldApes[current].alt,
+            }}
+            height="300px"
+            width="300px"
+          />
 
-          <div>
-            <img
-              src={goldApes[next].image}
-              alt={goldApes[next].alt}
-              height="200px"
-              width="200px"
-            />
-          </div>
+          <Card
+            image={{
+              'data-src': goldApes[next].image,
+              alt: goldApes[next].alt,
+            }}
+            height="200px"
+            width="200px"
+          />
         </div>
 
         {/* Navigation Buttons */}
-        <div>
+        <div className="justify-center  items center">
           <button onClick={handlePrevious}>
             <img src="/images/special-button-core.svg" alt="Previous" />
           </button>

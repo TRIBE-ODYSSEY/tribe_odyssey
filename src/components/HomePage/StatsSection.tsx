@@ -9,10 +9,10 @@ const StatsSection = () => {
   ];
 
   return (
-    <div className="stats-section py-8">
-      <div className="container mx-auto">
+    <div className="py-8 flex flex-row justify-center">
+      <div className="container">
         <h2 className="text-3xl font-bold text-center mb-8">Statistics</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="flex flex-row gap-4 justify-center">
           {stats.map((stat) => (
             <Card
               key={stat.id}

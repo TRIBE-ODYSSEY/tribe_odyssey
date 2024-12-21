@@ -6,11 +6,13 @@ interface CardProps {
   width?: string;
   className?: string;
   image?: {
+    objectFit?: React.CSSProperties['objectFit'];
+    objectPosition?: React.CSSProperties['objectPosition'];
     'data-src': string;
     alt?: string;
   };
   children?: React.ReactNode;
-  h1?: string;
+  isSquare?: string;
 }
 
 const Card: React.FC<CardProps> = ({
@@ -19,22 +21,34 @@ const Card: React.FC<CardProps> = ({
   className,
   image,
   children,
+  isSquare,
 }) => {
   useLazyLoading();
+  const size = isSquare || '';
+
   return (
     <div
-      className={`card  border-gray-300 border-4 h-96  w-72  rounded-lg overflow-hidden shadow-md ${className}`}
+      className={`card border-gray-300 border-4 rounded-lg overflow-hidden shadow-md ${className}`}
       style={{
-        height,
-        width,
+        height: size || height,
+        width: size || width,
       }}
     >
       {image && (
-        <div className="card-image h-46 relative overflow-hidden">
+        <div
+          className="card-image relative overflow-hidden"
+          style={{ height: size, width: size }}
+        >
           <img
             data-src={image['data-src']}
             alt={image.alt || 'No description available'}
-            className="w-full h-full object-cover"
+            style={{
+              objectFit: image.objectFit || 'cover',
+              objectPosition: image.objectPosition || 'center',
+              height: '100%',
+              width: '100%',
+            }}
+            className="object-cover"
           />
         </div>
       )}

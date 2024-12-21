@@ -1,11 +1,28 @@
 import { IMAGES } from '@assets/index';
 import { ImageCategories } from '@assets/types';
+import useLazyLoading from '@src/lib/hooks/useLazyLoading';
 import { useState } from 'react';
-
 const TribeAllianceSection: React.FC = () => {
+  useLazyLoading();
   const [currentImage, setCurrentImage] = useState(0);
 
-  const allianceImages = IMAGES[ImageCategories.ALLIANCE_IMAGES];
+  const allianceImages = [
+    {
+      image: 'images/Vyron.jpg',
+      name: 'Verron Haynes',
+      title: 'Former NFL Running Back',
+    },
+    {
+      image: 'images/Celebrity2.png',
+      name: 'Celebrity 2',
+      title: 'Title 2',
+    },
+    {
+      image: 'images/Celebrity3.png',
+      name: 'Celebrity 3',
+      title: 'Title 3',
+    },
+  ];
 
   const handlePrevious = () => {
     setCurrentImage((prev) =>
@@ -20,14 +37,14 @@ const TribeAllianceSection: React.FC = () => {
   };
 
   return (
-    <div className="max-w-screen-lg mx-auto py-6 md:py-12 relative">
+    <div className="flex flex-wrap max-w-screen-lg mx-auto py-6 md:py-12 relative">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
         {/* Left Side - Image */}
         <div className="relative">
           <img
-            src={allianceImages[currentImage].image}
+            data-src={allianceImages[currentImage].image}
             alt={allianceImages[currentImage].name}
-            className="w-full h-full object-cover"
+            className="w-3/4 h-full object-cover"
           />
           {/* Navigation Buttons */}
           <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
@@ -36,7 +53,7 @@ const TribeAllianceSection: React.FC = () => {
               className="w-10 h-10 bg-black/50 backdrop-blur-lg hover:bg-black/70 transition-colors rounded-full flex items-center justify-center"
             >
               <img
-                src={IMAGES[ImageCategories.ICONS].specialButtonCore}
+                data-src={IMAGES[ImageCategories.ICONS].specialButtonCore}
                 alt="Previous"
                 className="w-6 h-6"
               />
@@ -46,7 +63,7 @@ const TribeAllianceSection: React.FC = () => {
               className="w-10 h-10 bg-black/50 backdrop-blur-lg hover:bg-black/70 transition-colors rounded-full flex items-center justify-center"
             >
               <img
-                src={IMAGES[ImageCategories.ICONS].specialButtonCore}
+                data-src={IMAGES[ImageCategories.ICONS].specialButtonCore2}
                 alt="Next"
                 className="w-6 h-6"
               />
@@ -58,7 +75,7 @@ const TribeAllianceSection: React.FC = () => {
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-2">
             <img
-              src={IMAGES[ImageCategories.ICONS].starIcon}
+              data-src={IMAGES[ImageCategories.ICONS].starIcon}
               alt="Alliance Icon"
               className="w-10 h-10"
             />

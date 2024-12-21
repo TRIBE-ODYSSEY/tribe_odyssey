@@ -1,6 +1,6 @@
-import { IMAGES } from '@assets/index';
-import { ImageCategories } from '@assets/types';
+import useLazyLoading from '@src/lib/hooks/useLazyLoading';
 import React, { useState } from 'react';
+import Card from '../common/card/Card';
 
 interface Fighter {
   image: string;
@@ -11,13 +11,14 @@ interface Fighter {
 }
 
 const TribeFightersSection: React.FC = () => {
+  useLazyLoading();
   const [currentFighter, setCurrentFighter] = useState(0);
 
   const fighters: Fighter[] = [
     {
-      image: IMAGES[ImageCategories.FIGHTERS].coltonLoud,
+      image: 'images/Loud.png',
       name: 'Colton Loud',
-      nft: IMAGES[ImageCategories.FIGHTERS].coltonLoudNFT,
+      nft: 'images/fighter-nft-1.png',
       record: 'Professional Record: 8-0',
       weight: 'Weight Class: Lightweight',
     },
@@ -32,82 +33,55 @@ const TribeFightersSection: React.FC = () => {
   };
 
   return (
-    <div className="max-w-screen-lg mx-auto py-6 md:py-12 relative">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-        {/* Left Side - Content */}
-        <div className="flex flex-col gap-4">
-          <div className="flex items-center gap-2">
-            <img
-              src="/images/StarIcon.svg"
-              alt="Fighter Icon"
-              className="w-10 h-10"
+    <div className="g-center fine-flex flex flex-row ">
+      {/* Left Side - Content */}
+      <div>
+        <div>
+          <img data-src="/images/StarIcon.svg" alt="Fighter Icon" />
+          <h2>THE TRIBE FIGHTERS</h2>
+        </div>
+
+        <p>
+          An exclusive initiative representing the best up-and-coming
+          international MMA fighters on both professional and amateur circuits.
+        </p>
+
+        {/* Fighter Info Card */}
+        <div>
+          <h3>{fighters[currentFighter].name}</h3>
+
+          <div>
+            <Card
+              image={{
+                'data-src': fighters[currentFighter].nft,
+                alt: 'Fighter NFT',
+              }}
             />
-            <h2 className="text-2xl md:text-3xl font-medium font-montserrat bg-gradient-to-b from-white to-white/70 text-transparent bg-clip-text text-center">
-              THE TRIBE FIGHTERS
-            </h2>
-          </div>
-
-          <p className="text-base md:text-lg text-gray-200 leading-6 pl-0 md:pl-5">
-            An exclusive initiative representing the best up-and-coming
-            international MMA fighters on both professional and amateur
-            circuits.
-          </p>
-
-          {/* Fighter Info Card */}
-          <div className="bg-white/3 rounded-lg p-4 border border-white/10 mt-4">
-            <h3 className="text-xl md:text-2xl font-medium font-montserrat mb-3">
-              {fighters[currentFighter].name}
-            </h3>
-
-            <div className="flex gap-3 mb-3">
-              <img
-                src={fighters[currentFighter].nft}
-                alt="Fighter NFT"
-                style={{ width: '120px', height: '120px' }}
-              />
-              <div className="flex flex-col gap-1">
-                <p className="text-gray-200">
-                  {fighters[currentFighter].record}
-                </p>
-                <p className="text-gray-200">
-                  {fighters[currentFighter].weight}
-                </p>
-              </div>
+            <div>
+              <p>{fighters[currentFighter].record}</p>
+              <p>{fighters[currentFighter].weight}</p>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Right Side - Image */}
-        <div className="relative">
-          <img
-            src={fighters[currentFighter].image}
-            alt="Tribe Fighters"
-            style={{ width: '100%', height: '500px' }}
-          />
+      {/* Right Side - Image */}
+      <div>
+        <Card
+          image={{
+            'data-src': fighters[currentFighter].image,
+            alt: 'Fighter',
+          }}
+        />
 
-          {/* Navigation Buttons */}
-          <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
-            <button
-              onClick={handlePrevious}
-              className="w-10 h-10 bg-black/50 backdrop-blur-lg hover:bg-black/70 transition-colors rounded-full flex items-center justify-center"
-            >
-              <img
-                src="/images/special-button-core.svg"
-                alt="Previous"
-                className="w-6 h-6"
-              />
-            </button>
-            <button
-              onClick={handleNext}
-              className="w-10 h-10 bg-black/50 backdrop-blur-lg hover:bg-black/70 transition-colors rounded-full flex items-center justify-center transform rotate-180"
-            >
-              <img
-                src="/images/special-button-core.svg"
-                alt="Next"
-                className="w-6 h-6"
-              />
-            </button>
-          </div>
+        {/* Navigation Buttons */}
+        <div>
+          <button onClick={handlePrevious}>
+            <img data-src="images/special-button-core.svg" alt="Previous" />
+          </button>
+          <button onClick={handleNext}>
+            <img data-src="images/special-button-core.svg" alt="Next" />
+          </button>
         </div>
       </div>
     </div>

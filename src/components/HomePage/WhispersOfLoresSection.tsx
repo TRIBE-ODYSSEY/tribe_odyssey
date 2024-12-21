@@ -26,10 +26,10 @@ const WhispersOfLoresSection: React.FC = () => {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto py-6 relative">
+    <div className="max-w-7xl mx-auto py-6 ">
       <div className="text-center mb-8">
         <h2 className="text-4xl font-semibold bg-gt-to-b from-white to-white/70 bg-clip-text text-transparent mb-3">
-          Whispers of Lo
+          Whispers of Lore
         </h2>
         <p className="text-base text-white/80 max-w-md mx-auto">
           Discover the rich tapestry of stories that shape our digital realm
@@ -46,7 +46,6 @@ const WhispersOfLoresSection: React.FC = () => {
               <Card
                 image={{ 'data-src': lore.image, alt: lore.title }}
                 data-src={lore.image}
-
                 className="w-full h-full object-cover transition-transform duration-300 ease-out hover:scale-105"
               />
               <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black to-transparent"></div>
