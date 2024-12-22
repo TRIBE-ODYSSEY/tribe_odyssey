@@ -11,7 +11,7 @@ const TribeOdysseySection: React.FC = () => {
   ];
 
   return (
-    <div className="">
+    <div className=" w-full h-auto">
       {/* Main Image */}
       <div className="flex flex-row justify-center items-center">
         <Card
@@ -19,10 +19,10 @@ const TribeOdysseySection: React.FC = () => {
             'data-src': 'images/monkey.jpg',
             alt: 'Tribe Odyssey',
           }}
-          className="w-24 h-auto"
+          className=" h-auto"
         />
         {/* Side Images Container */}
-        <div className="relative  top-5 left-5 flex flex-col space-y-14 justify-between h-full">
+        <div className="  top-5 left-5 flex flex-col space-y-14 justify-between h-full">
           {sideImages.map((image, index) => (
             <div key={index} className="mb-2.5">
               <Card

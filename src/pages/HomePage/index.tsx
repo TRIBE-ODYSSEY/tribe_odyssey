@@ -33,10 +33,12 @@ const sections: SectionComponent[] = [
 
 const HomePage: React.FC = () => {
   return (
-    <div className="flex flex-col justify-center  ">
+    <div className="flex flex-col justify-center">
       <Suspense fallback={<div>Loading sections...</div>}>
         {sections.map((Section, index) => (
-          <Section key={index} />
+          <div key={index} className="mb-8">
+            <Section />
+          </div>
         ))}
       </Suspense>
     </div>

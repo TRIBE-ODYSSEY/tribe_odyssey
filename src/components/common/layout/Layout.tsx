@@ -13,7 +13,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <Navbar />
 
       {/* Główna zawartość */}
-      <main className="container mx-auto content-items-center justify-center">
+      <main className=" content-items-center justify-center">
         {children}
       </main>
 

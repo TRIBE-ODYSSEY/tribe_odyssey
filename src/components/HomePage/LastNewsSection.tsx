@@ -30,7 +30,7 @@ const LatestNewsSection = () => {
   ];
 
   return (
-    <>
+    <div>
       <div className="g-center  ">
         <h2 className=" text-4xl">Latest Updates</h2>
 
@@ -46,7 +46,7 @@ const LatestNewsSection = () => {
           ))}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
