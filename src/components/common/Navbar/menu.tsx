@@ -32,7 +32,7 @@ const Menu: React.FC<MenuProps> = ({
   return (
     <div className="flex flex-row">
       <ul
-        className={` absolute menu bg-white shadow-lg rounded-lg  ${className}`}
+        className={` absolute menu bg-white m-4 p-4 shadow-lg rounded-lg  ${className}`}
         style={{ width }}
       >
         {items.map((item, index) => (

@@ -1,3 +1,4 @@
+// filepath: /home/dg-neural23/extended/nvme2n1p3_mount/projects/pro/clean/sdsd/tribe-odyssey/src/components/common/Navbar/index.tsx
 import useLazyLoading from '@src/lib/hooks/useLazyLoading';
 import { useWalletDiscordButtonStore } from '@src/lib/store/walletdiscordStore';
 import { ConnectKitButton } from 'connectkit';
@@ -60,81 +61,62 @@ const Navbar: React.FC = () => {
     ],
   };
   return (
-    <div className="">
-      <nav className="relative nav flex-col flex items-center justify-between p-6  border-white ">
-        {/* Logo */}
-        <div className=" m-4 nav space-x-10 flex flex-col  items-center  justify-center ">
-          <img
-            data-src="images/logo.png"
-            alt="Logo"
-            loading="lazy"
-            className="w-auto h-12"
-          />
+    <nav className="flex min-h-24 flex-col  max-w-full grid-cols-1 min-sm orde2 md:flex-row gap-6 items-center justify-center">
+      {/* SECTION 1: Logo i Menu */}
+      <section className="flex  shrink-0 flex-col sm:flex-col  items-center justify-center gap-6 order-1 xl:flex-row xl:order-1">
+        <img
+          data-src="images/logo.png"
+          alt="Logo"
+          loading="lazy"
+          className="w-auto h-20"
+        />
 
-          <ul className=" flex   p-4 items-center   justify-center   margin-0  space-x-2  text-center ">
-            {menus.map((menu, index) => (
-              <li key={index} className="group relative">
-                <button className="text-white">{menu.label}</button>
-                <Menu items={menu.items} className=" bg-slate-800" />
-              </li>
-            ))}
-          </ul>
-        </div>
+        <ul className=" gap-5 p-4 m-4">
+          {menus.map((menu, index) => (
+            <li key={index} className="l1">
+              <button>{menu.label}</button>
+              <Menu items={menu.items} />
+            </li>
+          ))}
+        </ul>
+      </section>
 
-        {/* Social Icons */}
-        <div className="flex flex-row p-4  space-x-3 nav-btns ">
-          <a href="#" className="text-gray-400">
-            <FaTwitter />
-          </a>
-          <a href="#" className="text-gray-400">
-            <FaTelegram />
-          </a>
-          <a href="#" className="text-gray-400">
-            <FaInstagram />
-          </a>
+      {/* SECTION 2: Ikony społecznościowe */}
+      <div className="flex text-4xl   order-1  min-sm:order-2 md:flex-row md:order-1 xl:order-2 flex-row   gap-4 xl:flex-row  justify-center ">
+        <a href="#" className=" ">
+          <FaTwitter />
+        </a>
+        <a href="#">
+          <FaTelegram />
+        </a>
+        <a href="#">
+          <FaInstagram />
+        </a>
+      </div>
 
-          {/* Discord Button */}
+      <section className="flex flex-col order-3 items-center justify-center">
+        {/* SECTION 3: Połączenie i profil */}
+        {isConnected && <div className="order-3 ">{address}</div>}
 
-          {/* Przyciski */}
-          {isConnected && (
-            <div className="text-sm m-2 text-gray-400">{address}</div>
-          )}
-          <div className="flex items-center space-x-4 border rounded-full  to-white  p-2 text-gray-200">
-            {isConnected ? (
-              <div className="relative group z-10">
-                <button
-                  className=" asolute bg-gradient-to-tl z-10 from-transparent to-white 
-                bg-clip-text text-transparent 
-                px-4 py-2 rounded-full text-sm font-semibold 
-                transition duration-300"
-                >
-                  Profile
-                </button>
-                <Menu items={profile.items} className=" z-20" />
-              </div>
-            ) : (
-              <ConnectKitButton.Custom>
-                {({ show }) => (
-                  <button
-                    onClick={show}
-                    className="
-                  bg-gradient-to-tl from-transparent to-white 
-                  bg-clip-text text-transparent 
-                  px-4 py-2 rounded-full text-sm font-semibold 
-                  transition duration-300
-                  "
-                  >
-                    Connect Wallet
-                    {address}
-                  </button>
-                )}
-              </ConnectKitButton.Custom>
-            )}
+        {isConnected ? (
+          <div className="order-3 flex items-center space-x-2">
+            <button>Profile</button>
+            <Menu items={profile.items} />
           </div>
-        </div>
-        <div className="absolute bottom-0 left-0  w-full h-px bg-gradient-to-r from-transparent via-white to-transparent"></div>
-      </nav>
-    </div>
+        ) : (
+          <div className="order-3">
+            <ConnectKitButton.Custom>
+              {({ show }) => (
+                <button onClick={show}>
+                  Connect Wallet
+                  {address}
+                </button>
+              )}
+            </ConnectKitButton.Custom>
+          </div>
+        )}
+      </section>
+    </nav>
   );
 };
 

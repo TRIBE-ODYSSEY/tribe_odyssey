@@ -9,7 +9,7 @@ const StatsSection = () => {
   ];
 
   return (
-    <div className="py-8 flex flex-row justify-center">
+    <section className="py-8 flex flex-row justify-center">
       <div className="container">
         <h2 className="text-3xl font-bold text-center mb-8">Statistics</h2>
         <div className="flex flex-row gap-4 justify-center">
@@ -25,7 +25,7 @@ const StatsSection = () => {
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

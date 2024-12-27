@@ -1,60 +1,47 @@
-// import React from 'react';
-// import Slider from 'react-slick';
-// import { IMAGES } from '@assets/index';
+import Slider, { Settings } from 'react-slick';
 
-// const LogoSection = () => {
-//     const settings = {
-//         dots: false,
-//         infinite: true,
-//         speed: 500,
-//         slidesToShow: 5,
-//         slidesToScroll: 1,
-//         autoplay: true,
-//         autoplaySpeed: 2000,
-//         responsive: [
-//             {
-//                 breakpoint: 1024,
-//                 settings: {
-//                     slidesToShow: 3,
-//                     slidesToScroll: 1,
-//                 },
-//             },
-//             {
-//                 breakpoint: 600,
-//                 settings: {
-//                     slidesToShow: 2,
-//                     slidesToScroll: 1,
-//                 },
-//             },
-//             {
-//                 breakpoint: 480,
-//                 settings: {
-//                     slidesToShow: 1,
-//                     slidesToScroll: 1,
-//                 },
-//             },
-//         ],
-//     };
+import Card from '../common/card/Card';
 
-//     const logos = [
-//         IMAGES.logos.company1,
-//         IMAGES.logos.company2,
-//         IMAGES.logos.company3,
-//         IMAGES.logos.company4,
-//         IMAGES.logos.company5,
-//     ];
+export default function LogoSection() {
+  const settings: Settings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 5,
+    slidesToScroll: 1,
+    variableWidth: true,
+    centerMode: false,
+    autoplay: true,
+    autoplaySpeed: 3000,
+    cssEase: 'linear',
+    rtl: false,
+    // Dodaj również:
+    pauseOnHover: false,
+  };
 
-//     return (
-//         <div className="logo-section">
-//             <Slider {...settings}>
-//                 {logos.map((logo, index) => (
-//                     <div key={index} className="logo-slide">
-//                         <img src={logo} alt={`Company logo ${index + 1}`} />
-//                     </div>
-//                 ))}
-//             </Slider>
-//         </div>
-//     );
-// };
+  const brandLogos = [
+    { src: '/images/brand1.png', alt: 'Brand 1' },
+    { src: '/images/brand2.png', alt: 'Brand 2' },
+    { src: '/images/brand3.png', alt: 'Brand 3' },
+  ];
 
-// export default LogoSection;
+  return (
+    <section className="w-full px-4 py-8">
+      <section className="max-w-7xl mx-auto">
+        <Slider {...settings} className="logo-slider">
+          {brandLogos.map((logo, index) => (
+            <section key={index} className="px-2">
+              <Card
+                image={{
+                  'data-src': logo.src,
+                  alt: logo.alt || `Brand ${index + 1}`,
+                }}
+                className="w-40 h-40 mx-auto"
+              />
+            </section>
+          ))}
+        </Slider>
+      </section>
+    </section>
+  );
+}

@@ -8,6 +8,7 @@
     "connectkit": "^1.8.2",
     "dotenv": "^16.4.7",
     "ethers": "^6.13.4",
+    "flowbite-react": "^0.10.2",
     "framer-motion": "^11.15.0",
     "opensea-js": "^7.1.14",
     "react": "^18.3.1",
@@ -16,7 +17,9 @@
     "react-intersection-observer": "^9.13.1",
     "react-lazyload": "^3.2.1",
     "react-router-dom": "^7.0.2",
+    "react-slick": "^0.30.3",
     "react-toastify": "^10.0.6",
+    "slick-carousel": "^1.8.1",
     "toastify-react": "^4.3.1",
     "viem": "2.x",
     "wagmi": "^2.13.3",
@@ -25,9 +28,10 @@
   "devDependencies": {
     "@eslint/js": "^9.15.0",
     "@types/node": "^22.10.1",
-    "@types/react": "^18.3.12",
+    "@types/react": "18.3.1",
     "@types/react-dom": "^18.3.1",
     "@types/react-router-dom": "^5.3.3",
+    "@types/react-slick": "^0.23.13",
     "@vitejs/plugin-react": "^1.0.0",
     "@vitejs/plugin-react-swc": "^3.5.0",
     "@wagmi/cli": "^2.1.18",
@@ -53,6 +57,10 @@
     "dev": "vite",
     "lint": "eslint .",
     "preview": "vite preview"
+  },
+  "resolutions": {
+    "@types/react": "18.3.1",
+    "@types/react-dom": "18.3.1"
   },
   "engines": {
     "node": ">=16.0.0"

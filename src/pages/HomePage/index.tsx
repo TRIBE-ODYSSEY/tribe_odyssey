@@ -1,3 +1,4 @@
+import { Spinner } from 'flowbite-react';
 import React, { lazy, Suspense } from 'react';
 type SectionComponent = React.LazyExoticComponent<React.ComponentType<any>>;
 
@@ -29,19 +30,24 @@ const sections: SectionComponent[] = [
   ),
   lazyLoadSection(() => import('@src/components/HomePage/StatsSection')),
   lazyLoadSection(() => import('@src/components/HomePage/LastNewsSection')),
+  lazyLoadSection(() => import('@src/components/HomePage/LogoSection')),
 ];
 
 const HomePage: React.FC = () => {
   return (
-    <div className="flex flex-col justify-center">
-      <Suspense fallback={<div>Loading sections...</div>}>
+    <section className="max-w-full">
+      <Suspense
+        fallback={
+          <Spinner color="warning" aria-label="Warning spinner example" />
+        }
+      >
         {sections.map((Section, index) => (
-          <div key={index} className="mb-8">
+          <div key={index} className="mb-8 ">
             <Section />
           </div>
         ))}
       </Suspense>
-    </div>
+    </section>
   );
 };
 

@@ -1,5 +1,10 @@
 /* index.css */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');
+@import 'slick-carousel/slick/slick.css';
+
+@import 'flowbite';
+
+@import 'slick-carousel/slick/slick-theme.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -10,26 +15,42 @@
   --tribe-text: #c4c4c4;
 }
 
+
 /* Base Layer */
 @layer base {
-  html {
-    @apply antialiased scroll-smooth;
+  html,
+  body {
+    overflow-x: hidden;
+    height: 100%;
+    width: 100%;
   }
   body {
-    @apply font-montserrat justify-center text-gray-300 min-h-screen bg-backgroundDark dark:bg-gray-900;
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--tribe-bg);
+    color: var(--tribe-text);
   }
   ul {
-    @apply flex justify-between;
+    @apply list-none flex flex-row;
   }
 }
 
+@layer utilities {
+}
 /* Components Layer */
 @layer components {
+  .li1 {
+    display: inline-block;
+    margin-inline: 1rem;
+  }
+
+  .grid {
+    @apply border-2 border-blue-400;
+  }
   .g-center {
     @apply flex flex-col items-center justify-center text-center space-y-8;
   }
-  .nav {
-    @apply overflow-x-hidden justify-center flex flex-row;
+  max-w-full .nav {
+    @apply border  border-blue-600 overflow-x-hidden justify-center flex flex-row;
   }
   .menu {
     @apply group-hover:block hidden;
@@ -47,85 +68,17 @@
   .list-on-top {
     @apply relative z-50;
   }
-  .fine-flex {
-    flex-direction: row;
-  }
+
   .card {
     @apply w-4/5 max-w-lg h-auto;
   }
-  .container {
-    @apply flex flex-col items-center justify-center;
-  }
+
   .content-1 {
     @apply flex flex-col;
   }
 }
 
 /* Utilities Layer */
-@layer utilities {
-  @media (max-width: 768px) {
-    .nav-container {
-      flex-direction: column;
-    }
-    .logo-menu-container {
-      width: 100%;
-      justify-content: space-between;
-      margin-bottom: 1rem;
-    }
-    .bg-herobg {
-      @apply min-w-max;
-    }
-    .card {
-      @apply w-full;
-    }
-  }
-  @media (min-width: 734px) {
-    .content-1 {
-      @apply flex-row;
-    }
-  }
-  @media (min-width: 1163px) {
-    .nav {
-      @apply flex-row;
-    }
-    .fine-flex {
-      flex-direction: row;
-    }
-    .logo-nav {
-      @apply flex-col m-2;
-    }
-  }
-  @media (max-width: 326px) {
-    body {
-      @apply flex items-center justify-center;
-    }
-    .nav {
-      @apply flex flex-row items-center justify-normal;
-    }
-    .bg-herobg {
-      background-size: fit;
-    }
-  }
-  @media (min-width: 326px) {
-    .fine-flex {
-      flex-direction: column;
-    }
-  }
-  @media (orientation: portrait) {
-    .bg-herobg {
-      @apply w-full;
-    }
-    .fine-flex {
-      flex-direction: column;
-    }
-  }
-}
-
-/* Custom Classes */
-.grid-resp {
-  @apply grid gap-4 justify-items-center p-4;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-}
 .gradient-center {
   background: radial-gradient(
     circle,

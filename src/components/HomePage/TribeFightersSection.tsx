@@ -33,24 +33,35 @@ const TribeFightersSection: React.FC = () => {
   };
 
   return (
-    <div className="g-center fine-flex flex flex-row ">
-      {/* Left Side - Content */}
-      <div>
-        <div>
+    <section className="container mx-auto px-4 flex flex-row items-start gap-8">
+      <div className="w-1/2">
+        <Card
+          image={{
+            'data-src': fighters[currentFighter].image,
+            alt: 'Fighter',
+          }}
+        />
+        <div className="mt-4 flex gap-2">
+          <button onClick={handlePrevious}>
+            <img data-src="images/special-button-core.svg" alt="Previous" />
+          </button>
+          <button onClick={handleNext}>
+            <img data-src="images/special-button-core.svg" alt="Next" />
+          </button>
+        </div>
+      </div>
+      <div className="w-1/2">
+        <div className="flex items-center gap-2 mb-2">
           <img data-src="/images/StarIcon.svg" alt="Fighter Icon" />
           <h2>THE TRIBE FIGHTERS</h2>
         </div>
-
-        <p>
+        <p className="mb-4">
           An exclusive initiative representing the best up-and-coming
           international MMA fighters on both professional and amateur circuits.
         </p>
-
-        {/* Fighter Info Card */}
         <div>
           <h3>{fighters[currentFighter].name}</h3>
-
-          <div>
+          <div className="mt-2 flex items-start gap-4">
             <Card
               image={{
                 'data-src': fighters[currentFighter].nft,
@@ -64,27 +75,7 @@ const TribeFightersSection: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Right Side - Image */}
-      <div>
-        <Card
-          image={{
-            'data-src': fighters[currentFighter].image,
-            alt: 'Fighter',
-          }}
-        />
-
-        {/* Navigation Buttons */}
-        <div>
-          <button onClick={handlePrevious}>
-            <img data-src="images/special-button-core.svg" alt="Previous" />
-          </button>
-          <button onClick={handleNext}>
-            <img data-src="images/special-button-core.svg" alt="Next" />
-          </button>
-        </div>
-      </div>
-    </div>
+    </section>
   );
 };
 

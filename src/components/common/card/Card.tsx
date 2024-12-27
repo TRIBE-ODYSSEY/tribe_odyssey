@@ -27,15 +27,15 @@ const Card: React.FC<CardProps> = ({
   const size = isSquare || '';
 
   return (
-    <div
-      className={`card border-gray-300 border-4 rounded-lg overflow-hidden shadow-md ${className}`}
+    <section
+      className={`card border-gray-300  rounded-lg overflow-hidden shadow-md ${className}`}
       style={{
         height: size || height,
         width: size || width,
       }}
     >
       {image && (
-        <div
+        <section
           className="card-image relative overflow-hidden"
           style={{ height: size, width: size }}
         >
@@ -50,10 +50,10 @@ const Card: React.FC<CardProps> = ({
             }}
             className="object-cover"
           />
-        </div>
+        </section>
       )}
       <div className="card-content p-4">{children}</div>
-    </div>
+    </section>
   );
 };
 

@@ -36,15 +36,15 @@ export const Footer: React.FC = () => {
 
   return (
     <footer className="flex flex-col w-full p-10 bg-gradient-to-b from-transparent to-[#14121b]">
-      <div className="container mx-auto max-w-7xl">
-        <div className="grid grid-cols-6 gap-4">
-          <div className="col-span-1">
+      <section className="container mx-auto max-w-7xl">
+        <section className="grid grid-cols-6 gap-4">
+          <section className="col-span-1">
             <img
               data-src="images/logored.png"
               alt="Tribe Logo"
               className="w-20 h-8 object-cover mb-6"
             />
-          </div>
+          </section>
 
           {Object.entries(footerLinks).map(([title, links]) => (
             <div key={title} className="col-span-1">
@@ -74,13 +74,11 @@ export const Footer: React.FC = () => {
               </div>
             </div>
           ))}
-
-          <div className="col-span-1"></div>
-        </div>
+        </section>
 
         <hr className="my-10 border-t border-white" />
 
-        <div className="flex flex-wrap justify-between items-center gap-2">
+        <section className="flex flex-wrap justify-between items-center gap-2">
           <p className="text-white font-normal">
             © {currentYear} TRIBE. All rights reserved.
           </p>
@@ -98,8 +96,8 @@ export const Footer: React.FC = () => {
               </a>
             ))}
           </div>
-        </div>
-      </div>
+        </section>
+      </section>
     </footer>
   );
 };

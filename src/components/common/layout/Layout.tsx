@@ -8,14 +8,12 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <div className="flex flex-col">
+    <div className="">
       {/* Navbar */}
       <Navbar />
 
       {/* Główna zawartość */}
-      <main className=" content-items-center justify-center">
-        {children}
-      </main>
+      <main className="w-full">{children}</main>
 
       {/* Footer */}
       <Footer />

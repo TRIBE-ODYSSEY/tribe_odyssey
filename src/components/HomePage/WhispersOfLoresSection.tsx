@@ -26,31 +26,31 @@ const WhispersOfLoresSection: React.FC = () => {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto py-6 ">
-      <div className="text-center mb-8">
+    <section className="max-w-7xl mx-auto py-6 ">
+      <section className="text-center mb-8">
         <h2 className="text-4xl font-semibold bg-gt-to-b from-white to-white/70 bg-clip-text text-transparent mb-3">
           Whispers of Lore
         </h2>
-        <p className="text-base text-white/80 max-w-md mx-auto">
+        <h1 className=" text-4xl text-white/80 w-2/3  mx-auto">
           Discover the rich tapestry of stories that shape our digital realm
-        </p>
-      </div>
+        </h1>
+      </section>
 
-      <div className="flex flexbox-row gap-4">
+      <section className="flex flexbox-row gap-4">
         {lores.map((lore) => (
           <div
             key={lore.id}
             className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-lg overflow-hidden transform transition-transform duration-300 cursor-pointer hover:-translate-y-2"
           >
-            <div className="relative h-60 overflow-hidden">
+            <section className="relative h-60 overflow-hidden">
               <Card
                 image={{ 'data-src': lore.image, alt: lore.title }}
-                data-src={lore.image}
+                data-src={lore.image} 
                 className="w-full h-full object-cover transition-transform duration-300 ease-out hover:scale-105"
               />
               <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black to-transparent"></div>
               <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-white/20"></div>
-            </div>
+            </section>
             <div className="p-3">
               <h5 className="text-xl font-semibold mb-2 bg-gradient-to-r from-red-600 to-pink-500 bg-clip-text text-transparent">
                 {lore.title}
@@ -59,8 +59,8 @@ const WhispersOfLoresSection: React.FC = () => {
             </div>
           </div>
         ))}
-      </div>
-    </div>
+      </section>
+    </section>
   );
 };
 

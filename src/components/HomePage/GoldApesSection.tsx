@@ -32,59 +32,58 @@ const GoldApesSection = () => {
   const { prev, current, next } = getDisplayImages();
 
   return (
-    <div className="g-center ">
+    <section className="g-center ">
       {/* Title Section */}
-      <div>
+      <section>
         <h2>24 Carats Apes</h2>
         <p>
           Their exquisite 24 Carat fur shines vibrantly like royal armour
           piercing the shadows.
         </p>
-      </div>
+      </section>
 
       {/* Apes Display */}
-      <div>
-        <div className="flex flex-row justify-center items-center space-x-4">
-          <Card
-            image={{
-              'data-src': goldApes[prev].image,
-              alt: goldApes[prev].alt,
-            }}
-            height="200px"
-            width="200px"
-          />
 
-          <Card
-            image={{
-              'data-src': goldApes[current].image,
-              alt: goldApes[current].alt,
-            }}
-            height="300px"
-            width="300px"
-          />
+      <section className="flex flex-row justify-center items-center space-x-4">
+        <Card
+          image={{
+            'data-src': goldApes[prev].image,
+            alt: goldApes[prev].alt,
+          }}
+          height="200px"
+          width="200px"
+        />
 
-          <Card
-            image={{
-              'data-src': goldApes[next].image,
-              alt: goldApes[next].alt,
-            }}
-            height="200px"
-            width="200px"
-          />
-        </div>
+        <Card
+          image={{
+            'data-src': goldApes[current].image,
+            alt: goldApes[current].alt,
+          }}
+          height="300px"
+          width="300px"
+        />
 
-        {/* Navigation Buttons */}
-        <div className="justify-center  items center">
-          <button onClick={handlePrevious}>
-            <img src="/images/special-button-core.svg" alt="Previous" />
-          </button>
+        <Card
+          image={{
+            'data-src': goldApes[next].image,
+            alt: goldApes[next].alt,
+          }}
+          height="200px"
+          width="200px"
+        />
+      </section>
 
-          <button onClick={handleNext}>
-            <img src="/images/special-button-core.svg" alt="Next" />
-          </button>
-        </div>
-      </div>
-    </div>
+      {/* Navigation Buttons */}
+      <section className="justify-center  items center">
+        <button onClick={handlePrevious}>
+          <img src="/images/special-button-core.svg" alt="Previous" />
+        </button>
+
+        <button onClick={handleNext}>
+          <img src="/images/special-button-core.svg" alt="Next" />
+        </button>
+      </section>
+    </section>
   );
 };
 

@@ -1,5 +1,6 @@
 // src/AppRoutes.tsx
 import useLazyLoading from '@hooks/useLazyLoading';
+import { Spinner } from 'flowbite-react';
 import React, { Suspense, lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
 // Lazy loaded pages
@@ -12,7 +13,12 @@ const NotFoundPage = lazy(
 const AppRoutes: React.FC = () => {
   useLazyLoading();
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense
+      fallback={
+        
+        <Spinner color="warning" aria-label="Warning spinner example" />
+      }
+    >
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/health" element={<HealthChecker />} />

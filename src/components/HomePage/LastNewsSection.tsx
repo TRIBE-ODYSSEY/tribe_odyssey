@@ -30,23 +30,17 @@ const LatestNewsSection = () => {
   ];
 
   return (
-    <div>
-      <div className="g-center  ">
-        <h2 className=" text-4xl">Latest Updates</h2>
+    <section className="g-center  ">
+      <h2 className=" text-4xl">Latest Updates</h2>
 
-        <div>
-          {newsItems.map((item) => (
-            <div key={item.id}>
-              <div>
-                <h6>{item.title}</h6>
-                <p>{item.description}</p>
-                <span>{item.date}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
+      {newsItems.map((item) => (
+        <section key={item.id}>
+          <h6>{item.title}</h6>
+          <p>{item.description}</p>
+          <span>{item.date}</span>
+        </section>
+      ))}
+    </section>
   );
 };
 
