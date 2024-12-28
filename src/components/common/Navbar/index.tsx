@@ -96,15 +96,15 @@ const MenuList: React.FC<{ data: typeof menusData }> = ({ data }) => (
 const ProfileSection: React.FC = () => (
   <div className="flex items-center gap-1 ml-4 m-1">
     <div className="flex items-center space-x-1 m-0.5">
-    <div className="flex items-center space-x-4 border rounded-full  to-white  p-2 text-gray-200">
-    <button
-                  className=" asolute bg-gradient-to-tl z-10 from-transparent to-white 
+      <div className="flex items-center space-x-4 border rounded-full  to-white  p-2 text-gray-200">
+        <button
+          className=" asolute bg-gradient-to-tl z-10 from-transparent to-white 
                 bg-clip-text text-transparent 
                 px-4 py-2 rounded-full text-sm font-semibold 
                 transition duration-300"
-                >
-        {profileData.label}
-      </button>
+        >
+          {profileData.label}
+        </button>
       </div>
       <Menu items={profileData.items} />
     </div>
@@ -161,7 +161,17 @@ const MobileNav: React.FC<MobileNavProps> = ({ isMenuOpen, closeMenu }) => {
               </a>
             </li>
           ))}
-        </ul>
+   <li className="mt-6">
+            <div className="flex flex-col items-center space-y-2">
+              <button
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors whitespace-nowrap"
+                onClick={closeMenu}
+              >
+                {profileData.label}
+              </button>
+            </div>
+          </li>        </ul>
+
       </div>
     </div>
   );
