@@ -96,9 +96,16 @@ const MenuList: React.FC<{ data: typeof menusData }> = ({ data }) => (
 const ProfileSection: React.FC = () => (
   <div className="flex items-center gap-1 ml-4 m-1">
     <div className="flex items-center space-x-1 m-0.5">
-      <button className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 whitespace-nowrap">
+    <div className="flex items-center space-x-4 border rounded-full  to-white  p-2 text-gray-200">
+    <button
+                  className=" asolute bg-gradient-to-tl z-10 from-transparent to-white 
+                bg-clip-text text-transparent 
+                px-4 py-2 rounded-full text-sm font-semibold 
+                transition duration-300"
+                >
         {profileData.label}
       </button>
+      </div>
       <Menu items={profileData.items} />
     </div>
   </div>
