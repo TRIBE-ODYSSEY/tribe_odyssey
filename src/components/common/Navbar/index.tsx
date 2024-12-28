@@ -115,7 +115,7 @@ const DesktopNav: React.FC = () => (
   <div
     className="
       hidden md:flex 
-      flex-wrap items-center gap-4 m-1 
+      flex-nowrap items-center gap-4 m-1 
       md:justify-center  /* na dużych ekranach wyśrodkuj */
     "
   >
