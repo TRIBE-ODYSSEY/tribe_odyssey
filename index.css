@@ -15,6 +15,9 @@
   --tribe-text: #c4c4c4;
 }
 
+/* * {
+  outline: 1px solid red;
+} */
 
 /* Base Layer */
 @layer base {
