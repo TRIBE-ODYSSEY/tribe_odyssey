@@ -140,39 +140,30 @@ const MobileNav: React.FC<MobileNavProps> = ({ isMenuOpen, closeMenu }) => {
   if (!isMenuOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-90 z-50 md:hidden">
-      <div className="flex flex-col h-full">
-        <button
-          onClick={closeMenu}
-          className="absolute top-2 right-2 text-white text-xl"
-        >
-          <FaTimes />
-        </button>
+    <div className="fixed inset-0 bg-black bg-opacity-90 z-50 md:hidden flex flex-col items-center justify-center">
+      <button
+        onClick={closeMenu}
+        className="absolute top-2 right-2 text-white text-xl"
+      >
+        <FaTimes />
+      </button>
 
-        <ul className="flex-1 flex flex-col justify-center items-center space-y-4 text-white text-lg">
-          {menusData.map((menu, index) => (
-            <li key={index} className="text-center">
-              <a
-                href={menu.items[0].href}
-                className="hover:text-blue-400 transition-colors whitespace-nowrap"
-                onClick={closeMenu}
-              >
-                {menu.label}
-              </a>
-            </li>
-          ))}
-   <li className="mt-6">
-            <div className="flex flex-col items-center space-y-2">
-              <button
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors whitespace-nowrap"
-                onClick={closeMenu}
-              >
-                {profileData.label}
-              </button>
-            </div>
-          </li>        </ul>
+      <ul className="flex flex-col items-center space-y-4 text-white text-lg">
+        {menusData.map((menu, index) => (
+          <li key={index} className="text-center">
+            <a
+              href={menu.items[0].href}
+              className="hover:text-blue-400 transition-colors whitespace-nowrap"
+              onClick={closeMenu}
+            >
+              {menu.label}
+            </a>
+          </li>
+        ))}
+      </ul>
 
-      </div>
+      <div className="mt-4"></div>
+      <ProfileSection />
     </div>
   );
 };
