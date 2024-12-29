@@ -29,8 +29,7 @@ const Menu: React.FC<MenuProps> = ({
   useEffect(() => {
     if (!isMobile && isMenuOpen) {
       const closeMenu = (e: MouseEvent) => {
-        const target = e.target as HTMLElement;
-        if (!target.closest('.menu-container')) {
+        if (!(e.target as Element).closest('.menu-container')) {
           setIsMenuOpen(false);
         }
       };
@@ -39,51 +38,57 @@ const Menu: React.FC<MenuProps> = ({
     }
   }, [isMobile, isMenuOpen]);
 
-  const menuStyles = isMobile 
-    ? 'relative bg-transparent p-2' 
-    : 'absolute bg-white/95 backdrop-blur-sm p-4 shadow-lg rounded-lg';
-
   if (!showMenu && !isMobile) return null;
+
+  const handleItemClick = (e: React.MouseEvent, item: MenuItem) => {
+    if (item.onClick) {
+      e.preventDefault();
+      item.onClick();
+    }
+    if (isMobile && onClose) {
+      onClose();
+    } else {
+      setIsMenuOpen(false);
+    }
+  };
 
   return (
     <div className="menu-container">
-      <ul
-        className={`menu ${menuStyles} ${className}`}
+      <div 
+        className={`
+          menu relative transition-all duration-200 overflow-hidden
+          ${isMobile ? 'w-full mt-1' : 'absolute min-w-[180px]'}
+          ${className}
+        `}
         style={!isMobile ? { width } : undefined}
       >
-        {items.map((item, index) => (
-          <li 
-            key={index} 
-            className={`${
-              isMobile 
-                ? 'py-2' 
-                : 'hover:bg-gray-200/80 rounded transition-colors'
-            }`}
-          >
-            <a
-              href={item.href || '#'}
-              onClick={(e) => {
-                if (item.onClick) {
-                  e.preventDefault();
-                  item.onClick();
-                }
-                if (isMobile && onClose) {
-                  onClose();
-                } else {
-                  setIsMenuOpen(false);
-                }
-              }}
-              className={`block ${
-                isMobile 
-                  ? 'text-white/80 hover:text-white text-center text-lg' 
-                  : 'text-gray-800 py-2 px-3'
-              }`}
-            >
-              {item.label}
-            </a>
-          </li>
-        ))}
-      </ul>
+        <div className={`
+          ${isMobile ? 'bg-black/40' : 'bg-white/90'} 
+          backdrop-blur-lg border border-white/10 
+          shadow-xl rounded-xl
+        `}>
+          <ul className="p-1">
+            {items.map((item, index) => (
+              <li key={index}>
+                <a
+                  href={item.href || '#'}
+                  onClick={(e) => handleItemClick(e, item)}
+                  className={`
+                    block w-full text-left px-4 py-2.5 
+                    transition-colors rounded-lg my-0.5
+                    ${isMobile 
+                      ? 'text-white/90 hover:text-white hover:bg-white/10' 
+                      : 'text-gray-800 hover:bg-gray/5'
+                    }
+                  `}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 };

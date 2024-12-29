@@ -60,17 +60,22 @@ const SocialIcons: React.FC<{ className?: string }> = ({ className }) => (
 const NavMenu: React.FC<{ isMobile?: boolean; onClose?: () => void }> = ({ isMobile, onClose }) => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
 
+  const handleMenuClick = (menuLabel: string) => {
+    setActiveMenu(activeMenu === menuLabel ? null : menuLabel);
+  };
+
+  const commonButtonClasses = `
+    text-white/80 hover:text-white transition-colors whitespace-nowrap w-full
+    ${isMobile ? 'text-lg py-3' : 'text-sm px-3 py-2'}
+  `;
+
   return (
-    <ul className={`flex ${isMobile ? 'flex-col w-full gap-4' : 'items-center gap-1 sm:gap-2'}`}>
+    <ul className={`flex ${isMobile ? 'flex-col w-full gap-4' : 'items-center gap-2'}`}>
       {navigationData.menus.map((menu) => (
         <li key={menu.label} className={`relative group ${isMobile ? 'w-full' : ''}`}>
           <button 
-            className={`
-              text-white/80 hover:text-white transition-colors whitespace-nowrap w-full
-              ${isMobile ? 'text-lg sm:text-xl py-3' : 'text-sm sm:text-base px-2 sm:px-3 py-2'}
-              ${activeMenu === menu.label ? 'text-white' : ''}
-            `}
-            onClick={() => setActiveMenu(activeMenu === menu.label ? null : menu.label)}
+            className={`${commonButtonClasses} ${activeMenu === menu.label ? 'text-white' : ''}`}
+            onClick={() => handleMenuClick(menu.label)}
             aria-expanded={activeMenu === menu.label}
           >
             {menu.label}
@@ -83,7 +88,7 @@ const NavMenu: React.FC<{ isMobile?: boolean; onClose?: () => void }> = ({ isMob
               setActiveMenu(null);
               onClose?.();
             }}
-            className={isMobile ? 'w-full' : 'min-w-[180px] sm:min-w-[200px]'}
+            className={isMobile ? 'w-full' : ''}
           />
         </li>
       ))}
@@ -109,17 +114,17 @@ const ProfileButton: React.FC<{ isWalletConnected?: boolean; isMobile?: boolean 
   );
 };
 
-const MobileNav: React.FC<{ isOpen: boolean; onClose: () => void; isWalletConnected: boolean }> = ({ 
-  isOpen, 
-  onClose,
-  isWalletConnected 
-}) => {
+const MobileNav: React.FC<{ 
+  isOpen: boolean; 
+  onClose: () => void; 
+  isWalletConnected: boolean 
+}> = ({ isOpen, onClose, isWalletConnected }) => {
   useLazyLoading();
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 md:hidden">
-      <div className="h-full flex flex-col pt-16 pb-8 px-4 sm:px-6 overflow-y-auto">
+    <div className="fixed inset-0 bg-black/90 backdrop-blur-lg z-50 md:hidden">
+      <div className="h-full flex flex-col pt-16 pb-8 px-4 overflow-y-auto">
         <button 
           onClick={onClose} 
           className="absolute top-4 right-4 text-white/80 hover:text-white"
@@ -128,7 +133,7 @@ const MobileNav: React.FC<{ isOpen: boolean; onClose: () => void; isWalletConnec
           <FaTimes size={24} />
         </button>
 
-        <div className="flex-1 flex flex-col items-center gap-6 sm:gap-8 max-w-sm mx-auto w-full">
+        <div className="flex-1 flex flex-col items-center gap-6 max-w-sm mx-auto w-full">
           <NavMenu isMobile onClose={onClose} />
           {!isWalletConnected && (
             <Button onClick={onClose} className="w-full justify-center text-lg" />
