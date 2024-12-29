@@ -18,7 +18,7 @@ interface CardProps {
 const Card: React.FC<CardProps> = ({
   height,
   width,
-  className,
+  className = '',
   image,
   children,
   isSquare,
@@ -28,31 +28,41 @@ const Card: React.FC<CardProps> = ({
 
   return (
     <section
-      className={`card border-gray-300  rounded-lg overflow-hidden shadow-md ${className}`}
+      className={`relative overflow-hidden rounded-lg bg-white/5 backdrop-blur-sm transition-all duration-300 ${className}`}
       style={{
-        height: size || height,
-        width: size || width,
+        height: size || height || 'auto',
+        width: size || width || 'auto',
       }}
     >
       {image && (
-        <section
-          className="card-image relative overflow-hidden"
-          style={{ height: size, width: size }}
+        <div
+          className="relative overflow-hidden"
+          style={{ 
+            height: size || height || '100%',
+            width: size || width || '100%'
+          }}
         >
           <img
             data-src={image['data-src']}
             alt={image.alt || 'No description available'}
+            className={`w-full h-full transition-transform duration-300 ${
+              image.objectFit ? '' : 'object-cover'
+            }`}
             style={{
               objectFit: image.objectFit || 'cover',
               objectPosition: image.objectPosition || 'center',
-              height: '100%',
-              width: '100%',
             }}
-            className="object-cover"
+            loading="lazy"
           />
-        </section>
+          {/* Optional gradient overlay for images */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+        </div>
       )}
-      <div className="card-content p-4">{children}</div>
+      {children && (
+        <div className={`${image ? 'p-4 sm:p-6' : ''}`}>
+          {children}
+        </div>
+      )}
     </section>
   );
 };

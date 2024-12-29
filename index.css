@@ -94,3 +94,26 @@
 .custom-gradient {
   background: linear-gradient(to top, transparent, white 50%);
 }
+
+/* Logo Slider Styles */
+.logo-slider-container {
+  margin: 0 -12px;
+}
+
+.logo-slider .slick-track {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.logo-slider .slick-slide {
+  height: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.logo-slider .slick-slide > div {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
