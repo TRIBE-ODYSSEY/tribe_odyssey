@@ -4,6 +4,17 @@ import { FaBars, FaInstagram, FaTelegram, FaTimes, FaTwitter } from 'react-icons
 import Menu from './menu';
 import Button from './button';
 
+interface MenuItem {
+  label: string;
+  href?: string;
+  onClick?: () => void;
+}
+
+interface NavigationItem {
+  label: string;
+  items: MenuItem[];
+}
+
 const navigationData = {
   menus: [
     { label: 'Element', items: [{ label: 'Drops', href: '#' }, { label: 'Option 2', href: '#' }] },
@@ -11,21 +22,24 @@ const navigationData = {
     { label: 'Marketplace', items: [{ label: 'Marketplace 1', href: '#' }] },
     { label: 'Staking', items: [{ label: 'Staking 1', href: '#' }] },
     { label: 'The Council', items: [{ label: 'Council 1', href: '#' }] },
-  ],
+  ] as NavigationItem[],
   profile: {
     label: 'Profile',
     items: [
       { label: 'My NFTs', href: '/my-nfts' },
       { label: 'Settings', href: '/settings' },
-      { label: 'Disconnect', href: '#', onClick: () => window.dispatchEvent(new Event('wallet-disconnect')) }
-    ],
+      { label: 'Disconnect', href: '#', onClick: () => {
+        window.dispatchEvent(new Event('wallet-disconnect'));
+        return true;
+      }}
+    ] as MenuItem[]
   },
   socials: [
     { icon: <FaTwitter />, href: '#' },
     { icon: <FaTelegram />, href: '#' },
     { icon: <FaInstagram />, href: '#' },
-  ],
-} as const;
+  ]
+};
 
 const SocialIcons: React.FC<{ className?: string }> = ({ className }) => (
   <div className={className}>
