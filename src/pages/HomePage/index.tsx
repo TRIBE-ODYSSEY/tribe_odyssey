@@ -32,6 +32,7 @@ const sections: SectionComponent[] = [
   lazyLoadSection(() => import('@src/components/HomePage/AccomplishmentsSection')),
   lazyLoadSection(() => import('@src/components/HomePage/LastNewsSection')),
   lazyLoadSection(() => import('@src/components/HomePage/LogoSection')),
+  lazyLoadSection(() => import('@src/components/HomePage/FaqSection')),
 ];
 
 const HomePage: React.FC = () => {
