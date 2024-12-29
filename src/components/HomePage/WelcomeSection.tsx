@@ -3,37 +3,43 @@ import React from 'react';
 
 const WelcomeSection: React.FC = () => {
   return (
-    <section className="flex flex-col xl:flex-row gap-6 content-1 h- p-4 items-center justify-center">
-      {/* Left Content */}
-      <section className="flex-1 flex flex-col justify-center p-4 max-w-lg">
-        <h2 className="text-4xl font-bold mb-4 text-center">
+    <section className="container mx-auto flex flex-col xl:flex-row items-center justify-center gap-8 px-4 py-12 sm:py-16">
+      {/* Content */}
+      <div className="flex-1 max-w-xl">
+        <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-center text-white/90">
           Welcome to
           <br />
           Tribe Odyssey
         </h2>
 
-        <p className="mb-4 text-center">
-          Welcome to the Tribe project. Home of the highly popular 0xApes and
-          Tribe Odyssey NFT collection
-        </p>
-        <p className="text-center">
-          The 0xApes and Tribe phenom has taken the digital collectibles space
-          by storm inspiring a movement driven by the power of community, a
-          community that has over 30,000 members and growing across all its
-          social media platforms.
-        </p>
-      </section>
+        <div className="space-y-4 text-center text-white/80">
+          <p>
+            Welcome to the Tribe project. Home of the highly popular 0xApes and
+            Tribe Odyssey NFT collection
+          </p>
+          <p>
+            The 0xApes and Tribe phenom has taken the digital collectibles space
+            by storm inspiring a movement driven by the power of community, a
+            community that has over 30,000 members and growing across all its
+            social media platforms.
+          </p>
+        </div>
+      </div>
 
-      {/* Right Content */}
-
-      <section className="relative content-1 overflow-hidden">
+      {/* Image */}
+      <div className="relative max-w-lg w-full">
         <Card
-          image={{ 'data-src': '/images/molten-throne.png' }}
-          className="object-cover w-full h-auto transition-transform duration-300 ease-out hover:scale-105"
+          image={{ 
+            'data-src': '/images/molten-throne.png',
+            alt: 'Molten Throne'
+          }}
+          className="w-full rounded-2xl overflow-hidden shadow-xl"
         />
-        <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black to-transparent"></div>
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-white/20"></div>
-      </section>
+        <div className="absolute inset-0 rounded-2xl">
+          <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent" />
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+        </div>
+      </div>
     </section>
   );
 };
