@@ -1,5 +1,4 @@
 import React from 'react';
-import Card from '@src/components/common/card/Card';
 
 interface Accomplishment {
   id: string;
@@ -52,43 +51,45 @@ const accomplishments: Accomplishment[] = [
 
 const AccomplishmentsSection: React.FC = () => {
   return (
-    <section className="container mx-auto px-4 py-16 md:py-24 bg-backgroundDark">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold text-white/90 mb-6">
-            Accomplishments
-          </h2>
-          <p className="text-lg md:text-xl text-white/70 max-w-4xl mx-auto">
-            Tribe has never been bullish on laying out a "Road Map" in the traditional sense. We've always, however, been in the mindset 
-            of striving towards consistency and completing and celebrating significant milestones and accomplishments. We build, we 
-            create, and we accomplish.
-          </p>
-        </div>
+    <section className="w-full bg-backgroundDark">
+      <div className="container mx-auto px-4 py-16 md:py-24">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold text-white/90 mb-6">
+              Accomplishments
+            </h2>
+            <p className="text-lg md:text-xl text-white/70 max-w-4xl mx-auto">
+              Tribe has never been bullish on laying out a "Road Map" in the traditional sense. We've always, however, been in the mindset 
+              of striving towards consistency and completing and celebrating significant milestones and accomplishments. We build, we 
+              create, and we accomplish.
+            </p>
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {accomplishments.map((item) => (
-            <Card
-              key={item.id}
-              className="bg-black/20 hover:bg-black/30 backdrop-blur-sm transition-all duration-300 p-6 rounded-xl border border-white/5"
-            >
-              <div className="flex flex-col h-full">
-                <div className="flex items-center gap-3 mb-4">
-                  <img 
-                    src="/images/StarIcon.svg" 
-                    alt="Star" 
-                    className="w-6 h-6 text-white"
-                    loading="lazy"
-                  />
-                  <h3 className="text-xl font-semibold text-white/90">
-                    {item.title}
-                  </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {accomplishments.map((item) => (
+              <div
+                key={item.id}
+                className="bg-black/20 hover:bg-black/30 backdrop-blur-sm transition-all duration-300 p-6 rounded-xl border border-white/5"
+              >
+                <div className="flex flex-col h-full">
+                  <div className="flex items-center gap-3 mb-4">
+                    <img 
+                      src="/images/StarIcon.svg" 
+                      alt="Star" 
+                      className="w-6 h-6 text-white"
+                      loading="lazy"
+                    />
+                    <h3 className="text-xl font-semibold text-white/90">
+                      {item.title}
+                    </h3>
+                  </div>
+                  <p className="text-white/70 text-sm leading-relaxed">
+                    {item.description}
+                  </p>
                 </div>
-                <p className="text-white/70 text-sm leading-relaxed">
-                  {item.description}
-                </p>
               </div>
-            </Card>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>
