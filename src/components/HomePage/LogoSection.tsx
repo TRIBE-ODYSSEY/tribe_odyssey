@@ -73,7 +73,7 @@ export default function LogoSection() {
         
         <div className="-mx-2">
           <Slider {...settings} className="logo-slider">
-            {brandLogos.map((logo, index) => (
+            {brandLogos.map((logo) => (
               <div key={logo.alt} className="px-2">
                 <Card
                   image={{
