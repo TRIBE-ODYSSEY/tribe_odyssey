@@ -42,6 +42,8 @@ export interface FightersSection {
   nft: string;
   record: string;
   weight: string;
+  coltonLoud: string;
+  coltonLoudNFT: string;
 }
 
 export interface OdysseySection {
