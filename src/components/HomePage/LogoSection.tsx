@@ -20,9 +20,10 @@ export default function LogoSection() {
   };
 
   const brandLogos = [
-    { src: '/images/brand1.png', alt: 'Brand 1' },
-    { src: '/images/brand2.png', alt: 'Brand 2' },
-    { src: '/images/brand3.png', alt: 'Brand 3' },
+    { src: '/images/THRADS-logo.png', alt: 'Brand 1' },
+    { src: '/images/E19-Logo.jpg', alt: 'Brand 2' },
+    { src: '/images/MW.jpg', alt: 'Brand 3' },
+    { src: '/images/DAYLAVA.png', alt: 'Brand 4' },
   ];
 
   return (

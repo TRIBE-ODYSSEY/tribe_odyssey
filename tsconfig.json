@@ -26,7 +26,7 @@
     "paths": {
       "@src/*": ["*"],
       "@pages/*": ["pages/*"],
-      "@lib/*": ["lib/*"],
+      "@lib/*": ["src/lib/*"],
       "@config/*": ["lib/config/*"],
       "@assets/*": ["assets/*"],
       "@hooks/*": ["lib/hooks/*"]

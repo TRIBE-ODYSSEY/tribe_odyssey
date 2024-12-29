@@ -9,18 +9,24 @@ const StatsSection = () => {
   ];
 
   return (
-    <section className="py-8 flex flex-row justify-center">
-      <div className="container">
-        <h2 className="text-3xl font-bold text-center mb-8">Statistics</h2>
-        <div className="flex flex-row gap-4 justify-center">
+    <section className="py-8 sm:py-12 px-4">
+      <div className="max-w-7xl mx-auto">
+        <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6 sm:mb-8 text-white/90">
+          Statistics
+        </h2>
+        <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
           {stats.map((stat) => (
             <Card
               key={stat.id}
               height="auto"
-              className="flex flex-col items-center justify-center p-4"
+              className="flex-1 flex flex-col items-center justify-center p-6 sm:p-8 backdrop-blur-sm bg-white/5 hover:bg-white/10 transition-all duration-300"
             >
-              <h3 className="text-2xl font-semibold">{stat.value}</h3>
-              <p className="text-gray-600">{stat.label}</p>
+              <h3 className="text-2xl sm:text-3xl font-semibold mb-2 bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent">
+                {stat.value}
+              </h3>
+              <p className="text-sm sm:text-base text-white/70 text-center">
+                {stat.label}
+              </p>
             </Card>
           ))}
         </div>

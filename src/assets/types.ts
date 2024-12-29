@@ -37,8 +37,11 @@ export interface AllianceSection {
 }
 
 export interface FightersSection {
-  coltonLoud: string;
-  coltonLoudNFT: string;
+  image: string;
+  name: string;
+  nft: string;
+  record: string;
+  weight: string;
 }
 
 export interface OdysseySection {
