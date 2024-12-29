@@ -46,9 +46,9 @@
     margin-inline: 1rem;
   }
 
-  .grid {
-    @apply border-2 border-blue-400;
-  }
+  /* .grid {
+    @apply border-2 border-blue-400; <----------------------------------- this is this blue border on footer
+  } */
   .g-center {
     @apply flex flex-col items-center justify-center text-center space-y-8;
   }
