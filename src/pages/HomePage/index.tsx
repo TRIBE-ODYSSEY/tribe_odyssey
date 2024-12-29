@@ -29,6 +29,7 @@ const sections: SectionComponent[] = [
     () => import('@src/components/HomePage/TribeFightersSection')
   ),
   lazyLoadSection(() => import('@src/components/HomePage/StatsSection')),
+  lazyLoadSection(() => import('@src/components/HomePage/AccomplishmentsSection')),
   lazyLoadSection(() => import('@src/components/HomePage/LastNewsSection')),
   lazyLoadSection(() => import('@src/components/HomePage/LogoSection')),
 ];
