@@ -6,6 +6,8 @@ import { Route, Routes } from 'react-router-dom';
 // Lazy loaded pages
 const HomePage = lazy(() => import('@src/pages/HomePage'));
 const HealthChecker = lazy(() => import('@src/pages/health/health_checker'));
+const ENSPage = lazy(() => import('@src/pages/Assets/ENS'));
+const FourKPage = lazy(() => import('@src/pages/Assets/4kTribe'));
 const NotFoundPage = lazy(
   () => import('@src/components/common/errors/network/NetworkErrors')
 );
@@ -22,6 +24,8 @@ const AppRoutes: React.FC = () => {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/health" element={<HealthChecker />} />
+        <Route path="/assets/ens" element={<ENSPage />} />
+        <Route path="/assets/4kTribe" element={<FourKPage />} />
 
         {/* Strona 404 */}
         <Route path="*" element={<NotFoundPage />} />
