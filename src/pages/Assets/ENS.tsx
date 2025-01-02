@@ -11,6 +11,7 @@ const ENSPage: React.FC = () => {
       <div className="container mx-auto px-4 pt-20">
         <PageTitle>ENS</PageTitle>
         {/* Content goes here */}
+        
       </div>
     </div>
   );

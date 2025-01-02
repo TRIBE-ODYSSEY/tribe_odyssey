@@ -21,7 +21,7 @@ const FourKTribePage: React.FC = () => {
       setError('Please enter a Tribe ID');
       return;
     }
-    window.open(`/api/tribe/view/${tribeId}`, '_blank');
+    window.open(`https://cdn.0xworld.io/tribe-images-hr/${tribeId}.png`, '_blank');
   };
 
   const handleDownload = () => {
@@ -30,7 +30,7 @@ const FourKTribePage: React.FC = () => {
       return;
     }
     setIsLoading(true);
-    fetch(`/api/tribe/download/${tribeId}`)
+    fetch(`https://cdn.0xworld.io/tribe-images-hr/${tribeId}.png`)
       .then(response => {
         if (!response.ok) throw new Error('Invalid Tribe ID');
         return response.blob();
@@ -73,7 +73,7 @@ const FourKTribePage: React.FC = () => {
                   placeholder="Enter Tribe ID"
                   className="w-full sm:flex-1 px-4 py-2.5 bg-black/40 border border-white/10 rounded-lg 
                            text-white placeholder-white/50 focus:outline-none focus:border-white/20"
-                  maxLength={4}
+                  maxLength={7}
                 />
                 <div className="flex gap-2 sm:flex-shrink-0">
                   <button
