@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PageTitle from '@src/components/common/PageTitle';
+import PageLayout from '@src/components/common/layout/PageLayout';
+
 
 const FourKTribePage: React.FC = () => {
   useEffect(() => {
@@ -54,7 +56,7 @@ const FourKTribePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-backgroundDark">
+    <PageLayout>
       <div className="container mx-auto px-4 pt-20">
         <div className="w-full max-w-[960px] mx-auto lg:min-h-[270px]">
           <PageTitle>Tribe Digital Assets</PageTitle>
@@ -102,9 +104,9 @@ const FourKTribePage: React.FC = () => {
               )}
             </div>
           </div>
-        </div>
+        </div>  
       </div>
-    </div>
+    </PageLayout>
   );
 };
 

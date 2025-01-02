@@ -1,4 +1,6 @@
 import React, { useEffect } from 'react';
+import PageLayout from '@src/components/common/layout/PageLayout';
+import PageTitle from '@src/components/common/PageTitle';
 
 const CouncilPage: React.FC = () => {
   useEffect(() => {
@@ -6,12 +8,12 @@ const CouncilPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-backgroundDark">
+    <PageLayout>
+      <PageTitle>The Council</PageTitle>
       <div className="container mx-auto px-4 py-16">
-        <h1 className="text-4xl font-bold text-white/90 mb-8">The Council</h1>
         {/* Content goes here */}
       </div>
-    </div>
+    </PageLayout>
   );
 };
 

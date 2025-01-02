@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import PageTitle from '@src/components/common/PageTitle';
+import PageLayout from '@src/components/common/layout/PageLayout';
 
 const Tribal19CheckerPage: React.FC = () => {
   useEffect(() => {
@@ -7,12 +8,12 @@ const Tribal19CheckerPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-backgroundDark">
-      <PageTitle>Tribe 19 Checker</PageTitle>
+    <PageLayout>
       <div className="container mx-auto px-4 py-16">
+        <PageTitle>Tribe 19 Checker</PageTitle>
         {/* Content goes here */}
       </div>
-    </div>
+    </PageLayout>
   );
 };
 
