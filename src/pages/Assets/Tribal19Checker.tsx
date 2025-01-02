@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import PageTitle from '@src/components/common/PageTitle';
 
 const Tribal19CheckerPage: React.FC = () => {
   useEffect(() => {
@@ -7,8 +8,8 @@ const Tribal19CheckerPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-backgroundDark">
+      <PageTitle>Tribe 19 Checker</PageTitle>
       <div className="container mx-auto px-4 py-16">
-        <h1 className="text-4xl font-bold text-white/90 mb-8">Tribe 19 Checker</h1>
         {/* Content goes here */}
       </div>
     </div>

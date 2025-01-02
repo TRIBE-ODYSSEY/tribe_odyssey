@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import PageTitle from '@src/components/common/PageTitle';
 
 const MoltenPage: React.FC = () => {
   useEffect(() => {
@@ -7,8 +8,8 @@ const MoltenPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-backgroundDark">
-      <div className="container mx-auto px-4 py-16">
-        <h1 className="text-4xl font-bold text-white/90 mb-8">Molten</h1>
+      <div className="container mx-auto px-4 pt-20">
+        <PageTitle>Molten</PageTitle>
         {/* Content goes here */}
       </div>
     </div>

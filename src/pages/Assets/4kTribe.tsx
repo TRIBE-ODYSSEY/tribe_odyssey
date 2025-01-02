@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import PageTitle from '@src/components/common/PageTitle';
 
 const FourKTribePage: React.FC = () => {
   useEffect(() => {
@@ -55,28 +56,8 @@ const FourKTribePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-backgroundDark">
       <div className="container mx-auto px-4 pt-20">
-        <div 
-          className="w-full max-w-[960px] mx-auto lg:min-h-[270px]"
-          style={{
-            maxWidth: '960px',
-            margin: '0 auto',
-            width: '100%'
-          }}
-        >
-          <h1 
-            className="text-[80px] font-medium text-center mb-6 md:mb-12"
-            style={{
-              fontFamily: 'Montserrat, sans-serif',
-              lineHeight: '100%',
-              letterSpacing: '-3%',
-              background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.6) 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
-            }}
-          >
-            Tribe Digital Assets
-          </h1>
+        <div className="w-full max-w-[960px] mx-auto lg:min-h-[270px]">
+          <PageTitle>Tribe Digital Assets</PageTitle>
 
           <div className="bg-black/20 backdrop-blur-sm rounded-xl border border-white/5 p-4 sm:p-6 md:p-8">
             <h2 className="text-xl sm:text-2xl font-semibold text-white/90 mb-4 md:mb-6 text-center">

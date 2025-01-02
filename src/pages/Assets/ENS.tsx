@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import PageTitle from '@src/components/common/PageTitle';
 
 const ENSPage: React.FC = () => {
   useEffect(() => {
@@ -7,8 +8,8 @@ const ENSPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-backgroundDark">
-      <div className="container mx-auto px-4 py-16">
-        <h1 className="text-4xl font-bold text-white/90 mb-8">ENS</h1>
+      <div className="container mx-auto px-4 pt-20">
+        <PageTitle>ENS</PageTitle>
         {/* Content goes here */}
       </div>
     </div>

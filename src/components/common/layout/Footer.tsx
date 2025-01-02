@@ -12,9 +12,9 @@ export const Footer: React.FC = () => {
     ],
     Assets: [
       { name: '4K Tribe', path: '/4ktribe' },
-      { name: 'Wallpapers', path: '/wallpaper' },
+      { name: 'Wallpapers', path: '/wallpapers' },
       { name: 'ENS', path: '/ens' },
-      { name: 'Tribal Beats', path: '/beats' },
+      { name: 'Tribal Beats', path: '/tribalbeats' },
       { name: 'Tribe 19 Checker', path: '/checker' },
       { name: 'Molten', path: '/molten' },
     ],
