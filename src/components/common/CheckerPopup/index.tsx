@@ -24,14 +24,14 @@ const CheckerPopup: React.FC<CheckerPopupProps> = ({ open, onClose, data }) => {
   return (
     <AnimatePresence>
       {open && (
-        <>
+        <div className="fixed inset-0 flex items-center justify-center z-50">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm z-50"
           />
 
           {/* Popup Content */}
@@ -40,8 +40,7 @@ const CheckerPopup: React.FC<CheckerPopupProps> = ({ open, onClose, data }) => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: "spring", duration: 0.5 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg 
-                       bg-black/90 border border-white/10 rounded-2xl p-6 z-50 text-white"
+            className="relative w-[90%] max-w-lg mx-auto bg-black/90 border border-white/10 rounded-2xl p-6 z-50 text-white max-h-[90vh] overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent"
           >
             {/* Close Button */}
             <button
@@ -120,7 +119,7 @@ const CheckerPopup: React.FC<CheckerPopupProps> = ({ open, onClose, data }) => {
               <p className="text-center">{data.message}</p>
             </div>
           </motion.div>
-        </>
+        </div>
       )}
     </AnimatePresence>
   );

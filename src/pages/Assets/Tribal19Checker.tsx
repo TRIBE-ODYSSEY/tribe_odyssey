@@ -76,7 +76,108 @@ const Tribal19CheckerPage: React.FC = () => {
     setResult(null);
   };
 
-  // ... [Keep the existing API functions: getTribeTraits, getTribeStats, checkEligibility] ...
+  const getTribeTraits = async (nft: { identifier: string }): Promise<NFTData> => {
+    const response = await fetch(
+      `https://api.opensea.io/api/v2/chain/ethereum/contract/0x77f649385ca963859693c3d3299d36dfc7324eb9/nfts/${nft.identifier}`,
+      {
+        headers: {
+          'x-api-key': OPENSEA_API_KEY,
+        },
+      }
+    );
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch NFT traits');
+    }
+    
+    const data = await response.json();
+    return data.nft;
+  };
+
+  const getTribeStats = async () => {
+    const response = await fetch(
+      `https://api.opensea.io/api/v2/collections/tribe-odyssey/stats`,
+      {
+        headers: {
+          'x-api-key': OPENSEA_API_KEY,
+        },
+      }
+    );
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch collection stats');
+    }
+    
+    return await response.json();
+  };
+
+  const checkEligibility = async (address: string): Promise<CheckerResult> => {
+    const response = await fetch(
+      `https://api.opensea.io/api/v2/chain/ethereum/account/${address}/nfts?collection=tribe-odyssey&limit=200`,
+      {
+        headers: {
+          'x-api-key': OPENSEA_API_KEY,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch NFTs');
+    }
+
+    const data = await response.json();
+    const traitsToCheck = new Set(TRIBE_SPECIES);
+    const speciesCount = new Map<string, number>();
+
+    // Process first 120 NFTs
+    await Promise.all(data.nfts.slice(0, 120).map(async (nft: any) => {
+      const tribeTraits = await getTribeTraits(nft);
+      const species = tribeTraits.traits
+        .find(trait => trait.trait_type === 'Species')
+        ?.value;
+
+      if (species) {
+        if (traitsToCheck.has(species)) {
+          traitsToCheck.delete(species);
+        }
+        speciesCount.set(species, (speciesCount.get(species) || 0) + 1);
+      }
+    }));
+
+    // Get collection stats
+    const stats = await getTribeStats();
+    const totalAssets = data.nfts.length;
+    const assetsValue = (Number(stats.total.floor_price) * totalAssets).toFixed(4);
+    
+    // Find favorite species
+    let favoriteSpecies = 'None';
+    let maxCount = 0;
+    
+    speciesCount.forEach((count, species) => {
+      if (count > maxCount) {
+        maxCount = count;
+        favoriteSpecies = species;
+      }
+    });
+
+    const isEligible = traitsToCheck.size === 0;
+    const progress = TRIBE_SPECIES.length - traitsToCheck.size;
+
+    return {
+      isEligible,
+      message: isEligible
+        ? "Congratulations! You are in the exclusive TRIBΞ19 club! 🎉"
+        : `To enter the exclusive TRIBΞ19 club, collect the missing species below`,
+      data: {
+        assetsValue: `${assetsValue} ETH`,
+        favoriteSpecies,
+        totalAssets,
+        progress,
+        missingSpecies: Array.from(traitsToCheck),
+        nanaPoints: totalAssets * 10
+      }
+    };
+  };
 
   const handleAnalyse = async () => {
     try {
@@ -161,8 +262,17 @@ const Tribal19CheckerPage: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Add CheckerPopup component here once converted to Tailwind */}
+      {result && (
+        <CheckerPopup
+          open={showPopup}
+          onClose={() => setShowPopup(false)}
+          data={{
+            ...result.data,
+            isEligible: result.isEligible,
+            message: result.message
+          }}
+        />
+      )}
     </PageLayout>
   );
 };
