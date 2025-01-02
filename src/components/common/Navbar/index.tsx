@@ -4,6 +4,7 @@ import { FaBars, FaInstagram, FaTelegram, FaTimes, FaTwitter } from 'react-icons
 import Menu from './menu';
 import Button from './button';
 
+
 interface MenuItem {
   label: string;
   href?: string;
@@ -17,11 +18,11 @@ interface NavigationItem {
 
 const navigationData = {
   menus: [
-    { label: 'Element', items: [{ label: 'Drops', href: '#' }, { label: 'Option 2', href: '#' }] },
-    { label: 'Assets', items: [{ label: 'Asset 1', href: '#' }, { label: 'Asset 2', href: '#' }] },
+    { label: 'Element', items: [{ label: 'Drops', href: '/element19/drops' }, { label: 'Collection', href: '/element19/collection' }] },
+    { label: 'Assets', items: [{ label: '4kTribe ', href: '/assets/4kTribe' }, { label: 'Molten', href: '/assets/molten' }, { label: 'Wallpapers', href: '/assets/wallpapers' }, { label: 'ENS', href: '/assets/ens' }] },
     { label: 'Marketplace', items: [{ label: 'Marketplace 1', href: '#' }] },
-    { label: 'Staking', items: [{ label: 'Staking 1', href: '#' }] },
-    { label: 'The Council', items: [{ label: 'Council 1', href: '#' }] },
+    { label: 'Staking', items: [{ label: 'Raffles', href: '/staking/raffles' }, { label: 'Stake Apes', href: '/staking/stake-apes' }, { label: 'Winners', href: '/staking/winners' }] },
+    { label: 'The Council', items: [{ label: 'Council', href: '/council' }] },
   ] as NavigationItem[],
   profile: {
     label: 'Profile',
@@ -35,9 +36,9 @@ const navigationData = {
     ] as MenuItem[]
   },
   socials: [
-    { icon: <FaTwitter />, href: '#' },
+    { icon: <FaTwitter />, href: 'https://twitter.com/tribeodyssey' },
     { icon: <FaTelegram />, href: '#' },
-    { icon: <FaInstagram />, href: '#' },
+    { icon: <FaInstagram />, href: 'https://www.instagram.com/tribe.odyssey/' },
   ]
 };
 

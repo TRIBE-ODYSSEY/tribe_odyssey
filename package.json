@@ -18,7 +18,7 @@
     "react-lazyload": "^3.2.1",
     "react-router-dom": "^7.0.2",
     "react-slick": "^0.30.3",
-    "react-toastify": "^10.0.6",
+    "react-toastify": "^11.0.2",
     "slick-carousel": "^1.8.1",
     "toastify-react": "^4.3.1",
     "viem": "2.x",
