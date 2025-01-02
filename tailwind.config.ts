@@ -69,7 +69,9 @@ const IMAGES = {
         keyframes: KEYFRAMES,
       },
     },
-    plugins: [],
+    plugins: [
+      require('tailwind-scrollbar'),
+    ],
     future: {
       hoverOnlyWhenSupported: true,
       respectDefaultRingColorOpacity: true,
