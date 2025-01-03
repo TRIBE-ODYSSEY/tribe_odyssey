@@ -89,16 +89,19 @@ const WallpaperPage: React.FC = () => {
         ctx.fillRect(0, 0, canvasRef.current.width, canvasRef.current.height);
 
         // Draw image
-        const scale = imageScale / 100;
         const width = isDesktop ? 543 : 282;
         const height = isDesktop ? 351 : 611;
+        const scaledWidth = width * (imageScale / 100);
+        const scaledHeight = height * (imageScale / 100);
+        const x = (width - scaledWidth) / 2;
+        const y = (height - scaledHeight) / 2;
         
         ctx.drawImage(
           bannerImage,
-          0,
-          0,
-          width,
-          height
+          x,
+          y,
+          scaledWidth,
+          scaledHeight
         );
       }
     }
