@@ -11,7 +11,7 @@ import { type HttpTransport } from "viem";
 /**
  * Converts a viem PublicClient to an ethers.js Provider
  */
-export function publicClientToProvider(publicClient: PublicClient) {
+export function publicClientToProvider(publicClient: usePublicClient) {
   const { chain, transport } = publicClient;
   const network = {
     chainId: chain.id,
@@ -45,7 +45,7 @@ export function useEthersProvider({ chainId }: { chainId?: number } = {}) {
 /**
  * Converts a viem WalletClient to an ethers.js Signer
  */
-export function walletClientToSigner(walletClient: WalletClient) {
+export function walletClientToSigner(walletClient: useWalletClient) {
   const { account, chain, transport } = walletClient;
   const network = {
     chainId: chain.id,
