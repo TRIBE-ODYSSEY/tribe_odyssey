@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import PageLayout from '@src/components/common/layout/PageLayout';
 import PageTitle from '@src/components/common/PageTitle';
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import useWinners from '@src/lib/hooks/useWinners';
 import moment from 'moment';
 

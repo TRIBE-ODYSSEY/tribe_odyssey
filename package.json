@@ -8,6 +8,7 @@
     "@tanstack/react-query": "^5.62.2",
     "@types/lodash": "^4.17.13",
     "@types/react-router": "^5.1.20",
+    "axios": "^1.7.9",
     "connectkit": "^1.8.2",
     "date-and-time": "^3.6.0",
     "dotenv": "^16.4.7",

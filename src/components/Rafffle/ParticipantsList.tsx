@@ -3,8 +3,7 @@ import { Tab } from '@headlessui/react';
 import moment from 'moment';
 import makeBlockie from 'ethereum-blockies-base64';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
-import { shortenAddress } from '@src/lib/utils/address';
-import { Activity, Participant } from '@src/lib/types/raffle';
+import { shortenAddress } from '@src/lib/utils/addressHelpers';
 
 interface ParticipantsListProps {
   raffle: any;
