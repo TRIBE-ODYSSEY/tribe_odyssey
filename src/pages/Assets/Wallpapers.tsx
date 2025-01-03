@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PageLayout from '@src/components/common/layout/PageLayout';
-import { format } from 'date-and-time';
 import { Switch } from '@headlessui/react';
 
 const WallpaperPage: React.FC = () => {
@@ -14,8 +13,6 @@ const WallpaperPage: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [bannerImage, setBannerImage] = useState<HTMLImageElement | null>(null);
-
-  const now = new Date();
 
   const handleCreateWallpaper = () => {
     if (!canvasRef.current) return;
