@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.2",
+    "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
     "@mui/icons-material": "^6.1.10",
     "@paypal/react-paypal-js": "^8.7.0",
@@ -8,6 +9,7 @@
     "@types/lodash": "^4.17.13",
     "@types/react-router": "^5.1.20",
     "connectkit": "^1.8.2",
+    "date-and-time": "^3.6.0",
     "dotenv": "^16.4.7",
     "ethers": "^6.13.4",
     "flowbite-react": "^0.10.2",
