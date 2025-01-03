@@ -10,18 +10,18 @@ const beats = [
 ];
 
 const BeatCard: React.FC<{ title: string; url: string }> = ({ title, url }) => (
-  <div className="group flex flex-col w-full md:w-[400px] gap-5 p-6 
-                  bg-[#181818] rounded-lg border border-white/10 
+  <div className="group w-full p-6 bg-[#181818] rounded-lg border border-white/10 
                   transition-all duration-300 hover:-translate-y-0.5 
                   hover:border-white/20">
-    <MusicalNoteIcon className="w-12 h-12 text-red-600" />
-    <div className="flex justify-between items-center w-full">
-      <span className="text-white">{title}</span>
-      <a href={url} 
-         className="text-red-600 hover:opacity-80 transition-opacity 
-                    duration-300">
-        Download
-      </a>
+    <div className="flex flex-col gap-5">
+      <MusicalNoteIcon className="w-12 h-12 text-red-600" />
+      <div className="flex justify-between items-center w-full">
+        <span className="text-white">{title}</span>
+        <a href={url} 
+           className="text-red-600 hover:opacity-80 transition-opacity duration-300">
+          Download
+        </a>
+      </div>
     </div>
   </div>
 );
@@ -62,9 +62,11 @@ const TribalBeatsPage: React.FC = () => {
 
           {/* Beats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 
-                         gap-4 w-full">
+                         gap-6 w-full auto-rows-fr">
             {beats.map((beat, index) => (
-              <BeatCard key={index} {...beat} />
+              <div key={index} className="w-full">
+                <BeatCard {...beat} />
+              </div>
             ))}
           </div>
         </div>

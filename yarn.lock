@@ -1020,9 +1020,9 @@
     "@babel/runtime" "^7.26.0"
 
 "@noble/ciphers@^1.0.0":
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/@noble/ciphers/-/ciphers-1.1.3.tgz#eb27085aa7ce94d8c6eaeb64299bab0589920ec1"
-  integrity sha512-Ygv6WnWJHLLiW4fnNDC1z+i13bud+enXOFRBlpxI+NJliPWx5wdR+oWlTjLuBPTqjUjtHXtjkU6w3kuuH6upZA==
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@noble/ciphers/-/ciphers-1.2.0.tgz#a7858e18eb620f6b2a327a7f0e647b6a78fd0727"
+  integrity sha512-YGdEUzYEd+82jeaVbSKKVp1jFZb8LwaNMIIzHFkihGvYdd/KKAr7KaJHdEdSYGredE3ssSravXIa0Jxg28Sv5w==
 
 "@noble/curves@1.2.0":
   version "1.2.0"
@@ -1038,12 +1038,19 @@
   dependencies:
     "@noble/hashes" "1.4.0"
 
-"@noble/curves@1.7.0", "@noble/curves@^1.4.0", "@noble/curves@^1.6.0", "@noble/curves@~1.7.0":
+"@noble/curves@1.7.0", "@noble/curves@~1.7.0":
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/@noble/curves/-/curves-1.7.0.tgz#0512360622439256df892f21d25b388f52505e45"
   integrity sha512-UTMhXK9SeDhFJVrHeUJ5uZlI6ajXg10O6Ddocf9S6GjbSBVZsJo88HzKwXznNfGpMTRDyJkqMjNDPYgf0qFWnw==
   dependencies:
     "@noble/hashes" "1.6.0"
+
+"@noble/curves@^1.4.0", "@noble/curves@^1.6.0", "@noble/curves@~1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@noble/curves/-/curves-1.8.0.tgz#fe035a23959e6aeadf695851b51a87465b5ba8f7"
+  integrity sha512-j84kjAbzEnQHaSIhRPUmB3/eVXu2k3dKPl2LOrR8fSOIL+89U+7lV117EWHtq/GHM3ReGHM46iRBdZfpc4HRUQ==
+  dependencies:
+    "@noble/hashes" "1.7.0"
 
 "@noble/hashes@1.3.2":
   version "1.3.2"
@@ -1060,10 +1067,15 @@
   resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.6.0.tgz#d4bfb516ad6e7b5111c216a5cc7075f4cf19e6c5"
   integrity sha512-YUULf0Uk4/mAA89w+k3+yUYh6NrEvxZa5T6SY3wlMvE2chHkxFUUIDI8/XW1QSC357iA5pSnqt7XEhvFOqmDyQ==
 
-"@noble/hashes@1.6.1", "@noble/hashes@^1.3.1", "@noble/hashes@^1.4.0", "@noble/hashes@^1.5.0", "@noble/hashes@~1.6.0":
+"@noble/hashes@1.6.1", "@noble/hashes@~1.6.0":
   version "1.6.1"
   resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.6.1.tgz#df6e5943edcea504bac61395926d6fd67869a0d5"
   integrity sha512-pq5D8h10hHBjyqX+cfBm0i8JUXJ0UhczFc4r74zbuT9XgewFo2E3J1cOaGtdZynILNmQ685YWGzGE1Zv6io50w==
+
+"@noble/hashes@1.7.0", "@noble/hashes@^1.3.1", "@noble/hashes@^1.4.0", "@noble/hashes@^1.5.0", "@noble/hashes@~1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.7.0.tgz#5d9e33af2c7d04fee35de1519b80c958b2e35e39"
+  integrity sha512-HXydb0DgzTpDPwbVeDGCG1gIu7X6+AuU6Zl6av/E/KG8LMsvPntvq+w17CHRpKBmN6Ybdrt1eP3k4cj8DJa78w==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -1350,13 +1362,22 @@
     "@noble/hashes" "~1.4.0"
     "@scure/base" "~1.1.6"
 
-"@scure/bip32@1.6.0", "@scure/bip32@^1.5.0":
+"@scure/bip32@1.6.0":
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/@scure/bip32/-/bip32-1.6.0.tgz#6dbc6b4af7c9101b351f41231a879d8da47e0891"
   integrity sha512-82q1QfklrUUdXJzjuRU7iG7D7XiFx5PHYVS0+oeNKhyDLT7WPqs6pBcM2W5ZdwOwKCwoE1Vy1se+DHjcXwCYnA==
   dependencies:
     "@noble/curves" "~1.7.0"
     "@noble/hashes" "~1.6.0"
+    "@scure/base" "~1.2.1"
+
+"@scure/bip32@^1.5.0":
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/@scure/bip32/-/bip32-1.6.1.tgz#848eca1bc96f6b5ce6aa750798853fb142dace05"
+  integrity sha512-jSO+5Ud1E588Y+LFo8TaB8JVPNAZw/lGGao+1SepHDeTs2dFLurdNIAgUuDlwezqEjRjElkCJajVrtrZaBxvaQ==
+  dependencies:
+    "@noble/curves" "~1.8.0"
+    "@noble/hashes" "~1.7.0"
     "@scure/base" "~1.2.1"
 
 "@scure/bip39@1.3.0":
@@ -1367,12 +1388,20 @@
     "@noble/hashes" "~1.4.0"
     "@scure/base" "~1.1.6"
 
-"@scure/bip39@1.5.0", "@scure/bip39@^1.4.0":
+"@scure/bip39@1.5.0":
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/@scure/bip39/-/bip39-1.5.0.tgz#c8f9533dbd787641b047984356531d84485f19be"
   integrity sha512-Dop+ASYhnrwm9+HA/HwXg7j2ZqM6yk2fyLWb5znexjctFY3+E+eU8cIWI0Pql0Qx4hPZCijlGq4OL71g+Uz30A==
   dependencies:
     "@noble/hashes" "~1.6.0"
+    "@scure/base" "~1.2.1"
+
+"@scure/bip39@^1.4.0":
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/@scure/bip39/-/bip39-1.5.1.tgz#a056868d672c7203a6035c808893742a79e151f6"
+  integrity sha512-GnlufVSP9UdAo/H2Patfv22VTtpNTyfi+I3qCKpvuB5l1KWzEYx+l2TNpBy9Ksh4xTs3Rn06tBlpWCi/1Vz8gw==
+  dependencies:
+    "@noble/hashes" "~1.7.0"
     "@scure/base" "~1.2.1"
 
 "@socket.io/component-emitter@~3.1.0":
@@ -1671,9 +1700,9 @@
     undici-types "~6.19.2"
 
 "@types/node@^22.10.1":
-  version "22.10.4"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.10.4.tgz#da36bebcc4b124f3d62bfde1cd1dafd7763949c1"
-  integrity sha512-99l6wv4HEzBQhvaU/UGoeBoCK61SCROQaCCGyQSgX2tEQ3rKkNZ2S7CEWnS/4s1LV+8ODdK21UeyR1fHP2mXug==
+  version "22.10.5"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.10.5.tgz#95af89a3fb74a2bb41ef9927f206e6472026e48b"
+  integrity sha512-F8Q+SeGimwOo86fiovQh8qiXfFEh2/ocYv7tU5pJ3EXMSSxk1Joj5wefpFK2fHTf/N6HKGSxIDBT9f3gCxXPkQ==
   dependencies:
     undici-types "~6.20.0"
 
@@ -5164,9 +5193,9 @@ valtio@1.11.2:
     use-sync-external-store "1.2.0"
 
 viem@2.x, viem@^2.1.1:
-  version "2.22.1"
-  resolved "https://registry.yarnpkg.com/viem/-/viem-2.22.1.tgz#a108d533969d0a94812109b3f0a4553788014c1f"
-  integrity sha512-Dlul3ps87ErRSlAVuLQXQjquk0ECy/BCKATEErwHkVd0KQZvj80T5BUU0cDABo4axNF3+78Q060y6VFiT0+SqQ==
+  version "2.22.2"
+  resolved "https://registry.yarnpkg.com/viem/-/viem-2.22.2.tgz#ec25affced2491ea3984cc8ce5d3d4b760ae85b1"
+  integrity sha512-HNATy2rwkQcC1JRYBJJujJTtVtDkWlQEB7GvAtn4GBXdbBROnjs8pGXwJAWhb/crErVk5yJ/Fh50yGtA9VZh8A==
   dependencies:
     "@noble/curves" "1.7.0"
     "@noble/hashes" "1.6.1"
