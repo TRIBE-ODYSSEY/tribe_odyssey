@@ -1,89 +1,62 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
-import PageLayout from '@src/components/common/layout/PageLayout';
-import PageTitle from '@src/components/common/PageTitle';
-import useRaffles from '@src/lib/hooks/useRaffles';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import useRaffles from '@src/lib/hooks/useRaffles';
+import { RaffleData } from '@src/lib/types/raffle';
 
-interface RaffleCardProps {
-  id: string;
-  nftId: string;
-  projectName: string;
-  prizeImage: string;
-  raffleAt: string;
-  entryCount: number;
-}
-
-const RaffleCard: React.FC<RaffleCardProps> = ({
-  id,
-  nftId,
-  projectName,
-  prizeImage,
-  raffleAt,
-  entryCount
-}) => {
-  const daysLeft = Math.max(
-    moment.utc(raffleAt).diff(moment.utc(), 'days'),
-    0
-  );
-
-  return (
-    <div className="bg-dark border border-gray-600/50 rounded-lg p-3 
-                  transition-all duration-300 hover:border-gray-500">
-      <div className="relative">
-        <img 
-          src={prizeImage} 
-          alt={projectName}
-          className="w-full h-48 object-cover rounded-lg"
-        />
-        <div className="absolute bottom-2 w-full px-2 flex justify-between">
-          <span className="bg-white text-gray-600 text-xs font-semibold 
-                       px-2 py-1 rounded-full">
-            #{nftId}
-          </span>
-          <span className="bg-yellow-400 text-black text-xs font-bold 
-                       px-2 py-1 rounded-full whitespace-nowrap">
-            {daysLeft} Days Left
-          </span>
-        </div>
-      </div>
-
-      <div className="mt-3 space-y-3">
-        <div>
-          <h4 className="font-semibold text-white">{projectName}</h4>
-          <p className="mt-1 text-xs text-gray-400">#{nftId}</p>
-        </div>
-
-        <Link
-          to={`/raffle/${id}`}
-          className="w-full py-2 bg-gradient-to-r from-purple-600 to-purple-800 
-                   hover:opacity-90 transition-opacity rounded-md text-white 
-                   text-sm font-medium border-2 border-transparent"
-        >
-          Enter Now
-        </Link>
-
-        <div className="py-3 text-xs text-gray-400 font-semibold text-center">
-          {entryCount || 0} ENTRIES
-        </div>
+const RaffleCard = ({ id, nftId, projectName, prizeImage, raffleAt, entryCount }: RaffleData) => (
+  <div className="bg-dark border border-gray-600/50 rounded-lg p-3 transition-all duration-300 hover:border-gray-500">
+    <div className="relative">
+      <img 
+        src={prizeImage} 
+        alt={projectName}
+        className="w-full h-48 object-cover rounded-lg"
+      />
+      <div className="absolute bottom-2 w-full px-2 flex justify-between">
+        <span className="bg-white text-gray-600 text-xs font-semibold px-2 py-1 rounded-full">
+          #{nftId}
+        </span>
+        <span className="bg-yellow-400 text-black text-xs font-bold px-2 py-1 rounded-full whitespace-nowrap">
+          {Math.max(moment.utc(raffleAt).diff(moment.utc(), 'days'), 0)} Days Left
+        </span>
       </div>
     </div>
-  );
-};
 
-const ChevronButton: React.FC<{ direction: 'Left' | 'Right'; onClick?: () => void }> = ({ 
-  direction, 
-  onClick 
+    <div className="mt-3 space-y-3">
+      <div>
+        <h4 className="font-semibold text-white">{projectName}</h4>
+        <p className="mt-1 text-xs text-gray-400">#{nftId}</p>
+      </div>
+
+      <Link
+        to={`/raffle/${id}`}
+        className="block w-full py-2 bg-gradient-to-r from-purple-600 to-purple-800 
+                 hover:opacity-90 transition-opacity rounded-md text-white 
+                 text-sm font-medium border-2 border-transparent text-center"
+      >
+        Enter Now
+      </Link>
+
+      <div className="py-3 text-xs text-gray-400 font-semibold text-center">
+        {entryCount || 0} ENTRIES
+      </div>
+    </div>
+  </div>
+);
+
+const NavigationArrow = ({ direction, onClick }: { 
+  direction: 'left' | 'right';
+  onClick?: () => void;
 }) => (
   <button
     onClick={onClick}
     className="absolute top-1/2 -translate-y-1/2 z-10 p-2 rounded-full 
              bg-gray-800/50 hover:bg-gray-700/50 transition-colors
              text-gray-400 hover:text-white"
-    style={{ [direction === 'Left' ? 'left' : 'right']: '1rem' }}
+    style={{ [direction]: '1rem' }}
   >
-    {direction === 'Left' ? (
+    {direction === 'left' ? (
       <ChevronLeftIcon className="w-6 h-6" />
     ) : (
       <ChevronRightIcon className="w-6 h-6" />
@@ -91,18 +64,19 @@ const ChevronButton: React.FC<{ direction: 'Left' | 'Right'; onClick?: () => voi
   </button>
 );
 
-const RafflesPage: React.FC = () => {
+const RafflesPage = () => {
   const { raffles = [], isLoading } = useRaffles(true, 0);
 
   return (
-    <PageLayout>
-      <div className="container mx-auto px-4 py-16">
+    <div className="min-h-screen bg-gray-900 py-16">
+      <div className="container mx-auto px-4">
         <div className="max-w-[900px] mx-auto">
-          <PageTitle title="Upcoming Raffles" />
+          <h1 className="text-3xl font-bold text-white text-center">
+            Upcoming Raffles
+          </h1>
           
           <div className="mt-6 text-center text-gray-400 space-y-2">
-            <p>Use the NANA points generated by staking your TRIBE apes to 
-               enter our raffles.</p>
+            <p>Use the NANA points generated by staking your TRIBE apes to enter our raffles.</p>
             <p>There are some awesome prizes to be won!</p>
           </div>
 
@@ -111,22 +85,14 @@ const RafflesPage: React.FC = () => {
           ) : (
             <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {raffles.map((raffle) => (
-                <RaffleCard
-                  key={raffle.id}
-                  id={raffle.id}
-                  nftId={raffle.nft_id}
-                  projectName={raffle.project_name}
-                  prizeImage={raffle.prize_image}
-                  raffleAt={raffle.raffle_at}
-                  entryCount={raffle.entry_count}
-                />
+                <RaffleCard key={raffle.id} {...raffle} />
               ))}
             </div>
           )}
         </div>
       </div>
-    </PageLayout>
+    </div>
   );
 };
 
-export default RafflesPage; 
+export default RafflesPage;
