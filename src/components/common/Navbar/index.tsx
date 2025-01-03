@@ -18,21 +18,50 @@ interface NavigationItem {
 
 const navigationData = {
   menus: [
-    { label: 'Element', items: [{ label: 'Drops', href: '/element19/drops' }, { label: 'Collection', href: '/element19/collection' }] },
-    { label: 'Assets', items: [{ label: '4kTribe ', href: '/assets/4kTribe' }, { label: 'Molten', href: '/assets/molten' }, { label: 'Wallpapers', href: '/assets/wallpapers' }, { label: 'ENS', href: '/assets/ens' }] },
-    { label: 'Marketplace', items: [{ label: 'Marketplace 1', href: '#' }] },
-    { label: 'Staking', items: [{ label: 'Raffles', href: '/staking/raffles' }, { label: 'Stake Apes', href: '/staking/stake-apes' }, { label: 'Winners', href: '/staking/winners' }] },
-    { label: 'The Council', items: [{ label: 'Council', href: '/council' }] },
+    { 
+      label: 'Element', 
+      items: [
+        { label: 'Drops', href: '/element19/drops' },
+        { label: 'Collection', href: '/element19/collection' }
+      ] 
+    },
+    { 
+      label: 'Assets', 
+      items: [
+        { label: '4kTribe', href: '/assets/4ktribe' },
+        { label: 'Molten', href: '/assets/molten' },
+        { label: 'Wallpapers', href: '/assets/wallpapers' },
+        { label: 'Tribe19 Checker', href: '/assets/tribal19checker' }
+      ] 
+    },
+    { 
+      label: 'Staking', 
+      items: [
+        { label: 'Raffles', href: '/staking/raffles' },
+        { label: 'Stake Apes', href: '/staking/stake-apes' },
+        { label: 'Winners', href: '/staking/winners' }
+      ] 
+    },
+    { 
+      label: 'The Council', 
+      items: [
+        { label: 'Council', href: '/council' }
+      ] 
+    }
   ] as NavigationItem[],
   profile: {
     label: 'Profile',
     items: [
       { label: 'My NFTs', href: '/my-nfts' },
       { label: 'Settings', href: '/settings' },
-      { label: 'Disconnect', href: '#', onClick: () => {
-        window.dispatchEvent(new Event('wallet-disconnect'));
-        return true;
-      }}
+      { 
+        label: 'Disconnect', 
+        href: '#', 
+        onClick: () => {
+          window.dispatchEvent(new Event('wallet-disconnect'));
+          return true;
+        }
+      }
     ] as MenuItem[]
   },
   socials: [
