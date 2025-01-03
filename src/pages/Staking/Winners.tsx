@@ -1,18 +1,26 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PageLayout from '@src/components/common/layout/PageLayout';
-import PageTitle from '@src/components/common/PageTitle';
 import useWinners from '@src/lib/hooks/useWinners';
 import moment from 'moment';
 
-const WinnerCard: React.FC<{
+interface WinnerCardProps {
   id: string;
-  nftId: string;
-  projectName: string;
-  prizeImage: string;
-  raffleAt: string;
-  entryCount: number;
-}> = ({ id, nftId, projectName, prizeImage, raffleAt, entryCount }) => {
+  nft_id: string;
+  project_name: string;
+  prize_image: string;
+  raffle_at: string;
+  entry_count: number;
+}
+
+const WinnerCard = ({ 
+  id, 
+  nft_id: nftId, 
+  project_name: projectName, 
+  prize_image: prizeImage, 
+  raffle_at: raffleAt, 
+  entry_count: entryCount 
+}: WinnerCardProps) => {
   const daysAgo = moment.utc().diff(moment.utc(raffleAt), 'days');
 
   return (
@@ -59,14 +67,16 @@ const WinnerCard: React.FC<{
   );
 };
 
-const Winners: React.FC = () => {
+const Winners = () => {
   const { raffles = [] } = useWinners(0);
 
   return (
     <PageLayout>
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-[900px] mx-auto">
-          <PageTitle className="text-center">Winners</PageTitle>
+          <h1 className="text-3xl font-bold text-white text-center">
+            Winners
+          </h1>
           
           <p className="mt-4 text-center text-gray-400">
             Past raffle winners. Winners are grinners!
@@ -77,11 +87,11 @@ const Winners: React.FC = () => {
               <WinnerCard
                 key={raffle.id}
                 id={raffle.id}
-                nftId={raffle.nft_id}
-                projectName={raffle.project_name}
-                prizeImage={raffle.prize_image}
-                raffleAt={raffle.raffle_at}
-                entryCount={raffle.entry_count}
+                nft_id={raffle.nft_id}
+                project_name={raffle.project_name}
+                prize_image={raffle.prize_image}
+                raffle_at={raffle.raffle_at}
+                entry_count={raffle.entry_count}
               />
             ))}
           </div>
