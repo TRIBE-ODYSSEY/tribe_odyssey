@@ -81,7 +81,7 @@ const RafflesPage = () => {
           ) : (
             <div className="mt-10 relative">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {(raffles as RaffleData[]).map((raffle) => (
+                {raffles.map((raffle) => (
                   <RaffleCard 
                     key={raffle.id}
                     id={raffle.id}
