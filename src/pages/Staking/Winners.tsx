@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import PageLayout from '@src/components/common/layout/PageLayout';
 import useWinners from '@src/lib/hooks/useWinners';

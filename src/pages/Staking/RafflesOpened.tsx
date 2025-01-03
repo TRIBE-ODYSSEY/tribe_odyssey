@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import moment from 'moment';
 import PageLayout from '@src/components/common/layout/PageLayout';
 import useRaffles from '@src/lib/hooks/useRaffles';
-import { RaffleData } from '@src/lib/types/raffle';
 
 interface RaffleCardProps {
   id: string;
@@ -77,20 +76,28 @@ const RafflesOpened = () => {
           </div>
 
           {isLoading ? (
-            <div className="mt-10 text-center text-gray-400">Loading...</div>
+            <div className="mt-10 flex justify-center items-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+            </div>
+          ) : raffles.length === 0 ? (
+            <div className="mt-10 text-center text-gray-400">
+              No open raffles available at the moment.
+            </div>
           ) : (
-            <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {raffles.map((raffle: RaffleData) => (
-                <RaffleCard 
-                  key={raffle.id}
-                  id={raffle.id}
-                  nft_id={raffle.nft_id}
-                  project_name={raffle.project_name}
-                  prize_image={raffle.prize_image}
-                  raffle_at={raffle.raffle_at}
-                  entry_count={raffle.entry_count}
-                />
-              ))}
+            <div className="mt-10 relative">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {raffles.map((raffle) => (
+                  <RaffleCard 
+                    key={raffle.id}
+                    id={raffle.id}
+                    nft_id={raffle.nft_id}
+                    project_name={raffle.project_name}
+                    prize_image={raffle.prize_image}
+                    raffle_at={raffle.raffle_at}
+                    entry_count={raffle.entry_count}
+                  />
+                ))}
+              </div>
             </div>
           )}
         </div>
