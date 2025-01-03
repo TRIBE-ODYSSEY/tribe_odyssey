@@ -3,16 +3,9 @@ import moment from 'moment';
 import PageLayout from '@src/components/common/layout/PageLayout';
 import PageTitle from '@src/components/common/PageTitle';
 import useRaffles from '@src/lib/hooks/useRaffles';
-import { RaffleData } from '@src/lib/types/raffle';
+import type { RaffleData } from '@src/lib/types/raffle';
 
-interface RaffleCardProps {
-  id: string;
-  nft_id: string;
-  project_name: string;
-  prize_image: string;
-  raffle_at: string;
-  entry_count: number;
-}
+interface RaffleCardProps extends Pick<RaffleData, 'id' | 'nft_id' | 'project_name' | 'prize_image' | 'raffle_at' | 'entry_count'> {}
 
 const RaffleCard = ({ 
   id, 
@@ -88,7 +81,7 @@ const RafflesPage = () => {
           ) : (
             <div className="mt-10 relative">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {raffles.map((raffle) => (
+                {(raffles as RaffleData[]).map((raffle) => (
                   <RaffleCard 
                     key={raffle.id}
                     id={raffle.id}
