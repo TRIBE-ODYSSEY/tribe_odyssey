@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useWeb3React } from "@src/libs/hooks/useWeb3React";
+import { useWeb3React } from "@src/lib/hooks/useWeb3React";
 
 const useUserStaked = (trigger: number) => {
   const [userStaked, setUserStaked] = useState<any>(null);
