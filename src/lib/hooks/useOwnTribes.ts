@@ -1,8 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import useRefresh from "@src/libs/hooks/useRefresh";
-import { getSubgraphEndpoint } from "@src/libs/utils/addressHelpers";
-import { useWeb3React } from "@src/libs/hooks/useWeb3React";
+import useRefresh from "@src/lib/hooks/useRefresh";
+import { useWeb3React } from "@src/lib/hooks/useWeb3React";
 
 const useOwnTribes = (trigger: number) => {
   const [tribes, setTribes] = useState([]);
@@ -21,12 +20,12 @@ const useOwnTribes = (trigger: number) => {
           },
         })
         .then((response) => {
-          const items = (response?.data?.items || []).map((item) => ({
+          const items = (response?.data?.items || []).map((item: any) => ({
             ...item,
             id: `${item.contract}-${item.tokenId}`,
           }));
-          setTribes(items.filter((item) => !item.is_staked));
-          setStakedTribes(items.filter((item) => item.is_staked));
+          setTribes(items.filter((item: any) => !item.is_staked));
+          setStakedTribes(items.filter((item: any) => item.is_staked));
         })
         .catch((error) => {
           console.error(error);
