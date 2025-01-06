@@ -1,5 +1,4 @@
 import { useMemo } from "react"
-import { type PublicClient, type WalletClient } from 'viem'
 import { usePublicClient, useWalletClient } from 'wagmi'
 import ERC20_ABI from '../config/abi/erc20.json'
 import { getContractInstance } from "../utils/contracts"
