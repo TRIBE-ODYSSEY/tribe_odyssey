@@ -3,8 +3,8 @@ import {
     useChainId,
     useWalletClient,
     usePublicClient,
-    type WalletClient,
 } from 'wagmi';
+import type { WalletClient } from '@wagmi/core';
 import { 
     useModal as useConnectKitModal 
 } from 'connectkit';

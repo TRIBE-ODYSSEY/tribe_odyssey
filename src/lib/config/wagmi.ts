@@ -8,6 +8,10 @@ const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID
 
 export const config = createConfig(
   getDefaultConfig({
+    appName: 'Tribe Odyssey',
+    appIcon: 'https://tribeodyssey.com/favicon.ico',
+    appDescription: 'Tribe Odyssey - The Expanse',
+    appUrl: 'https://tribeodyssey.com',
     chains: [mainnet, sepolia],
     transports: {
       [mainnet.id]: http(),
@@ -19,7 +23,5 @@ export const config = createConfig(
       walletConnect({ projectId }),
     ],
     walletConnectProjectId: projectId,
-    // Add this if you want to auto-connect to MetaMask
-    autoConnect: true,
   })
 )

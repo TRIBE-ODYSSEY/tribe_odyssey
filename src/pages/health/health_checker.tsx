@@ -1,4 +1,4 @@
-import { config } from '@config/wagmiClient';
+import { config } from '@config/wagmi';
 import Card from '@src/components/common/card/Card'; // Importuj komponent Card
 import React from 'react';
 

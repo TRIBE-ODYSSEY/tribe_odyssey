@@ -1,10 +1,8 @@
 import { useCallback } from "react";
 import {
-  type Config,
   useConnect,
   useDisconnect,
-  useChainId,
-  type Connector
+  useChainId
 } from "wagmi";
 
 interface LoginError extends Error {
