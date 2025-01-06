@@ -32,8 +32,10 @@ const siweConfig: SIWEConfig = {
 };
 
 const App: React.FC = () => {
+  const auth = AuthProvider({ children: null });
+  
   return (
-    <AuthProvider>
+    <auth.Provider value={auth.value}>
       <Suspense
         fallback={
           <div className="">
@@ -54,7 +56,7 @@ const App: React.FC = () => {
           </SIWEProvider>
         </ConnectKitProvider>
       </Suspense>
-    </AuthProvider>
+    </auth.Provider>
   );
 };
 
