@@ -12,6 +12,7 @@ import {
   getMulticallAddress,
   getStakingAddress,
   getTribeAddress,
+  isZeroAddress,
 } from "../utils/addressHelpers";
 import getNodeUrl from "../utils/getRcpUrl";
 import { getMerkleProof } from "../utils/merkle";
@@ -21,37 +22,37 @@ export const simpleRpcProvider = new ethers.JsonRpcProvider(
   getNodeUrl()
 );
 
-export const getContract = (address: string, abi: any, signer: any) => {
+export const getContract = (address, abi, signer) => {
   const signerOrProvider = signer ? signer : simpleRpcProvider;
   return new ethers.Contract(address, abi, signerOrProvider);
 };
 
-export const getMulticallContract = (provider: any) => {
+export const getMulticallContract = (provider) => {
   return getContract(getMulticallAddress(), MulticallABI, provider);
 };
 
 // Get NFT Contract
-export const getTribeContract = (provider: any) => {
+export const getTribeContract = (provider) => {
   return getContract(getTribeAddress(), TribeABI, provider);
 };
 
-export const getApeContract = (provider: any) => {
+export const getApeContract = (provider) => {
   return getContract(getApeAddress(), ApeABI, provider);
 };
 
-export const getTokenContract = (currency: string, provider: any  ) => {
+export const getTokenContract = (currency: string, provider) => {
   return getContract(currency, ERC20ABI, provider);
 };
 
-export const getStakingContract = (provider: any) => {
+export const getStakingContract = (provider) => {
   return getContract(getStakingAddress(), StakingABI, provider);
 };
 
-export const getEnsRegistrarContract = (provider: any) => {
+export const getEnsRegistrarContract = (provider) => {
   return getContract(getEnsRegistrarAddress(), EnsRegistrarABI, provider);
 };
 
-export const mint = async (numToMint: number, signer: any) => {
+export const mint = async (numToMint: number, signer) => {
   const nftContract = getTribeContract(signer);
 
   try {
@@ -85,7 +86,7 @@ export const mint = async (numToMint: number, signer: any) => {
       transactionHash: receipt.transactionHash,
       error: null,
     };
-  } catch (e: any) {
+  } catch (e) {
     const message = e?.message;
     throw new Error(
       message
@@ -103,11 +104,11 @@ export const checkClaimed = async (id: number) => {
   try {
     const owner = await nftContract.ownerOf(id - 10000);
 
-    if (owner && isAddress(owner)) {
+    if (owner && isZeroAddress(owner)) {
       return true;
     }
     return false;
-  } catch (e: any) {
+  } catch (e) {
     return false;
   }
 };
@@ -121,7 +122,7 @@ export const checkExist = async (ids: number[]) => {
     const exists = await nftContract.isExists(ids.map((id) => id - 10000));
 
     return ids.filter((_, index) => exists[index]);
-  } catch (e: any) {
+  } catch (e) {
     return [];
   }
 };
@@ -162,7 +163,7 @@ export const claim = async (ids: number[], signer: any) => {
       transactionHash: receipt.transactionHash,
       error: null,
     };
-  } catch (e: any) {
+  } catch (e) {
     console.log(e);
     const message = e?.message;
     throw new Error(
@@ -175,7 +176,7 @@ export const claim = async (ids: number[], signer: any) => {
   }
 };
 
-export const register = async (name: string, signer: any) => {
+export const register = async (name, signer) => {
   const ensContract = getEnsRegistrarContract(signer);
   const nftContract = getTribeContract(signer);
   const address = await signer.getAddress();
@@ -222,7 +223,7 @@ export const register = async (name: string, signer: any) => {
       transactionHash: receipt.transactionHash,
       error: null,
     };
-  } catch (e: any) {
+  } catch (e) {
     console.log(e);
     const message = e?.message;
     throw new Error(
@@ -311,7 +312,7 @@ export const stake = async (ids: number[], pid: number, signer: any) => {
       transactionHash: receipt.transactionHash,
       error: null,
     };
-  } catch (e: any) {
+  } catch (e) {
     console.log(e);
     const message = e?.message;
     throw new Error(
@@ -351,7 +352,7 @@ export const unstake = async (ids: number[], pid: number, signer: any) => {
       transactionHash: receipt.transactionHash,
       error: null,
     };
-  } catch (e: any) {
+  } catch (e) {
     console.log(e);
     const message = e?.message;
     throw new Error(
