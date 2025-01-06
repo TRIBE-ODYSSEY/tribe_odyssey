@@ -36,8 +36,8 @@ export const getContractInstance = (
   return getContract({
     address: address as `0x${string}`,
     abi,
-    publicClient: client as PublicClient,
-    walletClient: client as WalletClient
+    client: client as PublicClient,
+    publicClient: client as PublicClient
   })
 }
 
@@ -75,14 +75,18 @@ interface StakeParams {
 
 // Update register function
 export const register = async (
-  name: string, 
-  signer: Wallet
+  name: string,
+  client: WalletClient
 ) => {
-  const ensContract = getEnsRegistrarContract(signer);
-  const nftContract = getTribeContract(signer);
-  const address = await signer.getAddress();
+  const ensContract = getEnsRegistrarContract(client);
+  const nftContract = getTribeContract(client);
+  const address = client.account?.address;
+
   try {
-    let gasPrice = await signer.getGasPrice();
+    const feeData = await client.request({
+      method: 'eth_gasPrice'
+    });
+    let gasPrice = BigInt(feeData as string);
     if (gasPrice < parseGwei("10")) {
       gasPrice = parseGwei("10");
     }
@@ -94,12 +98,12 @@ export const register = async (
     const resolver = "0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41";
 
     const [exists, balance, allowed] = await Promise.all([
-      ensContract.query(label, name),
-      nftContract.balanceOf(address),
-      ensContract.allowedToRegister(address),
+      ensContract.read.query([label, name]),
+      nftContract.read.balanceOf([address]),
+      ensContract.read.allowedToRegister([address])
     ]);
 
-    if (balance.toNumber() <= 0) {
+    if (Number(balance) <= 0) {
       throw new Error(`You don't have tribe nft!`);
     }
 
@@ -111,31 +115,34 @@ export const register = async (
       throw new Error(`You can register 1 ENS per wallet address!`);
     }
 
-    let gasLimit = await ensContract.estimateGas.register(
+    const gasLimit = await ensContract.estimateGas.register([
       label,
       name,
       resolver
-    );
-    let tx = await ensContract.register(label, name, resolver, {
-      gasLimit: gasLimit.mul(140).div(100),
-      gasPrice: gasPrice.mul(120).div(100),
-    });
+    ]);
 
-    const receipt = await tx.wait(1);
+    const { request } = await ensContract.simulate.register(
+      [label, name, resolver],
+      {
+        account: address,
+        gas: (gasLimit * 140n) / 100n,
+        gasPrice: (gasPrice * 120n) / 100n
+      }
+    );
+
+    const hash = await client.writeContract(request);
+    const receipt = await client.waitForTransactionReceipt({ hash });
 
     return {
       transactionHash: receipt.transactionHash,
       error: null,
     };
-  } catch (e: any) {
-    console.log(e);
-    const message = e?.message;
+
+  } catch (error: unknown) {
+    console.log(error);
+    const message = error instanceof Error ? error.message : 'Failed Transaction!';
     throw new Error(
-      message
-        ? message.length > 100
-          ? message.slice(0, 100) + "..."
-          : message
-        : "Failed Transaction!"
+      message.length > 100 ? message.slice(0, 100) + "..." : message
     );
   }
 };

@@ -18,7 +18,7 @@ const useTokenBalance = (token: string) => {
           tempBalance = await signer.provider.getBalance(account);
         }
       } else if (account && tokenContract) {
-        tempBalance = await tokenContract.balanceOf(account);
+        tempBalance = await tokenContract.read.balanceOf([account]);
       }
 
       setBalance(tempBalance);
