@@ -1,46 +1,35 @@
-import { Contract, BaseContract, JsonRpcProvider } from "ethers";
-import { useMemo } from "react";
-import ERC20_ABI from '../config/abi/erc20.json';
-import { getContractInstance } from "../utils/contracts";
-import { useWeb3React } from "./useWeb3React";
+import { useMemo } from "react"
+import { type PublicClient, type WalletClient } from 'viem'
+import { usePublicClient, useWalletClient } from 'wagmi'
+import ERC20_ABI from '../config/abi/erc20.json'
+import { getContractInstance } from "../utils/contracts"
 
-// returns null on errors
-export function useContract<T extends BaseContract = Contract>(
+export function useContract<T = any>(
   address: string | undefined,
-  ABI: any[], // TODO: Add proper type for ABI
+  ABI: any[],
   withSignerIfPossible = true
 ): T | null {
-  const { getSigner, provider } = useWeb3React();
+  const publicClient = usePublicClient()
+  const { data: walletClient } = useWalletClient()
 
   return useMemo(() => {
-    if (!address || !ABI) return null;
+    if (!address || !ABI) return null
+    
     try {
-      if (withSignerIfPossible) {
-        const signerPromise = getSigner();
-        if (signerPromise) {
-          // Wait for signer promise to resolve
-          return signerPromise.then((signer) => {
-            if (signer) {
-              return getContractInstance(address, ABI, signer) as T;
-            }
-            return null;
-          });
-        }
+      if (withSignerIfPossible && walletClient) {
+        return getContractInstance(address, ABI, walletClient) as T
       }
-      if (provider instanceof JsonRpcProvider) {
-        return getContractInstance(address, ABI, provider) as T;
-      }
-      return null;
+      return getContractInstance(address, ABI, publicClient) as T
     } catch (error) {
-      console.error("Failed to get contract", error);
-      return null;
+      console.error('Failed to get contract', error)
+      return null
     }
-  }, [address, ABI, getSigner, provider, withSignerIfPossible]) as T | null;
+  }, [address, ABI, publicClient, walletClient, withSignerIfPossible])
 }
 
 export function useTokenContract(
   tokenAddress?: string,
   withSignerIfPossible = true
-): Contract | null {
-  return useContract(tokenAddress, ERC20_ABI, withSignerIfPossible);
+) {
+  return useContract(tokenAddress, ERC20_ABI, withSignerIfPossible)
 }
