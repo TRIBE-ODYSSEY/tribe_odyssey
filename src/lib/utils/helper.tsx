@@ -1,7 +1,7 @@
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import { DefaultChainID } from "../config/constants";
 
-export function shortenHex(hex, length = 4) {
+export function shortenHex(hex: string, length = 4) {
   if (!hex) return "";
   return `${hex.substring(0, length + 2)}…${hex.substring(
     hex.length - length
@@ -17,17 +17,17 @@ export function shortenHex(hex, length = 4) {
  *
  * @returns {string}
  */
-export const parseBalance = (balance, decimals = 18, decimalsToDisplay = 3) =>
-  Number(ethers.utils.formatUnits(balance, decimals)).toFixed(
+export const parseBalance = (balance: any, decimals = 18, decimalsToDisplay = 3) =>
+  Number(ethers.formatUnits(balance, decimals)).toFixed(
     decimalsToDisplay
   );
 
-export const numberWithCommas = (x) => {
+export const numberWithCommas = (x: any) => {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
-export const nFormatter = (num, digits) => {
-  var si = [
+export const nFormatter = (num: number, digits: number) => {
+  const si = [
     { value: 1, symbol: "" },
     { value: 1e3, symbol: "k" },
     { value: 1e6, symbol: "M" },
@@ -36,8 +36,8 @@ export const nFormatter = (num, digits) => {
     { value: 1e15, symbol: "P" },
     { value: 1e18, symbol: "E" },
   ];
-  var rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
-  var i;
+  const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
+  let i;
   for (i = si.length - 1; i > 0; i--) {
     if (num >= si[i].value) {
       break;
@@ -46,35 +46,35 @@ export const nFormatter = (num, digits) => {
   return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
 };
 
-export function toWei(ether) {
-  return ethers.utils.parseEther(String(ether));
+export function toWei(ether: string | number) {
+  return ethers.parseEther(String(ether));
 }
 
-export function toEth(ether) {
-  return ethers.utils.formatEther(ether);
+export function toEth(ether: bigint | string) {
+  return ethers.formatEther(ether);
 }
 
-export function isSameAddress(addr1, addr2) {
+export function isSameAddress(addr1: string, addr2: string) {
   return (
-    ethers.utils.isAddress(addr1) &&
-    ethers.utils.isAddress(addr2) &&
+    ethers.isAddress(addr1) &&
+    ethers.isAddress(addr2) &&
     addr1?.toLowerCase() === addr2?.toLowerCase()
   );
 }
 
-export function getBigNumber(value) {
-  return ethers.BigNumber.from(String(value));
+export function getBigNumber(value: string | number) {
+  return BigInt(String(value));
 }
 
-export function formatPrice(price) {
-  return `${nFormatter(toEth(price), 4)}`;
+export function formatPrice(price: bigint) {
+  return `${nFormatter(Number(toEth(price)), 4)}`;
 }
 
-export function formatPriceUsd(price, usd) {
+export function formatPriceUsd(price: bigint, usd: number) {
   return `${nFormatter(parseFloat(toEth(price)) * usd, 4)}`;
 }
 
-export function getEtherScanLink(data, type) {
+export function getEtherScanLink(data: string, type: "transaction" | "token" | "address") {
   const prefix =
     DefaultChainID == 4
       ? `https://rinkeby.etherscan.io`
@@ -94,16 +94,16 @@ export function getEtherScanLink(data, type) {
   }
 }
 
-const download = (link, type, name) => {
-  var element = document.createElement("a");
-  var file = new Blob([link], { type: "image/*" });
+const download = (link: string) => {
+  const element = document.createElement("a");
+  const file = new Blob([link], { type: "image/*" });
   element.href = URL.createObjectURL(file);
   element.download = "image.jpg";
   element.click();
 };
 
-export function sortAndSetCategory(array) {
-  const allTagsWithCount = array?.reduce((tagsWithCount, currentTag) => {
+export function sortAndSetCategory(array: string[]) {
+  const allTagsWithCount = array?.reduce((tagsWithCount: Record<string, number>, currentTag: string) => {
     tagsWithCount[currentTag] = (tagsWithCount[currentTag] || 0) + 1; // increment the number of counts of a tag
     return tagsWithCount;
   }, {});
@@ -115,12 +115,13 @@ export function sortAndSetCategory(array) {
   return sortedTagsArray;
 }
 
-export function ToText(node) {
+export function ToText(node: string) {
   const tag = document.createElement("div");
   tag.innerHTML = node;
   node = tag.innerText;
   return node;
 }
-export function ShortenText(text, startingPoint, maxLength) {
+
+export function ShortenText(text: string, startingPoint: number, maxLength: number) {
   return text.length > maxLength ? text.slice(startingPoint, maxLength) : text;
 }
