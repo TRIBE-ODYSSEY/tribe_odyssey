@@ -1,6 +1,6 @@
 import { FC, useState, ChangeEvent } from "react";
 import Button from "@src/components/common/Button";
-import * as moment from "moment";
+import moment from "moment";
 import { toast } from "react-toastify";
 import { useWeb3React } from "@src/lib/hooks/useWeb3React";
 import { useSignMessage } from "wagmi";
