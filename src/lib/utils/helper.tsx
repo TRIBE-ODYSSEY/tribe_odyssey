@@ -94,13 +94,13 @@ export function getEtherScanLink(data: string, type: "transaction" | "token" | "
   }
 }
 
-const download = (link: string) => {
+export function downloadFile(link: string) {
   const element = document.createElement("a");
   const file = new Blob([link], { type: "image/*" });
   element.href = URL.createObjectURL(file);
   element.download = "image.jpg";
   element.click();
-};
+}
 
 export function sortAndSetCategory(array: string[]) {
   const allTagsWithCount = array?.reduce((tagsWithCount: Record<string, number>, currentTag: string) => {

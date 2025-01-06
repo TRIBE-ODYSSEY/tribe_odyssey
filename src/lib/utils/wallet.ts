@@ -26,13 +26,13 @@ export const setupNetwork = async (walletClient?: WalletClient) => {
           decimals: 18,
         },
         rpcUrls: {
-          default: { http: getNodeUrl() },
-          public: { http: getNodeUrl() },
+          default: { http: [getNodeUrl()].filter(Boolean) as string[] },
+          public: { http: [getNodeUrl()].filter(Boolean) as string[] },
         },
         blockExplorers: {
           default: { name: 'BscScan', url: 'https://bscscan.com' },
         },
-      } as Chain,
+      } as unknown as Chain,
     })
     return true
   } catch (error) {

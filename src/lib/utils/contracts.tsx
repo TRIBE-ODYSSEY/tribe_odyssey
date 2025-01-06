@@ -70,7 +70,8 @@ export const mint = async (numToMint: number, signer: ethers.Signer) => {
       throw new Error("Insufficient funds!");
     }
 
-    const gasPrice = await signer.provider?.getGasPrice();
+    const feeData = await signer.provider?.getFeeData();
+    const gasPrice = feeData?.gasPrice;
     const minGasPrice = ethers.parseUnits("20", "gwei");
     const finalGasPrice = gasPrice && gasPrice < minGasPrice ? minGasPrice : gasPrice;
 
@@ -133,7 +134,8 @@ export const checkExist = async (ids: number[]) => {
 export const claim = async (ids: number[], signer: ethers.Signer) => {
   const nftContract = getTribeContract(signer);
   try {
-    const gasPrice = await signer.provider?.getGasPrice();
+    const feeData = await signer.provider?.getFeeData();
+    const gasPrice = feeData?.gasPrice;
     const minGasPrice = ethers.parseUnits("20", "gwei");
     const finalGasPrice = gasPrice && gasPrice < minGasPrice ? minGasPrice : gasPrice;
 
@@ -183,7 +185,8 @@ export const register = async (name: string, signer: ethers.Signer) => {
   const nftContract = getTribeContract(signer);
   const address = await signer.getAddress();
   try {
-    const gasPrice = await signer.provider?.getGasPrice();
+    const feeData = await signer.provider?.getFeeData();
+    const gasPrice = feeData?.gasPrice;
     const minGasPrice = ethers.parseUnits("10", "gwei");
     const finalGasPrice = gasPrice && gasPrice < minGasPrice ? minGasPrice : gasPrice;
 
@@ -276,7 +279,8 @@ export const stake = async (ids: number[], pid: number, signer: ethers.Signer) =
   const nftContract = getTribeContract(signer);
   const stakingContract = getStakingContract(signer);
   try {
-    const gasPrice = await signer.provider?.getGasPrice();
+    const feeData = await signer.provider?.getFeeData();
+    const gasPrice = feeData?.gasPrice;
     const address = await signer.getAddress();
     const approved = await nftContract.isApprovedForAll(
       address,
@@ -329,7 +333,8 @@ export const stake = async (ids: number[], pid: number, signer: ethers.Signer) =
 export const unstake = async (ids: number[], pid: number, signer: ethers.Signer) => {
   const stakingContract = getStakingContract(signer);
   try {
-    const gasPrice = await signer.provider?.getGasPrice();
+    const feeData = await signer.provider?.getFeeData();
+    const gasPrice = feeData?.gasPrice;
     let gasLimit;
     let tx;
 
