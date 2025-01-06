@@ -7,7 +7,7 @@ import { Popover } from '@headlessui/react';
 
 // The HtmlTooltip component is used to show tooltips with information
 // It's used with the InformationCircleIcon button below
-const HtmlTooltip: React.FC<{ content: React.ReactNode; children: React.ReactNode }> = ({ content, children }) => {
+export const HtmlTooltip: React.FC<{ content: React.ReactNode; children: React.ReactNode }> = ({ content, children }) => {
   return (
     <Popover className="relative">
       <Popover.Button>{children}</Popover.Button>
@@ -57,11 +57,9 @@ const ENSPage: React.FC = () => {
                 onClick={handleInfoClick}
                 className="flex items-center gap-2 mx-auto group"
               >
-                <span className="font-montserrat text-red-600 text-lg">
-                  How it works?
-                </span>
+                "How it works?"
                 <InformationCircleIcon 
-                  className="w-6 h-6 text-red-600 transition-transform duration-300 group-hover:scale-110" 
+                  className="h-6 w-6 text-red-600 hover:text-red-700 transform transition-all duration-300 ease-in-out group-hover:scale-110"
                 />
               </Button>
             </div>
