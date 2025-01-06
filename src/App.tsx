@@ -33,7 +33,7 @@ const siweConfig: SIWEConfig = {
 
 const App: React.FC = () => {
   return (
-    <AuthProvider.Provider value={AuthProvider.value}>
+    <AuthProvider>
       <Suspense
         fallback={
           <div className="">
@@ -41,18 +41,20 @@ const App: React.FC = () => {
           </div>
         }
       >
-        <ConnectKitProvider theme="default" mode="light" options={{
-          language: 'en-US',
-          overlayBlur: 0,
-          accentColor: '#000000',
-          accentColorForeground: '#ffffff',
-        }}>
+        <ConnectKitProvider
+          theme="auto"
+          mode="light"
+          options={{
+            language: 'en-US',
+            overlayBlur: 0
+          }}
+        >
           <SIWEProvider {...siweConfig}>
             <AppRoutes />
           </SIWEProvider>
         </ConnectKitProvider>
       </Suspense>
-    </AuthProvider.Provider>
+    </AuthProvider>
   );
 };
 
