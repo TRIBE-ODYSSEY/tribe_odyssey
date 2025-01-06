@@ -57,10 +57,25 @@ const ENSPage: React.FC = () => {
                 onClick={handleInfoClick}
                 className="flex items-center gap-2 mx-auto group"
               >
-                <span>How it works?</span>
-                <InformationCircleIcon 
-                  className="h-6 w-6 text-red-600 hover:text-red-700 transform transition-all duration-300 ease-in-out group-hover:scale-110"
-                />
+                <div className="flex justify-center">
+                  <HtmlTooltip
+                    content={
+                      <div className="ens-faq">
+                        <h6 className="mb-1">FAQ</h6>
+                        <p>1. Connect your wallet</p>
+                        <p>2. Input your ENS name</p>
+                        <p>3. Push register</p>
+                        <p>4. You will be required to be pay gas fees</p>
+                        <p>5. You may register 1 ENS per wallet address</p>
+                      </div>
+                    }
+                  >
+                    <p className="flex hover:text-red-600">
+                      How it works?
+                      <InformationCircleIcon className="ml-2 h-6 w-6" />
+                    </p>
+                  </HtmlTooltip>
+                </div>
               </Button>
             </div>
           </div>
