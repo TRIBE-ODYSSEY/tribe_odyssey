@@ -183,8 +183,8 @@ const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
 
     axios
       .get("/user/nonce", { params: { address: account } })
-      .then(async () => {
-        const nonce = Response.data.nonce;
+      .then(async (response) => {
+        const nonce = response.data.nonce;
         const signature = await signMessageAsync({
           message: `I am signing my one-time nonce: ${nonce}`,
         });
@@ -218,8 +218,8 @@ const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
   const onFinish = (id: string) => {
     axios
       .get("/user/nonce", { params: { address: account } })
-      .then(async () => {
-        const nonce = Response.data.nonce;
+      .then(async (response) => {
+        const nonce = response.data.nonce;
         const signature = await signMessageAsync({
           message: `I am signing my one-time nonce: ${nonce}`,
         });
@@ -245,8 +245,8 @@ const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
   const onClose = (id: string) => {
     axios
       .get("/user/nonce", { params: { address: account } })
-      .then(async () => {
-        const nonce = Response.data.nonce;
+      .then(async (response) => {
+        const nonce = response.data.nonce;
         const signature = await signMessageAsync({
           message: `I am signing my one-time nonce: ${nonce}`,
         });
