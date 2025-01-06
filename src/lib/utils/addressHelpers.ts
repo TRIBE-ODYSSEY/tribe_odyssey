@@ -112,6 +112,10 @@ export const getAddressFromENS = async (
   }
 };
 
+export const getSubgraphEndpoint = () => {
+  return process.env.VITE_APP_SUBGRAPH_URL;
+};
+
 export default {
   shortenAddress,
   shortenBtcAddress,
@@ -120,5 +124,6 @@ export default {
   areAddressesEqual,
   formatAddress,
   isPossibleAddress,
-  getAddressFromENS
+  getAddressFromENS,
+  getSubgraphEndpoint
 };
