@@ -7,8 +7,6 @@ import { useSignMessage } from "wagmi";
 import axios from "axios";
 import useUserInfo from "@src/lib/hooks/useUserInfo";
 import { shortenAddress } from "@src/lib/utils/formatters";
-import { createAvatar } from '@dicebear/core';
-import { identicon } from '@dicebear/collection';
 import { PencilIcon } from "@heroicons/react/24/outline";
 
 interface ProfilePageProps {}
@@ -124,7 +122,7 @@ const ProfilePage: FC<ProfilePageProps> = () => {
         <div className="text-center flex flex-col gap-[20px] max-w-[800px] mx-auto">
           <div className="mx-auto group relative">
             <img
-              src={imagePreview ?? user?.profile_image ?? createAvatar(identicon, { seed: account }).toDataURL()}
+              src={imagePreview ?? user?.profile_image ?? `https://api.dicebear.com/7.x/identicon/svg?seed=${account}`}
               alt="Profile"
               className="w-[180px] h-[180px] rounded-full"
             />
