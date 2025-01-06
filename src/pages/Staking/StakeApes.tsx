@@ -277,7 +277,7 @@ const StakingPage: FC<ClaimPageProps> = () => {
                               ? "selected"
                               : ""
                           }`}
-                          bxwidth={apebxwidth}
+                          style={{width: apebxwidth}}
                           onClick={() => {
                             toggleApeSelector(id);
                           }}
@@ -429,7 +429,7 @@ const ApeboxWrapper = styled.div`
   margin: 2px;
   box-sizing: border-box;
   position: relative;
-  width: calc(${(props: { bxwidth: number }) => props.bxwidth}px - 6px);
+  width: calc(100px - 6px);
   border: 0px solid transparent;
   img {
     width: 100%;
@@ -492,9 +492,9 @@ const StakeWrapper = styled.div`
     overflow: auto;
     max-height: 400px;
     box-sizing: border-box;
-    // ${ApeboxWrapper} {
-    //   width: ${(props: { bxwidth: number }) => props.bxwidth}px;
-    // }
+    ${ApeboxWrapper} {
+      width: 100px;
+    }
   }
   .gradtext {
     cursor: pointer;

@@ -11,7 +11,7 @@ interface MulticallOptions {
   requireSuccess?: boolean
 }
 
-const multicall = async (abi: InterfaceAbi, calls: Call[], provider?: Provider) => {
+const multicall = async (abi: InterfaceAbi, calls: Call[], provider: Provider = ethers.getDefaultProvider()) => {
   try {
     const multi = getMulticallContract(provider)
     const itf = new ethers.Interface(abi)
@@ -37,7 +37,7 @@ export const multicallv2 = async (
   abi: InterfaceAbi,
   calls: Call[],
   options: MulticallOptions = { requireSuccess: true },
-  provider?: Provider
+  provider: Provider = ethers.getDefaultProvider()
 ): Promise<unknown[]> => {
   const { requireSuccess } = options
   const multi = getMulticallContract(provider)
