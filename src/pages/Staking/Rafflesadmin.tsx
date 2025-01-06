@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import { FC, useState, ChangeEvent } from "react";
 import Button from "@src/components/common/Button";
 import styled from "styled-components";
 import * as moment from "moment";
@@ -11,13 +11,18 @@ import { useNavigate } from "react-router-dom";
 
 interface RaffleAdminPageProps {}
 
+interface RaffleCondition {
+  entry: number;
+  points: number;
+}
+
 const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
   const { account } = useWeb3React();
   const { signMessageAsync } = useSignMessage();
 
   const [trigger, setTrigger] = useState(0);
   const { raffles } = useRaffles(false, trigger);
-  const history = useNavigate();
+  const navigate = useNavigate();
 
   const [data, setData] = useState<{
     id: string;
@@ -40,17 +45,17 @@ const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
     points: [0, 0, 0, 0],
     only_allow_once: false,
   });
-  const [image, setImage] = useState();
+  const [image, setImage] = useState<File>();
   const [imagePreview, setImagePreview] = useState<string | undefined>();
 
-  const onImageChange = (event) => {
+  const onImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       setImage(event.target.files[0]);
       setImagePreview(URL.createObjectURL(event.target.files[0]));
     }
   };
 
-  const onChangeData = (event) => {
+  const onChangeData = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const value = event.target.value;
     const name = event.target.name;
 
@@ -82,7 +87,7 @@ const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
       case "nft_id":
         setData({
           ...data,
-          nft_id: value,
+          nft_id: Number(value),
         });
         break;
       case "only_allow_once":
@@ -103,14 +108,20 @@ const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
 
     if (name.includes("entry")) {
       const temp = { ...data };
-      temp.entry[parseInt(name.match(/\[(\d+)\]/)[1])] = parseInt(value);
-      setData(temp);
+      const match = name.match(/\[(\d+)\]/);
+      if (match) {
+        temp.entry[parseInt(match[1])] = parseInt(value);
+        setData(temp);
+      }
     }
 
     if (name.includes("points")) {
       const temp = { ...data };
-      temp.points[parseInt(name.match(/\[(\d+)\]/)[1])] = parseInt(value);
-      setData(temp);
+      const match = name.match(/\[(\d+)\]/);
+      if (match) {
+        temp.points[parseInt(match[1])] = parseInt(value);
+        setData(temp);
+      }
     }
   };
 
@@ -144,7 +155,7 @@ const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
       toast.error("Please select end date!");
       return;
     }
-    const entryPoints: { entry: number; points: number }[] = [];
+    const entryPoints: RaffleCondition[] = [];
     for (let i = 0; i < data.entry.length; i++) {
       if (data.entry[i] > 0 && data.points[i] > 0) {
         entryPoints.push({
@@ -173,7 +184,7 @@ const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
 
     axios
       .get("/user/nonce", { params: { address: account } })
-      .then(async (response) => {
+      .then(async () => {
         const nonce = response.data.nonce;
         const signature = await signMessageAsync({
           message: `I am signing my one-time nonce: ${nonce}`,
@@ -187,7 +198,7 @@ const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
               : "/staking/create-raffle",
             formData
           )
-          .then((response) => {
+          .then(() => {
             toast.success(
               `Successfully ${data.id === "" ? "created" : "updated"}!!`
             );
@@ -208,7 +219,7 @@ const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
   const onFinish = (id: string) => {
     axios
       .get("/user/nonce", { params: { address: account } })
-      .then(async (response) => {
+      .then(async () => {
         const nonce = response.data.nonce;
         const signature = await signMessageAsync({
           message: `I am signing my one-time nonce: ${nonce}`,
@@ -220,7 +231,7 @@ const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
             signature,
             id: id,
           })
-          .then((response) => {
+          .then(() => {
             toast.success("Successfully finished!!");
           })
           .catch((error) => {
@@ -235,7 +246,7 @@ const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
   const onClose = (id: string) => {
     axios
       .get("/user/nonce", { params: { address: account } })
-      .then(async (response) => {
+      .then(async () => {
         const nonce = response.data.nonce;
         const signature = await signMessageAsync({
           message: `I am signing my one-time nonce: ${nonce}`,
@@ -247,7 +258,7 @@ const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
             signature,
             id: id,
           })
-          .then((response) => {
+          .then(() => {
             toast.success("Successfully finished!!");
           })
           .catch((error) => {
@@ -272,8 +283,8 @@ const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
       prize_name: raffle.prizes[0].name,
       nft_id: +raffle.nft_id,
       raffle_at: moment.utc(raffle.raffle_at).valueOf() / 1000,
-      entry: raffle.conditions.map((c) => c.entry),
-      points: raffle.conditions.map((c) => c.points),
+      entry: raffle.conditions.map((c: RaffleCondition) => c.entry),
+      points: raffle.conditions.map((c: RaffleCondition) => c.points),
       only_allow_once: raffle.only_allow_once ?? false,
     });
     setImagePreview(raffle.prize_image);
@@ -523,7 +534,7 @@ const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
                       </div>
                       <Button
                         className="mx-auto"
-                        onClick={() => history.push(`/raffle/${raffle.id}`)}
+                        onClick={() => navigate(`/raffle/${raffle.id}`)}
                       >
                         Enter Now
                       </Button>
