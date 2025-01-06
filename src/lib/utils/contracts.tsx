@@ -1,7 +1,7 @@
 import { createPublicClient, http, parseGwei, keccak256, encodeAbiParameters, type PublicClient, type WalletClient } from 'viem'
-import { getContract } from '@wagmi/core'
+import { getContract } from 'viem'
 import { mainnet } from 'wagmi/chains'
-import { type WalletClient as EthersWalletClient } from 'ethers'
+import { type Wallet } from 'ethers'
 
 // Import ABIs
 import MulticallABI from '../config/abi/Multicall.json'
@@ -34,7 +34,7 @@ export const getContractInstance = (
   client: PublicClient | WalletClient
 ) => {
   return getContract({
-    address,
+    address: address as `0x${string}`,
     abi,
     publicClient: client as PublicClient,
     walletClient: client as WalletClient
@@ -70,13 +70,13 @@ export const getEnsRegistrarContract = (client: PublicClient | WalletClient) => 
 interface StakeParams {
   ids: number[];
   pid: number;
-  signer: EthersWalletClient;
+  signer: Wallet;
 }
 
 // Update register function
 export const register = async (
   name: string, 
-  signer: EthersWalletClient
+  signer: Wallet
 ) => {
   const ensContract = getEnsRegistrarContract(signer);
   const nftContract = getTribeContract(signer);
