@@ -14,51 +14,54 @@ import {
   getTribeAddress,
 } from "@src/lib/utils/addressHelpers";
 import getNodeUrl from "@src/lib/utils/getRcpUrl";
-import whitelist from "@src/lib/config/whitelist";
 import { getMerkleProof } from "@src/lib/utils/merkle";
 import { isAddress } from ".";
 import axios from "axios";
 
-export const simpleRpcProvider = new ethers.providers.JsonRpcProvider(
+export const simpleRpcProvider = new ethers.JsonRpcProvider(
   getNodeUrl()
 );
 
-export const getContract = (address, abi, signer) => {
+export const getContract = (
+  address: string, 
+  abi: ethers.ContractInterface, 
+  signer: ethers.Signer | null
+): ethers.Contract => {
   const signerOrProvider = signer ? signer : simpleRpcProvider;
   return new ethers.Contract(address, abi, signerOrProvider);
 };
 
-export const getMulticallContract = (provider) => {
+export const getMulticallContract = (provider: ethers.Provider): ethers.Contract => {
   return getContract(getMulticallAddress(), MulticallABI, provider);
 };
 
 // Get NFT Contract
-export const getTribeContract = (provider) => {
+export const getTribeContract = (provider: ethers.Provider): ethers.Contract => {
   return getContract(getTribeAddress(), TribeABI, provider);
 };
 
-export const getApeContract = (provider) => {
+export const getApeContract = (provider: ethers.Provider): ethers.Contract => {
   return getContract(getApeAddress(), ApeABI, provider);
 };
 
-export const getTokenContract = (currency, provider) => {
+export const getTokenContract = (currency: string, provider: ethers.Provider): ethers.Contract => {
   return getContract(currency, ERC20ABI, provider);
 };
 
-export const getStakingContract = (provider) => {
+export const getStakingContract = (provider: ethers.Provider): ethers.Contract => {
   return getContract(getStakingAddress(), StakingABI, provider);
 };
 
-export const getEnsRegistrarContract = (provider) => {
+export const getEnsRegistrarContract = (provider: ethers.Provider): ethers.Contract => {
   return getContract(getEnsRegistrarAddress(), EnsRegistrarABI, provider);
 };
 
-export const mint = async (numToMint, signer) => {
+export const mint = async (numToMint: number, signer: ethers.Signer) => {
   const nftContract = getTribeContract(signer);
 
   try {
     const account = await signer.getAddress();
-    const proof = getMerkleProof(whitelist, account);
+    const proof = getMerkleProof(account);
 
     const price = await nftContract.costForMint(numToMint, account, proof);
 
@@ -67,19 +70,18 @@ export const mint = async (numToMint, signer) => {
       throw new Error("Insufficient funds!");
     }
 
-    let gasPrice = await signer.getGasPrice();
-    if (gasPrice.lt(utils.parseUnits("20", "gwei"))) {
-      gasPrice = utils.parseUnits("20", "gwei");
-    }
+    const gasPrice = await signer.getGasPrice();
+    const minGasPrice = utils.parseUnits("20", "gwei");
+    const finalGasPrice = gasPrice.lt(minGasPrice) ? minGasPrice : gasPrice;
 
-    const gasLimit = await nftContract.estimateGas.mint(numToMint, proof, {
+    const gasLimit = await nftContract.mint.estimateGas(numToMint, proof, {
       value: price,
     });
 
     const tx = await nftContract.mint(numToMint, proof, {
       value: price,
       gasLimit: gasLimit.mul(140).div(100),
-      gasPrice: gasPrice.mul(120).div(100),
+      gasPrice: finalGasPrice.mul(120).div(100),
     });
     const receipt = await tx.wait(1);
 
@@ -87,8 +89,8 @@ export const mint = async (numToMint, signer) => {
       transactionHash: receipt.transactionHash,
       error: null,
     };
-  } catch (e: any) {
-    const message = e?.message;
+  } catch (error: Error) {
+    const message = error.message;
     throw new Error(
       message
         ? message.length > 100
@@ -99,7 +101,7 @@ export const mint = async (numToMint, signer) => {
   }
 };
 
-export const checkClaimed = async (id) => {
+export const checkClaimed = async (id: number) => {
   const nftContract = getTribeContract(simpleRpcProvider);
 
   try {
@@ -109,7 +111,7 @@ export const checkClaimed = async (id) => {
       return true;
     }
     return false;
-  } catch (e: any) {
+  } catch (error: Error) {
     return false;
   }
 };
@@ -123,18 +125,17 @@ export const checkExist = async (ids: number[]) => {
     const exists = await nftContract.isExists(ids.map((id) => id - 10000));
 
     return ids.filter((_, index) => exists[index]);
-  } catch (e: any) {
+  } catch (error: Error) {
     return [];
   }
 };
 
-export const claim = async (ids, signer) => {
+export const claim = async (ids: number[], signer: ethers.Signer) => {
   const nftContract = getTribeContract(signer);
   try {
-    let gasPrice = await signer.getGasPrice();
-    if (gasPrice.lt(utils.parseUnits("20", "gwei"))) {
-      gasPrice = utils.parseUnits("20", "gwei");
-    }
+    const gasPrice = await signer.getGasPrice();
+    const minGasPrice = utils.parseUnits("20", "gwei");
+    const finalGasPrice = gasPrice.lt(minGasPrice) ? minGasPrice : gasPrice;
 
     const exists = await checkExist(ids);
     if (exists.length) {
@@ -145,16 +146,16 @@ export const claim = async (ids, signer) => {
     let tx;
 
     if (ids.length === 1) {
-      gasLimit = await nftContract.estimateGas.claim(ids[0]);
+      gasLimit = await nftContract.claim.estimateGas(ids[0]);
       tx = await nftContract.claim(ids[0], {
         gasLimit: gasLimit.mul(140).div(100),
-        gasPrice: gasPrice.mul(120).div(100),
+        gasPrice: finalGasPrice.mul(120).div(100),
       });
     } else {
-      gasLimit = await nftContract.estimateGas.claimBatch(ids);
+      gasLimit = await nftContract.claimBatch.estimateGas(ids);
       tx = await nftContract.claimBatch(ids, {
         gasLimit: gasLimit.mul(140).div(100),
-        gasPrice: gasPrice.mul(120).div(100),
+        gasPrice: finalGasPrice.mul(120).div(100),
       });
     }
 
@@ -164,9 +165,9 @@ export const claim = async (ids, signer) => {
       transactionHash: receipt.transactionHash,
       error: null,
     };
-  } catch (e: any) {
-    console.log(e);
-    const message = e?.message;
+  } catch (error: Error) {
+    console.log(error);
+    const message = error.message;
     throw new Error(
       message
         ? message.length > 100
@@ -177,15 +178,14 @@ export const claim = async (ids, signer) => {
   }
 };
 
-export const register = async (name: string, signer) => {
+export const register = async (name: string, signer: ethers.Signer) => {
   const ensContract = getEnsRegistrarContract(signer);
   const nftContract = getTribeContract(signer);
   const address = await signer.getAddress();
   try {
-    let gasPrice = await signer.getGasPrice();
-    if (gasPrice.lt(utils.parseUnits("10", "gwei"))) {
-      gasPrice = utils.parseUnits("10", "gwei");
-    }
+    const gasPrice = await signer.getGasPrice();
+    const minGasPrice = utils.parseUnits("10", "gwei");
+    const finalGasPrice = gasPrice.lt(minGasPrice) ? minGasPrice : gasPrice;
 
     const label = utils.keccak256(utils.toUtf8Bytes("tribeodyssey"));
     const resolver = "0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41";
@@ -208,14 +208,14 @@ export const register = async (name: string, signer) => {
       throw new Error(`You can register 1 ENS per wallet address!`);
     }
 
-    let gasLimit = await ensContract.estimateGas.register(
+    const gasLimit = await ensContract.register.estimateGas(
       label,
       name,
       resolver
     );
-    let tx = await ensContract.register(label, name, resolver, {
+    const tx = await ensContract.register(label, name, resolver, {
       gasLimit: gasLimit.mul(140).div(100),
-      gasPrice: gasPrice.mul(120).div(100),
+      gasPrice: finalGasPrice.mul(120).div(100),
     });
 
     const receipt = await tx.wait(1);
@@ -224,9 +224,9 @@ export const register = async (name: string, signer) => {
       transactionHash: receipt.transactionHash,
       error: null,
     };
-  } catch (e: any) {
-    console.log(e);
-    const message = e?.message;
+  } catch (error: Error) {
+    console.log(error);
+    const message = error.message;
     throw new Error(
       message
         ? message.length > 100
@@ -267,23 +267,23 @@ export const lookup = async (account: string) => {
     });
     const subdomains = response?.data?.data?.domains;
     return subdomains && subdomains.length ? subdomains[0].name : null;
-  } catch (e) {
+  } catch {
     return null;
   }
 };
 
-export const stake = async (ids, pid, signer) => {
+export const stake = async (ids: number[], pid: number, signer: ethers.Signer) => {
   const nftContract = getTribeContract(signer);
   const stakingContract = getStakingContract(signer);
   try {
-    let gasPrice = await signer.getGasPrice();
+    const gasPrice = await signer.getGasPrice();
     const address = await signer.getAddress();
     const approved = await nftContract.isApprovedForAll(
       address,
       stakingContract.address
     );
     if (!approved) {
-      let approveTx = await nftContract.setApprovalForAll(
+      const approveTx = await nftContract.setApprovalForAll(
         stakingContract.address,
         true
       );
@@ -294,13 +294,13 @@ export const stake = async (ids, pid, signer) => {
     let tx;
 
     if (ids.length === 1) {
-      gasLimit = await stakingContract.estimateGas.joinOne(pid, ids[0]);
+      gasLimit = await stakingContract.joinOne.estimateGas(pid, ids[0]);
       tx = await stakingContract.joinOne(pid, ids[0], {
         gasLimit: gasLimit.mul(110).div(100),
         gasPrice,
       });
     } else {
-      gasLimit = await stakingContract.estimateGas.joinMany(pid, ids);
+      gasLimit = await stakingContract.joinMany.estimateGas(pid, ids);
       tx = await stakingContract.joinMany(pid, ids, {
         gasLimit: gasLimit.mul(110).div(100),
         gasPrice,
@@ -313,9 +313,9 @@ export const stake = async (ids, pid, signer) => {
       transactionHash: receipt.transactionHash,
       error: null,
     };
-  } catch (e: any) {
-    console.log(e);
-    const message = e?.message;
+  } catch (error: Error) {
+    console.log(error);
+    const message = error.message;
     throw new Error(
       message
         ? message.length > 100
@@ -326,21 +326,21 @@ export const stake = async (ids, pid, signer) => {
   }
 };
 
-export const unstake = async (ids, pid, signer) => {
+export const unstake = async (ids: number[], pid: number, signer: ethers.Signer) => {
   const stakingContract = getStakingContract(signer);
   try {
-    let gasPrice = await signer.getGasPrice();
+    const gasPrice = await signer.getGasPrice();
     let gasLimit;
     let tx;
 
     if (ids.length === 1) {
-      gasLimit = await stakingContract.estimateGas.leaveOne(pid, ids[0]);
+      gasLimit = await stakingContract.leaveOne.estimateGas(pid, ids[0]);
       tx = await stakingContract.leaveOne(pid, ids[0], {
         gasLimit: gasLimit.mul(110).div(100),
         gasPrice,
       });
     } else {
-      gasLimit = await stakingContract.estimateGas.leaveMany(pid, ids);
+      gasLimit = await stakingContract.leaveMany.estimateGas(pid, ids);
       tx = await stakingContract.leaveMany(pid, ids, {
         gasLimit: gasLimit.mul(110).div(100),
         gasPrice,
@@ -353,9 +353,9 @@ export const unstake = async (ids, pid, signer) => {
       transactionHash: receipt.transactionHash,
       error: null,
     };
-  } catch (e: any) {
-    console.log(e);
-    const message = e?.message;
+  } catch (error: Error) {
+    console.log(error);
+    const message = error.message;
     throw new Error(
       message
         ? message.length > 100
