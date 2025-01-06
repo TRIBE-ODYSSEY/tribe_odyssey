@@ -60,7 +60,8 @@ const RaffleCard = ({
 );
 
 const RafflesOpened = () => {
-  const { raffles = [], isLoading } = useRaffles(false, 0);
+  const { raffles = [] } = useRaffles(false, 0);
+  const isLoading = false;
 
   return (
     <PageLayout>
