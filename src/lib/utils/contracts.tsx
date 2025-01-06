@@ -1,6 +1,7 @@
 import { createPublicClient, http, type PublicClient, type WalletClient } from 'viem'
-import { getContract } from 'wagmi/actions'
+import { getContractInstance } from 'wagmi/actions'
 import { mainnet } from 'wagmi/chains'
+import { ethers } from 'ethers'
 
 // Import ABIs
 import MulticallABI from "../config/abi/Multicall.json";
@@ -29,49 +30,64 @@ export const publicClient = createPublicClient({
   transport: http(getNodeUrl())
 })
 
-// Update contract getter to use Wagmi v2
-export const getContract = (address: string, abi: any[], client: PublicClient | WalletClient) => {
+// Add these type definitions
+type Provider = PublicClient | WalletClient
+interface TransactionResponse {
+  transactionHash: string;
+  error: string | null;
+}
+
+// Fix getContract function
+export const getContractInstance = (
+  address: string, 
+  abi: any[], 
+  client: Provider
+) => {
   return getContract({
-    address,
+    address: address as `0x${string}`,
     abi,
     publicClient: client as PublicClient,
     walletClient: client as WalletClient
   })
 }
 
-export const getMulticallContract = (provider) => {
-  return getContract(getMulticallAddress(), MulticallABI, provider);
+// Update contract getters with proper typing
+export const getMulticallContract = (provider: Provider) => {
+  return getContractInstance(getMulticallAddress(), MulticallABI, provider);
 };
 
-// Get NFT Contract
-export const getTribeContract = (provider) => {
-  return getContract(getTribeAddress(), TribeABI, provider);
+export const getTribeContract = (provider: Provider) => {
+  return getContractInstance(getTribeAddress(), TribeABI, provider);
 };
 
 export const getApeContract = (provider) => {
-  return getContract(getApeAddress(), ApeABI, provider);
+  return getContractInstance(getApeAddress(), ApeABI, provider);
 };
 
 export const getTokenContract = (currency, provider) => {
-  return getContract(currency, ERC20ABI, provider);
+  return getContractInstance(currency, ERC20ABI, provider);
 };
 
 export const getStakingContract = (provider) => {
-  return getContract(getStakingAddress(), StakingABI, provider);
+  return getContractInstance(getStakingAddress(), StakingABI, provider);
 };
 
 export const getEnsRegistrarContract = (provider) => {
-  return getContract(getEnsRegistrarAddress(), EnsRegistrarABI, provider);
+  return getContractInstance(getEnsRegistrarAddress(), EnsRegistrarABI, provider);
 };
 
-export const mint = async (numToMint, signer) => {
+// Update mint function with proper typing
+export const mint = async (
+  numToMint: number, 
+  signer: ethers.utils
+): Promise<TransactionResponse> => {
   const nftContract = getTribeContract(signer);
 
   try {
     const account = await signer.getAddress();
     const proof = getMerkleProof(whitelist, account);
 
-    const price = await nftContract.costForMint(numToMint, account, proof);
+    const price = await nftContract.costForMint(numToMint, proof);
 
     const balance = await signer.getBalance();
     if (balance.lte(price)) {
@@ -79,8 +95,8 @@ export const mint = async (numToMint, signer) => {
     }
 
     let gasPrice = await signer.getGasPrice();
-    if (gasPrice.lt(utils.parseUnits("20", "gwei"))) {
-      gasPrice = utils.parseUnits("20", "gwei");
+    if (gasPrice.lt(ethers.utils.parseUnits("20", "gwei"))) {
+      gasPrice = ethers.utils.parseUnits("20", "gwei");
     }
 
     const gasLimit = await nftContract.estimateGas.mint(numToMint, proof, {
