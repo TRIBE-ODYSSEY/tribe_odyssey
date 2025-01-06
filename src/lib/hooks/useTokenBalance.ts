@@ -4,7 +4,7 @@ import { useTokenContract } from "./useContract";
 import { useWeb3React } from "./useWeb3React";
 const useTokenBalance = (token: string) => {
   const { account, getSigner } = useWeb3React();
-  const tokenContract = useTokenContract(token);
+  const tokenContract = useTokenContract(token) as any;
 
   const [balance, setBalance] = useState<bigint>(BigInt(0));
 
