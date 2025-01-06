@@ -8,32 +8,36 @@ import useAuth from "@src/lib/hooks/useAuth";
 import useUserStaked from "@src/lib/hooks/useUserStaked";
 import { connectorLocalStorageKey } from "@src/lib/hooks";
 
-interface ProfileDropdownProps {}
+interface ProfileDropdownProps {
+  trigger: number;
+}
 
 const ProfileDropdown: FC<ProfileDropdownProps> = () => {
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const { logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { userStaked } = useUserStaked();
+  const { userStaked } = useUserStaked(0);
+
+  if (!isConnected) return null;
 
   return (
     <Menu>
       {({ open }) => (
-        <div className="relative menubtnmobile">
+        <div className="relative">
           <Menu.Button
-            className="mx-[20px] flex text-white border border-theme-red px-[20px] py-[12px] rounded-lg btnLogout"
+            className="flex items-center gap-2 text-white bg-theme-dark hover:bg-theme-dark/80 px-4 py-2 rounded-lg transition-colors"
           >
             <p>{shortenAddress(address || "")}</p>
             {open ? (
-              <RiArrowDropUpLine className="cursor-pointer" />
+              <RiArrowDropUpLine className="text-xl" />
             ) : (
-              <RiArrowDropDownLine className="cursor-pointer" />
+              <RiArrowDropDownLine className="text-xl" />
             )}
           </Menu.Button>
           <Menu.Items
-            className="absolute top-0 left-0 translate-x-[20px] w-[180px] translate-y-[65px] flex flex-col bg-theme-dark border border-theme-grey rounded gap-2"
+            className="absolute right-0 mt-2 w-[200px] rounded-lg bg-theme-dark border border-theme-grey shadow-lg overflow-hidden"
           >
             <Menu.Item>
               <>

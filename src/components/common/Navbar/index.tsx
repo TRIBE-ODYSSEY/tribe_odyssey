@@ -7,6 +7,7 @@ import { menuConfig } from '@src/lib/config/menuConfig';
 import { Menu } from '@headlessui/react';
 import { Link } from 'react-router-dom';
 import { RiArrowDropDownLine, RiArrowDropUpLine } from 'react-icons/ri';
+import { useAccount } from 'wagmi';
 
 const MenuDropdown: React.FC<{ title: string; items: Array<{ name: string; path: string }> }> = ({ 
   title, 
@@ -89,7 +90,20 @@ const NavMenu: React.FC<{ isMobile?: boolean; onClose?: () => void }> = ({ isMob
       {Object.entries(menuConfig).map(([title, items]) => (
         <MenuDropdown key={title} title={title} items={items} />
       ))}
-      {!isMobile && <ProfileDropdown />}
+    </div>
+  );
+};
+
+const WalletSection: React.FC = () => {
+  const { isConnected } = useAccount();
+  
+  return (
+    <div className="flex items-center gap-2">
+      {isConnected ? (
+        <ProfileDropdown trigger={0} />
+      ) : (
+        <ConnectKitButton />
+      )}
     </div>
   );
 };
@@ -99,6 +113,7 @@ const MobileNav: React.FC<{
   onClose: () => void;
 }> = ({ isOpen, onClose }) => {
   useLazyLoading();
+  
   if (!isOpen) return null;
 
   return (
@@ -114,8 +129,7 @@ const MobileNav: React.FC<{
 
         <div className="flex-1 flex flex-col items-center gap-6 max-w-sm mx-auto w-full">
           <NavMenu isMobile onClose={onClose} />
-          <ProfileDropdown />
-          <ConnectKitButton />
+          <WalletSection />
           <SocialIcons className="flex gap-6" />
         </div>
       </div>
@@ -152,7 +166,7 @@ const Navbar: React.FC = () => {
           <div className="hidden md:flex items-center gap-4 sm:gap-6">
             <NavMenu />
             <SocialIcons className="flex gap-3 sm:gap-4" />
-            <ConnectKitButton />
+            <WalletSection />
           </div>
 
           <button
