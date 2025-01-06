@@ -11,7 +11,7 @@ import { ClockLoader } from "react-spinners";
 import axios from "axios";
 import { getStakingAddress } from "@src/lib/utils/addressHelpers";
 import { useAccount, useSignMessage } from "wagmi";
-import { useModal as useConnectModal } from 'connectkit';
+import { useModal } from 'connectkit';
 import debounce from 'lodash/debounce';
 
 const customStyles = {
@@ -25,8 +25,6 @@ const customStyles = {
     maxWidth: "500px",
   },
 };
-
-interface ClaimPageProps {}
 
 const useWindowSize = (delay = 250) => {
   const [width, setWidth] = useState(window.innerWidth);
@@ -52,7 +50,7 @@ const useWindowSize = (delay = 250) => {
 const StakingPage: FC = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const { address: account, isConnected } = useAccount();
-  const { openConnectModal } = useConnectModal();
+  const { setOpen: openConnectModal } = useModal();
   const { signMessageAsync } = useSignMessage();
   const { tribes: ownTribes, stakedTribes } = useOwnTribes(refreshTrigger);
   const stakingAddress = getStakingAddress();
@@ -345,7 +343,7 @@ const StakingPage: FC = () => {
                   <p className="mb-[40px]">
                     To stake you need to connect your wallet.
                   </p>
-                  <Button onClick={openConnectModal} className="">
+                  <Button onClick={() => openConnectModal(true)} className="">
                     Connect Wallet
                   </Button>
                 </div>
