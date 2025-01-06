@@ -1,5 +1,5 @@
 import { createPublicClient, http, type PublicClient, type WalletClient } from 'viem'
-import { getContract } from 'wagmi/actions'
+import { getContract } from 'wagmi/core'
 import { mainnet } from 'wagmi/chains'
 
 // Import ABIs
@@ -16,10 +16,8 @@ import {
   getMulticallAddress,
   getStakingAddress,
   getTribeAddress,
-  isZeroAddress,
 } from "./addressHelpers"
 import getNodeUrl from "./getRcpUrl"
-import { getMerkleProof } from "./merkle"
 import axios from "axios"
 
 // Create public client for read operations
@@ -73,11 +71,11 @@ export const register = async (name: string, signer) => {
   const address = await signer.getAddress();
   try {
     let gasPrice = await signer.getGasPrice();
-    if (gasPrice.lt(utils.parseUnits("10", "gwei"))) {
-      gasPrice = utils.parseUnits("10", "gwei");
+    if (gasPrice < parseGwei("10")) {
+      gasPrice = parseGwei("10");
     }
 
-    const label = utils.keccak256(utils.toUtf8Bytes("tribeodyssey"));
+    const label = keccak256(encodeToBytes("tribeodyssey"));
     const resolver = "0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41";
 
     const [exists, balance, allowed] = await Promise.all([
