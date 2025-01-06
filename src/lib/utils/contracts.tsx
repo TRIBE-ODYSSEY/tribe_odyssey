@@ -246,22 +246,22 @@ export const unstake = async ({
   pid,
   signer
 }: StakeParams): Promise<{ transactionHash: string; error: null | string }> => {
-  const stakingContract = getStakingContract(signer);
+  const stakingContract = getStakingContract(client);
   try {
-    const gasPrice = await signer.getGasPrice();
+    const gasPrice = await publicClient.getGasPrice();
     let gasLimit;
     let tx;
 
     if (ids.length === 1) {
-      gasLimit = await stakingContract.estimateGas.leaveOne(pid, ids[0]);
-      tx = await stakingContract.leaveOne(pid, ids[0], {
-        gasLimit: BigInt(Number(gasLimit) * 110n / 100n),
+      gasLimit = await stakingContract.estimateGas.leaveOne([pid, ids[0]]);
+      tx = await stakingContract.write.leaveOne([pid, ids[0]], {
+        gasLimit: gasLimit * 110n / 100n,
         gasPrice,
       });
     } else {
-      gasLimit = await stakingContract.estimateGas.leaveMany(pid, ids);
-      tx = await stakingContract.leaveMany(pid, ids, {
-        gasLimit: BigInt(Number(gasLimit) * 110n / 100n),
+      gasLimit = await stakingContract.estimateGas.leaveMany([pid, ids]);
+      tx = await stakingContract.write.leaveMany([pid, ids], {
+        gasLimit: gasLimit * 110n / 100n,
         gasPrice,
       });
     }

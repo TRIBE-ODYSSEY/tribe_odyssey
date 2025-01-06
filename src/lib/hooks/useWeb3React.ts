@@ -69,3 +69,4 @@ export function useWalletConnect() {
         openChainModal: () => setOpen(true)
     };
 }
+export default useWeb3React;

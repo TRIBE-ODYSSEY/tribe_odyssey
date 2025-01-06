@@ -2,97 +2,95 @@ import useLazyLoading from '@src/lib/hooks/useLazyLoading';
 import React, { useEffect, useState } from 'react';
 import { FaBars, FaInstagram, FaTelegram, FaTimes, FaTwitter } from 'react-icons/fa';
 import { ConnectKitButton } from 'connectkit';
-import Menu from './menu';
+import ProfileDropdown from '@src/components/common/ProfileDropdwon';
+import { menuConfig } from '@src/lib/config/menuConfig';
+import { Menu } from '@headlessui/react';
+import { Link } from 'react-router-dom';
+import { RiArrowDropDownLine, RiArrowDropUpLine } from 'react-icons/ri';
 
-interface MenuItem {
-  label: string;
-  href?: string;
-  onClick?: () => void;
-}
+const MenuDropdown: React.FC<{ title: string; items: Array<{ name: string; path: string }> }> = ({ 
+  title, 
+  items 
+}) => {
+  return (
+    <Menu as="div" className="relative">
+      {({ open }) => (
+        <>
+          <Menu.Button className="flex items-center text-white/80 hover:text-white px-3 py-2">
+            {title}
+            {open ? <RiArrowDropUpLine /> : <RiArrowDropDownLine />}
+          </Menu.Button>
+          <Menu.Items className="absolute left-0 mt-2 w-48 rounded-md bg-theme-dark border border-theme-grey shadow-lg">
+            <div className="py-1">
+              {items.map((item) => (
+                <Menu.Item key={item.name}>
+                  {({ active }) => (
+                    item.path.startsWith('http') ? (
+                      <a
+                        href={item.path}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`${
+                          active ? 'bg-theme-grey/10 text-white' : 'text-white/70'
+                        } block px-4 py-2 text-sm`}
+                      >
+                        {item.name}
+                      </a>
+                    ) : (
+                      <Link
+                        to={item.path}
+                        className={`${
+                          active ? 'bg-theme-grey/10 text-white' : 'text-white/70'
+                        } block px-4 py-2 text-sm`}
+                      >
+                        {item.name}
+                      </Link>
+                    )
+                  )}
+                </Menu.Item>
+              ))}
+            </div>
+          </Menu.Items>
+        </>
+      )}
+    </Menu>
+  );
+};
 
-interface NavigationItem {
-  label: string;
-  items: MenuItem[];
-}
-
-const navigationData = {
-  menus: [
-    { label: 'Element', items: [{ label: 'Drops', href: '/element19/drops' }, { label: 'Collection', href: '/element19/collection' }] },
-    { label: 'Assets', items: [{ label: '4kTribe ', href: '/assets/4kTribe' }, { label: 'Molten', href: '/assets/molten' }, { label: 'Wallpapers', href: '/assets/wallpapers' }, { label: 'ENS', href: '/assets/ens' }] },
-    { label: 'Marketplace', items: [{ label: 'Marketplace 1', href: '#' }] },
-    { label: 'Staking', items: [{ label: 'Raffles', href: '/staking/raffles' }, { label: 'Stake Apes', href: '/staking/stake-apes' }, { label: 'Winners', href: '/staking/winners' }] },
-    { label: 'The Council', items: [{ label: 'Council', href: '/council' }] },
-  ] as NavigationItem[],
-  profile: {
-    label: 'Profile',
-    items: [
-      { label: 'My NFTs', href: '/my-nfts' },
-      { label: 'Settings', href: '/settings' },
-      { label: 'Disconnect', href: '#', onClick: () => {
-        window.dispatchEvent(new Event('wallet-disconnect'));
-        return true;
-      }}
-    ] as MenuItem[]
-  },
-  socials: [
+const SocialIcons: React.FC<{ className?: string }> = ({ className }) => {
+  const socials = [
     { icon: <FaTwitter />, href: 'https://twitter.com/tribeodyssey' },
     { icon: <FaTelegram />, href: '#' },
     { icon: <FaInstagram />, href: 'https://www.instagram.com/tribe.odyssey/' },
-  ]
-};
-
-const SocialIcons: React.FC<{ className?: string }> = ({ className }) => (
-  <div className={className}>
-    {navigationData.socials.map((social, idx) => (
-      <a
-        key={idx}
-        href={social.href}
-        className="text-white/70 hover:text-white transition-colors text-lg sm:text-xl"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {social.icon}
-      </a>
-    ))}
-  </div>
-);
-
-const NavMenu: React.FC<{ isMobile?: boolean; onClose?: () => void }> = ({ isMobile, onClose }) => {
-  const [activeMenu, setActiveMenu] = useState<string | null>(null);
-
-  const handleMenuClick = (menuLabel: string) => {
-    setActiveMenu(activeMenu === menuLabel ? null : menuLabel);
-  };
-
-  const commonButtonClasses = `
-    text-white/80 hover:text-white transition-colors whitespace-nowrap w-full
-    ${isMobile ? 'text-lg py-3' : 'text-sm px-3 py-2'}
-  `;
+  ];
 
   return (
-    <ul className={`flex ${isMobile ? 'flex-col w-full gap-4' : 'items-center gap-2'}`}>
-      {navigationData.menus.map((menu) => (
-        <li key={menu.label} className={`relative group ${isMobile ? 'w-full' : ''}`}>
-          <button 
-            className={`${commonButtonClasses} ${activeMenu === menu.label ? 'text-white' : ''}`}
-            onClick={() => handleMenuClick(menu.label)}
-            aria-expanded={activeMenu === menu.label}
-          >
-            {menu.label}
-          </button>
-          <Menu 
-            items={menu.items} 
-            isMobile={isMobile}
-            isOpen={activeMenu === menu.label}
-            onClose={() => {
-              setActiveMenu(null);
-              onClose?.();
-            }}
-            className={isMobile ? 'w-full' : ''}
-          />
-        </li>
+    <div className={className}>
+      {socials.map((social, idx) => (
+        <a
+          key={idx}
+          href={social.href}
+          className="text-white/70 hover:text-white transition-colors text-lg sm:text-xl"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {social.icon}
+        </a>
       ))}
-    </ul>
+    </div>
+  );
+};
+
+const NavMenu: React.FC<{ isMobile?: boolean; onClose?: () => void }> = ({ isMobile }) => {
+  const commonClasses = `flex ${isMobile ? 'flex-col w-full gap-4' : 'items-center gap-2'}`;
+
+  return (
+    <div className={commonClasses}>
+      {Object.entries(menuConfig).map(([title, items]) => (
+        <MenuDropdown key={title} title={title} items={items} />
+      ))}
+      {!isMobile && <ProfileDropdown />}
+    </div>
   );
 };
 
@@ -116,6 +114,7 @@ const MobileNav: React.FC<{
 
         <div className="flex-1 flex flex-col items-center gap-6 max-w-sm mx-auto w-full">
           <NavMenu isMobile onClose={onClose} />
+          <ProfileDropdown />
           <ConnectKitButton />
           <SocialIcons className="flex gap-6" />
         </div>

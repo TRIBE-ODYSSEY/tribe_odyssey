@@ -1,37 +1,10 @@
 import { Discord } from '@src/assets/icons/Discord';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { menuConfig } from '@src/lib/config/menuConfig';
 
 export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
-
-  const footerLinks = {
-    Element19: [
-      { name: 'Drops', path: '/drops' },
-      { name: 'Collection', path: '/collection' },
-    ],
-    Assets: [
-      { name: '4K Tribe', path: '/4ktribe' },
-      { name: 'Wallpapers', path: '/wallpapers' },
-      { name: 'ENS', path: '/ens' },
-      { name: 'Tribal Beats', path: '/tribalbeats' },
-      { name: 'Tribe 19 Checker', path: '/checker' },
-      { name: 'Molten', path: '/molten' },
-    ],
-    Marketplace: [
-      { name: 'Marketplace', path: '/marketplace' },
-      { name: 'Opensea', path: 'https://opensea.io/tribe' },
-      { name: 'Looksrare', path: 'https://looksrare.org/tribe' },
-      { name: 'X2Y2', path: 'https://x2y2.io/tribe' },
-    ],
-    Staking: [
-      { name: 'Stake Apes', path: '/staking' },
-      { name: 'Raffles', path: '/raffles' },
-      { name: 'Winners', path: '/winners' },
-    ],
-    'The Council': [{ name: 'Council', path: '/council' }],
-  };
-
   const socialLinks = [{ Icon: Discord, href: '#discord' }];
 
   return (
@@ -50,7 +23,7 @@ export const Footer: React.FC = () => {
           {/* Links Section */}
           <div className="flex-grow">
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 sm:gap-8">
-              {Object.entries(footerLinks).map(([title, links]) => (
+              {Object.entries(menuConfig).map(([title, links]) => (
                 <div key={title}>
                   <h6 className="mb-3 text-base font-medium text-white/90">
                     {title}
