@@ -1,5 +1,7 @@
 /* eslint-disable */
 import { FC, useState, useEffect, useRef, useMemo, useContext, useCallback } from "react";
+import PageLayout from '@src/components/common/layout/PageLayout';
+import PageTitle from '@src/components/common/PageTitle';
 import Button from "@src/components/common/Button";
 import { useWalletConnect, useWeb3React } from "@src/lib/hooks/useWeb3React";
 import styled from "styled-components";
