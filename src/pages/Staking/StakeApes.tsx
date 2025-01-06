@@ -1,9 +1,8 @@
 /* eslint-disable */
-import { FC, useState, useEffect, useRef, useMemo, useContext, useCallback } from "react";
+import { FC, useState, useEffect, useRef, useMemo, useCallback } from "react";
 import PageLayout from '@src/components/common/layout/PageLayout';
 import PageTitle from '@src/components/common/PageTitle';
 import Button from "@src/components/common/Button";
-import { useWalletConnect, useWeb3React } from "@src/lib/hooks/useWeb3React";
 import styled from "styled-components";
 import Modal from "react-modal";
 import useOwnTribes from "@src/lib/hooks/useOwnTribes";
@@ -11,8 +10,8 @@ import { toast } from "react-toastify";
 import { ClockLoader } from "react-spinners";
 import axios from "axios";
 import { getStakingAddress } from "@src/lib/utils/addressHelpers";
-import { useSignMessage } from "wagmi";
-import GlobalContext from "@src/lib/contexts/GlobalContext";
+import { useAccount, useSignMessage } from "wagmi";
+import { useModal as useConnectModal } from 'connectkit';
 import debounce from 'lodash/debounce';
 
 const customStyles = {
@@ -50,13 +49,10 @@ const useWindowSize = (delay = 250) => {
   return width;
 };
 
-const StakingPage: FC<ClaimPageProps> = () => {
+const StakingPage: FC = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
-  const context: any = useContext(GlobalContext);
-  const setState = context.setState;
-
-  const { account } = useWeb3React();
-  const { openConnectModal } = useWalletConnect();
+  const { address: account, isConnected } = useAccount();
+  const { openConnectModal } = useConnectModal();
   const { signMessageAsync } = useSignMessage();
   const { tribes: ownTribes, stakedTribes } = useOwnTribes(refreshTrigger);
   const stakingAddress = getStakingAddress();
@@ -66,7 +62,6 @@ const StakingPage: FC<ClaimPageProps> = () => {
   const [allselected, setAllselected] = useState(false);
   const [confirmmodal, setConfirmmodal] = useState(false);
   const [unstakemodal, setUnstakemodal] = useState(false);
-
   const [waiting, setWaiting] = useState(false);
 
   const tribes = useMemo(() => {
@@ -101,7 +96,7 @@ const StakingPage: FC<ClaimPageProps> = () => {
       return;
     }
 
-    if (!account) {
+    if (!isConnected || !account) {
       toast.error("Please connect wallet to stake!!");
       return;
     }
@@ -112,33 +107,31 @@ const StakingPage: FC<ClaimPageProps> = () => {
     });
 
     setWaiting(true);
-    const signature = await signMessageAsync({
-      message: msg,
-    });
-    axios
-      .post("/staking/stake", {
+    try {
+      const signature = await signMessageAsync({
+        message: msg,
+      });
+      
+      const response = await axios.post("/staking/stake", {
         address: account,
         signature,
         ids: selectedapes,
-      })
-      .then((response) => {
-        toast.success(
-          `${response.data.staked.length} nft(s) have been staked successfully!!`
-        );
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => {
-        setWaiting(false);
-        setConfirmmodal(false);
-        setSelectedapes([]);
-        setRefreshTrigger((prev) => prev + 1);
-        setState((prevState: any) => ({
-          ...prevState,
-          trigger: (prevState.trigger || 0) + 1,
-        }));
       });
+      
+      toast.success(
+        `${response.data.staked.length} nft(s) have been staked successfully!!`
+      );
+      
+      setConfirmmodal(false);
+      setSelectedapes([]);
+      setRefreshTrigger(prev => prev + 1);
+      
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to stake NFTs");
+    } finally {
+      setWaiting(false);
+    }
   };
 
   const onUnStake = async () => {
@@ -146,8 +139,8 @@ const StakingPage: FC<ClaimPageProps> = () => {
       toast.error("Please select Apes to unstake!!");
       return;
     }
-    if (!account) {
-      toast.error("Please connect wallet to stake!!");
+    if (!isConnected || !account) {
+      toast.error("Please connect wallet to unstake!!");
       return;
     }
 
@@ -157,33 +150,31 @@ const StakingPage: FC<ClaimPageProps> = () => {
     });
 
     setWaiting(true);
-    const signature = await signMessageAsync({
-      message: msg,
-    });
-    axios
-      .post("/staking/unstake", {
+    try {
+      const signature = await signMessageAsync({
+        message: msg,
+      });
+      
+      const response = await axios.post("/staking/unstake", {
         address: account,
         signature,
         ids: selectedapes,
-      })
-      .then((response) => {
-        toast.success(
-          `${response.data.unstaked.length} nft(s) have been unstaked successfully!!`
-        );
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => {
-        setWaiting(false);
-        setUnstakemodal(false);
-        setSelectedapes([]);
-        setRefreshTrigger((prev) => prev + 1);
-        setState((prevState: any) => ({
-          ...prevState,
-          trigger: (prevState.trigger || 0) + 1,
-        }));
       });
+      
+      toast.success(
+        `${response.data.unstaked.length} nft(s) have been unstaked successfully!!`
+      );
+      
+      setUnstakemodal(false);
+      setSelectedapes([]);
+      setRefreshTrigger(prev => prev + 1);
+      
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to unstake NFTs");
+    } finally {
+      setWaiting(false);
+    }
   };
 
   const stakeref = useRef(null);
@@ -220,7 +211,8 @@ const StakingPage: FC<ClaimPageProps> = () => {
   }, [stakeref.current, onlyWidth]);
 
   return (
-    <>
+    <PageLayout>
+      <PageTitle>Stake Apes</PageTitle>
       <StakeWrapper>
         <div className="flex justify-center">
           <div className="flex gap-[80px] min-h-[580px] flex-row mb-12 max-w-[1200px] w-full">
@@ -229,7 +221,7 @@ const StakingPage: FC<ClaimPageProps> = () => {
                 <div className="flex flex-col items-center justify-center h-full">
                   <p className="mb-[40px]">Staking Live Soon</p>
                 </div>
-              ) : account ? (
+              ) : isConnected ? (
                 <div className="h-full">
                   <div className="p-[20px]">
                     <h4 className="font-medium text-[20px] mb-6">
@@ -421,7 +413,7 @@ const StakingPage: FC<ClaimPageProps> = () => {
           </div>
         </div>
       </Modal>
-    </>
+    </PageLayout>
   );
 };
 
@@ -552,8 +544,8 @@ const GradIcon = () => {
           y2="9.81132"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#9A34EF" />
-          <stop offset="1" stop-color="#D826FF" />
+          <stop stopColor="#9A34EF" />
+          <stop offset="1" stopColor="#D826FF" />
         </linearGradient>
       </defs>
     </svg>
