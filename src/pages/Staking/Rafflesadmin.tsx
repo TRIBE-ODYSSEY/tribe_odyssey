@@ -1,6 +1,6 @@
 import { FC, useState, ChangeEvent } from "react";
 import Button from "@src/components/common/Button";
-import styled from "styled-components";
+import styled from "styled-components/macro";
 import * as moment from "moment";
 import { toast } from "react-toastify";
 import { useWeb3React } from "@src/lib/hooks/useWeb3React";
@@ -185,7 +185,7 @@ const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
     axios
       .get("/user/nonce", { params: { address: account } })
       .then(async () => {
-        const nonce = response.data.nonce;
+        const nonce = Response.data.nonce;
         const signature = await signMessageAsync({
           message: `I am signing my one-time nonce: ${nonce}`,
         });
@@ -220,7 +220,7 @@ const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
     axios
       .get("/user/nonce", { params: { address: account } })
       .then(async () => {
-        const nonce = response.data.nonce;
+        const nonce = Response.data.nonce;
         const signature = await signMessageAsync({
           message: `I am signing my one-time nonce: ${nonce}`,
         });
@@ -247,7 +247,7 @@ const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
     axios
       .get("/user/nonce", { params: { address: account } })
       .then(async () => {
-        const nonce = response.data.nonce;
+        const nonce = Response.data.nonce;
         const signature = await signMessageAsync({
           message: `I am signing my one-time nonce: ${nonce}`,
         });
