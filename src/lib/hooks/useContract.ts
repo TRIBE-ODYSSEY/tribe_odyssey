@@ -1,32 +1,40 @@
-import { Contract, ContractInterface } from "ethers";
+import { Contract, BaseContract } from "ethers";
 import { useMemo } from "react";
 import ERC20_ABI from '../config/abi/erc20.json';
-import { getContract, simpleRpcProvider } from "../utils/contracts";
+import { getContract } from "../utils/contracts";
 import { useWeb3React } from "./useWeb3React";
 
 // returns null on errors
-export function useContract(
+export function useContract<T extends BaseContract = Contract>(
   address: string | undefined,
-  ABI: ContractInterface,
+  ABI: any[], // TODO: Add proper type for ABI
   withSignerIfPossible = true
-): Contract | null {
-  const { getSigner } = useWeb3React();
-  const signer = useMemo(() => getSigner(), [getSigner]);
+): T | null {
+  const { getSigner, provider } = useWeb3React();
 
   return useMemo(() => {
-    if (!address || !ABI || !signer) return null;
+    if (!address || !ABI) return null;
     try {
-      return getContract(address, Array.isArray(ABI) ? ABI : Object.values(ABI), withSignerIfPossible ? signer : simpleRpcProvider);
+      if (withSignerIfPossible) {
+        const signer = getSigner();
+        if (signer) {
+          return getContract(address, ABI, signer) as T;
+        }
+      }
+      if (provider) {
+        return getContract(address, ABI, provider) as T;
+      }
+      return null;
     } catch (error) {
       console.error("Failed to get contract", error);
       return null;
     }
-  }, [address, ABI, signer, withSignerIfPossible]);
+  }, [address, ABI, getSigner, provider, withSignerIfPossible]);
 }
 
 export function useTokenContract(
   tokenAddress?: string,
   withSignerIfPossible = true
 ): Contract | null {
-  return useContract(tokenAddress, ERC20_ABI as unknown as ContractInterface, withSignerIfPossible);
+  return useContract(tokenAddress, ERC20_ABI, withSignerIfPossible);
 }
