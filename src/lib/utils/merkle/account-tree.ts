@@ -1,5 +1,5 @@
 import MerkleTree from "./merkle-tree";
-import { utils } from "ethers";
+import { ethers } from "ethers";
 
 export default class AccountTree {
   private readonly tree: MerkleTree;
@@ -27,7 +27,7 @@ export default class AccountTree {
   // keccak256(abi.encode(account))
   public static toNode(account: string): Buffer {
     return Buffer.from(
-      utils.solidityKeccak256(["address"], [account]).substr(2),
+      ethers.solidityPackedKeccak256(["address"], [account]).slice(2),
       "hex"
     );
   }

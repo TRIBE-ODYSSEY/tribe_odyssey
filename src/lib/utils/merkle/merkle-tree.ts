@@ -1,4 +1,4 @@
-import { hexlify, keccak256 } from "ethers/lib/utils";
+import { hexlify, keccak256 } from "ethers";
 
 export default class MerkleTree {
   private readonly elements: Buffer[];

@@ -1,8 +1,8 @@
 import AccountTree from "./account-tree";
 
-export const getMerkleProof = (whitelist, account) => {
-  const accountTree = new AccountTree(whitelist);
-  let merkleProof;
+export const getMerkleProof = (account: string) => {
+  const accountTree = new AccountTree([account]);
+  let merkleProof: string[];
   try {
     merkleProof = accountTree.getProof(account);
   } catch (e) {
