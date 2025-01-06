@@ -3,7 +3,6 @@ import { Menu } from "@headlessui/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { RiArrowDropDownLine, RiArrowDropUpLine, RiLogoutBoxRLine, RiAccountCircleLine } from "react-icons/ri";
 import { useAccount } from 'wagmi';
-import { shortenAddress } from "@src/lib/utils/addressHelpers";
 import useAuth from "@src/lib/hooks/useAuth";
 import useUserStaked from "@src/lib/hooks/useUserStaked";
 import { connectorLocalStorageKey } from "@src/lib/hooks";
@@ -20,7 +19,19 @@ const ProfileDropdown: FC<ProfileDropdownProps> = () => {
 
   const { userStaked } = useUserStaked(0);
 
-  if (!isConnected) return null;
+  if (!isConnected || !address) return null;
+
+  const handleProfileClick = () => {
+    navigate("/account");
+  };
+
+  const handleLogout = () => {
+    logout();
+    window.localStorage.removeItem(connectorLocalStorageKey);
+  };
+
+  // Format address manually
+  const displayAddress = address ? `${address.slice(0, 6)}...${address.slice(-4)}` : '';
 
   return (
     <Menu>
@@ -29,7 +40,7 @@ const ProfileDropdown: FC<ProfileDropdownProps> = () => {
           <Menu.Button
             className="flex items-center gap-2 text-white bg-theme-dark hover:bg-theme-dark/80 px-4 py-2 rounded-lg transition-colors"
           >
-            <p>{shortenAddress(address || "")}</p>
+            <p>{displayAddress}</p>
             {open ? (
               <RiArrowDropUpLine className="text-xl" />
             ) : (
@@ -39,46 +50,53 @@ const ProfileDropdown: FC<ProfileDropdownProps> = () => {
           <Menu.Items
             className="absolute right-0 mt-2 w-[200px] rounded-lg bg-theme-dark border border-theme-grey shadow-lg overflow-hidden"
           >
-            <Menu.Item>
-              <>
-                {location.pathname.includes("/staking") ||
+            <div className="py-2">
+              {(location.pathname.includes("/staking") ||
                 location.pathname.includes("/account") ||
                 location.pathname.includes("/raffle") ||
-                location.pathname.includes("/raffles") ? (
-                  <>
-                    <div className="ddrow">
-                      <b>Apes Staked</b>
-                      {userStaked?.staked_count || 0} Apes
-                    </div>
-                    <div className="ddrow">
-                      <b>24hr Points Earned</b>
-                      {userStaked?.daily_points || 0} Points
-                    </div>
-                    <div className="ddrow">
-                      <b>Total Earned</b>
-                      {(userStaked?.points || 0).toFixed(2)} Points
-                    </div>
-                  </>
-                ) : null}
-                <div
-                  onClick={() => navigate("/account")}
-                  className="px-[20px] flex gap-3 py-[12px] cursor-pointer hover:opacity-70"
-                  style={{ borderTop: "1px solid rgba(128, 131, 154, 0.50)" }}
-                >
-                  <RiAccountCircleLine /> <span>Profile</span>
+                location.pathname.includes("/raffles")) && (
+                <div className="px-4 py-2 space-y-2 border-b border-theme-grey/50">
+                  <div className="flex justify-between text-sm">
+                    <b>Apes Staked</b>
+                    <span>{userStaked?.staked_count || 0} Apes</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <b>24hr Points Earned</b>
+                    <span>{userStaked?.daily_points || 0} Points</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <b>Total Earned</b>
+                    <span>{(userStaked?.points || 0).toFixed(2)} Points</span>
+                  </div>
                 </div>
-                <div
-                  onClick={() => {
-                    logout();
-                    window.localStorage.removeItem(connectorLocalStorageKey);
-                  }}
-                  className="px-[20px] flex gap-3 py-[12px] cursor-pointer hover:opacity-70"
-                  style={{ borderTop: "1px solid rgba(128, 131, 154, 0.50)" }}
-                >
-                  <RiLogoutBoxRLine /> <span>Logout</span>
-                </div>
-              </>
-            </Menu.Item>
+              )}
+              <Menu.Item>
+                {({ active }) => (
+                  <button
+                    onClick={handleProfileClick}
+                    className={`${
+                      active ? 'bg-theme-grey/10' : ''
+                    } w-full px-4 py-2 flex items-center gap-2 text-sm text-white hover:text-white/90`}
+                  >
+                    <RiAccountCircleLine className="text-lg" />
+                    <span>Profile</span>
+                  </button>
+                )}
+              </Menu.Item>
+              <Menu.Item>
+                {({ active }) => (
+                  <button
+                    onClick={handleLogout}
+                    className={`${
+                      active ? 'bg-theme-grey/10' : ''
+                    } w-full px-4 py-2 flex items-center gap-2 text-sm text-white hover:text-white/90`}
+                  >
+                    <RiLogoutBoxRLine className="text-lg" />
+                    <span>Logout</span>
+                  </button>
+                )}
+              </Menu.Item>
+            </div>
           </Menu.Items>
         </div>
       )}
