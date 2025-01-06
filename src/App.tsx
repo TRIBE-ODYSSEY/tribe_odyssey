@@ -4,7 +4,7 @@ import AppRoutes from './AppRoutes';
 import { ConnectKitProvider, SIWEProvider } from 'connectkit';
 import type { SIWEConfig, SIWESession } from 'connectkit';
 import axios from 'axios';
-import { AuthProvider } from './lib/context/AuthContext';
+import { AuthProvider } from './lib/contexts/AuthContext';
 
 const siweConfig: SIWEConfig = {
   getNonce: async () => {
@@ -27,6 +27,7 @@ const siweConfig: SIWEConfig = {
   },
   signOut: async () => {
     await axios.post('/api/auth/signout');
+    return true; // Return boolean to match expected return type
   }
 };
 
@@ -40,9 +41,11 @@ const App: React.FC = () => {
           </div>
         }
       >
-        <ConnectKitProvider options={{
-          customTheme: {mode: 'light', accentColor: '#000000', accentColorForeground: '#ffffff'}, // Define theme object or import it
+        <ConnectKitProvider theme="default" mode="light" options={{
           language: 'en-US',
+          overlayBlur: 0,
+          accentColor: '#000000',
+          accentColorForeground: '#ffffff',
         }}>
           <SIWEProvider {...siweConfig}>
             <AppRoutes />
