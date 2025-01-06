@@ -4,23 +4,23 @@ import {
     useWalletClient,
     usePublicClient,
 } from 'wagmi';
-import type { WalletClient } from '@wagmi/core';
 import { 
     useModal as useConnectKitModal 
 } from 'connectkit';
 import { BrowserProvider, JsonRpcSigner } from 'ethers';
 import { type PublicClient } from 'viem';
+import { type WalletClient as ViemWalletClient } from 'viem';
 
 // Convert WalletClient to Ethers v6 Signer
-async function walletClientToSigner(walletClient: WalletClient): Promise<JsonRpcSigner> {
+async function walletClientToSigner(walletClient: ViemWalletClient): Promise<JsonRpcSigner> {
     const { account, chain, transport } = walletClient;
     const network = {
-        chainId: chain.id,
-        name: chain.name,
-        ensAddress: chain.contracts?.ensRegistry?.address
+        chainId: chain?.id,
+        name: chain?.name,
+        ensAddress: chain?.contracts?.ensRegistry?.address
     };
     const provider = new BrowserProvider(transport, network);
-    const signer = await provider.getSigner(account.address);
+    const signer = await provider.getSigner(account?.address);
     return signer;
 }
 
