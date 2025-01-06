@@ -1,6 +1,7 @@
-import { createPublicClient, http, parseGwei, keccak256, type PublicClient, type WalletClient } from 'viem'
-import { getContract } from 'wagmi/core'
+import { createPublicClient, http, parseGwei, keccak256, encodeAbiParameters, type PublicClient, type WalletClient } from 'viem'
+import { getContract } from '@wagmi/core'
 import { mainnet } from 'wagmi/chains'
+import { type WalletClient as EthersWalletClient } from 'ethers'
 
 // Import ABIs
 import MulticallABI from '../config/abi/Multicall.json'
@@ -65,7 +66,18 @@ export const getEnsRegistrarContract = (client: PublicClient | WalletClient) => 
   return getContractInstance(getEnsRegistrarAddress(), EnsRegistrarABI, client)
 }
 
-export const register = async (name: string, signer) => {
+// Add interfaces
+interface StakeParams {
+  ids: number[];
+  pid: number;
+  signer: EthersWalletClient;
+}
+
+// Update register function
+export const register = async (
+  name: string, 
+  signer: EthersWalletClient
+) => {
   const ensContract = getEnsRegistrarContract(signer);
   const nftContract = getTribeContract(signer);
   const address = await signer.getAddress();
@@ -75,7 +87,10 @@ export const register = async (name: string, signer) => {
       gasPrice = parseGwei("10");
     }
 
-    const label = keccak256(encodeToBytes("tribeodyssey"));
+    const label = keccak256(encodeAbiParameters(
+      [{ type: 'string' }],
+      [name]
+    ));
     const resolver = "0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41";
 
     const [exists, balance, allowed] = await Promise.all([
@@ -160,7 +175,12 @@ export const lookup = async (account: string) => {
   }
 };
 
-export const stake = async (ids, pid, signer) => {
+// Update stake function
+export const stake = async ({
+  ids,
+  pid,
+  signer
+}: StakeParams): Promise<{ transactionHash: string; error: null | string }> => {
   const nftContract = getTribeContract(signer);
   const stakingContract = getStakingContract(signer);
   try {
@@ -214,7 +234,12 @@ export const stake = async (ids, pid, signer) => {
   }
 };
 
-export const unstake = async (ids, pid, signer) => {
+// Update unstake function
+export const unstake = async ({
+  ids,
+  pid,
+  signer
+}: StakeParams): Promise<{ transactionHash: string; error: null | string }> => {
   const stakingContract = getStakingContract(signer);
   try {
     let gasPrice = await signer.getGasPrice();
