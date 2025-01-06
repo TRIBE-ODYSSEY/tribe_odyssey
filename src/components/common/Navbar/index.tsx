@@ -1,9 +1,8 @@
 import useLazyLoading from '@src/lib/hooks/useLazyLoading';
 import React, { useEffect, useState } from 'react';
 import { FaBars, FaInstagram, FaTelegram, FaTimes, FaTwitter } from 'react-icons/fa';
+import { ConnectKitButton } from 'connectkit';
 import Menu from './menu';
-import Button from './button';
-
 
 interface MenuItem {
   label: string;
@@ -18,50 +17,21 @@ interface NavigationItem {
 
 const navigationData = {
   menus: [
-    { 
-      label: 'Element', 
-      items: [
-        { label: 'Drops', href: '/element19/drops' },
-        { label: 'Collection', href: '/element19/collection' }
-      ] 
-    },
-    { 
-      label: 'Assets', 
-      items: [
-        { label: '4kTribe', href: '/assets/4ktribe' },
-        { label: 'Molten', href: '/assets/molten' },
-        { label: 'Wallpapers', href: '/assets/wallpapers' },
-        { label: 'Tribe19 Checker', href: '/assets/tribal19checker' }
-      ] 
-    },
-    { 
-      label: 'Staking', 
-      items: [
-        { label: 'Raffles', href: '/staking/raffles' },
-        { label: 'Stake Apes', href: '/staking/stake-apes' },
-        { label: 'Winners', href: '/staking/winners' }
-      ] 
-    },
-    { 
-      label: 'The Council', 
-      items: [
-        { label: 'Council', href: '/council' }
-      ] 
-    }
+    { label: 'Element', items: [{ label: 'Drops', href: '/element19/drops' }, { label: 'Collection', href: '/element19/collection' }] },
+    { label: 'Assets', items: [{ label: '4kTribe ', href: '/assets/4kTribe' }, { label: 'Molten', href: '/assets/molten' }, { label: 'Wallpapers', href: '/assets/wallpapers' }, { label: 'ENS', href: '/assets/ens' }] },
+    { label: 'Marketplace', items: [{ label: 'Marketplace 1', href: '#' }] },
+    { label: 'Staking', items: [{ label: 'Raffles', href: '/staking/raffles' }, { label: 'Stake Apes', href: '/staking/stake-apes' }, { label: 'Winners', href: '/staking/winners' }] },
+    { label: 'The Council', items: [{ label: 'Council', href: '/council' }] },
   ] as NavigationItem[],
   profile: {
     label: 'Profile',
     items: [
       { label: 'My NFTs', href: '/my-nfts' },
       { label: 'Settings', href: '/settings' },
-      { 
-        label: 'Disconnect', 
-        href: '#', 
-        onClick: () => {
-          window.dispatchEvent(new Event('wallet-disconnect'));
-          return true;
-        }
-      }
+      { label: 'Disconnect', href: '#', onClick: () => {
+        window.dispatchEvent(new Event('wallet-disconnect'));
+        return true;
+      }}
     ] as MenuItem[]
   },
   socials: [
@@ -126,29 +96,10 @@ const NavMenu: React.FC<{ isMobile?: boolean; onClose?: () => void }> = ({ isMob
   );
 };
 
-const ProfileButton: React.FC<{ isWalletConnected?: boolean; isMobile?: boolean }> = ({ 
-  isWalletConnected = false,
-  isMobile = false 
-}) => {
-  if (!isWalletConnected) return null;
-  
-  return (
-    <div className={`relative group ${isMobile ? 'w-full' : ''}`}>
-      <Button isWalletConnected className={isMobile ? 'w-full justify-center' : ''} />
-      <Menu 
-        items={navigationData.profile.items} 
-        className={`${isMobile ? 'w-full' : 'right-0'} mt-2`} 
-        isMobile={isMobile} 
-      />
-    </div>
-  );
-};
-
 const MobileNav: React.FC<{ 
   isOpen: boolean; 
-  onClose: () => void; 
-  isWalletConnected: boolean 
-}> = ({ isOpen, onClose, isWalletConnected }) => {
+  onClose: () => void;
+}> = ({ isOpen, onClose }) => {
   useLazyLoading();
   if (!isOpen) return null;
 
@@ -165,10 +116,7 @@ const MobileNav: React.FC<{
 
         <div className="flex-1 flex flex-col items-center gap-6 max-w-sm mx-auto w-full">
           <NavMenu isMobile onClose={onClose} />
-          {!isWalletConnected && (
-            <Button onClick={onClose} className="w-full justify-center text-lg" />
-          )}
-          <ProfileButton isWalletConnected={isWalletConnected} isMobile />
+          <ConnectKitButton />
           <SocialIcons className="flex gap-6" />
         </div>
       </div>
@@ -178,21 +126,14 @@ const MobileNav: React.FC<{
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isWalletConnected, setIsWalletConnected] = useState(false);
 
   useEffect(() => {
-    const handleConnect = () => setIsWalletConnected(true);
-    const handleDisconnect = () => setIsWalletConnected(false);
     const handleResize = () => window.innerWidth >= 768 && setIsMenuOpen(false);
     
-    window.addEventListener('wallet-connect', handleConnect);
-    window.addEventListener('wallet-disconnect', handleDisconnect);
     window.addEventListener('resize', handleResize);
     window.addEventListener('orientationchange', handleResize);
     
     return () => {
-      window.removeEventListener('wallet-connect', handleConnect);
-      window.removeEventListener('wallet-disconnect', handleDisconnect);
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('orientationchange', handleResize);
     };
@@ -212,10 +153,7 @@ const Navbar: React.FC = () => {
           <div className="hidden md:flex items-center gap-4 sm:gap-6">
             <NavMenu />
             <SocialIcons className="flex gap-3 sm:gap-4" />
-            <div className="flex items-center gap-2 sm:gap-3">
-              {!isWalletConnected && <Button />}
-              <ProfileButton isWalletConnected={isWalletConnected} />
-            </div>
+            <ConnectKitButton />
           </div>
 
           <button
@@ -230,8 +168,7 @@ const Navbar: React.FC = () => {
 
       <MobileNav 
         isOpen={isMenuOpen} 
-        onClose={() => setIsMenuOpen(false)} 
-        isWalletConnected={isWalletConnected} 
+        onClose={() => setIsMenuOpen(false)}
       />
     </nav>
   );

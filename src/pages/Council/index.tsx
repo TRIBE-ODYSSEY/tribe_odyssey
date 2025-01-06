@@ -28,7 +28,7 @@ const features = [
     desc: "Fostering unity and strength through collective wisdom.",
     icon: UsersIcon
   }
-]
+];
 
 const HeroSection = () => (
   <div className="container mx-auto px-4 py-16">

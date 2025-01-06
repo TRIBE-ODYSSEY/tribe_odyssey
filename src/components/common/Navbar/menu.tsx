@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 interface MenuItem {
   label: string;
@@ -70,20 +71,37 @@ const Menu: React.FC<MenuProps> = ({
           <ul className="p-1">
             {items.map((item, index) => (
               <li key={index}>
-                <a
-                  href={item.href || '#'}
-                  onClick={(e) => handleItemClick(e, item)}
-                  className={`
-                    block w-full text-left px-4 py-2.5 
-                    transition-colors rounded-lg my-0.5
-                    ${isMobile 
-                      ? 'text-white/90 hover:text-white hover:bg-white/10' 
-                      : 'text-gray-800 hover:bg-gray/5'
-                    }
-                  `}
-                >
-                  {item.label}
-                </a>
+                {item.href?.startsWith('/') ? (
+                  <Link
+                    to={item.href}
+                    onClick={(e) => handleItemClick(e, item)}
+                    className={`
+                      block w-full text-left px-4 py-2.5 
+                      transition-colors rounded-lg my-0.5
+                      ${isMobile 
+                        ? 'text-white/90 hover:text-white hover:bg-white/10' 
+                        : 'text-gray-800 hover:bg-gray-100'
+                      }
+                    `}
+                  >
+                    {item.label}
+                  </Link>
+                ) : (
+                  <a
+                    href={item.href || '#'}
+                    onClick={(e) => handleItemClick(e, item)}
+                    className={`
+                      block w-full text-left px-4 py-2.5 
+                      transition-colors rounded-lg my-0.5
+                      ${isMobile 
+                        ? 'text-white/90 hover:text-white hover:bg-white/10' 
+                        : 'text-gray-800 hover:bg-gray-100'
+                      }
+                    `}
+                  >
+                    {item.label}
+                  </a>
+                )}
               </li>
             ))}
           </ul>
