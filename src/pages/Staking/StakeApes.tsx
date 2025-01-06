@@ -220,141 +220,143 @@ const StakingPage: FC<ClaimPageProps> = () => {
   return (
     <>
       <StakeWrapper>
-        <div className="flex gap-[80px] min-h-[580px] flex-row mb-12">
-          <div className="flex-[6] border border-theme-grey rounded-lg p-[20px] claim-box">
-            {stakingAddress === "" ? (
-              <div className="flex flex-col items-center justify-center h-full">
-                <p className="mb-[40px]">Staking Live Soon</p>
-              </div>
-            ) : account ? (
-              <div className="h-full">
-                <div className="p-[20px]">
-                  <h4 className="font-medium text-[20px] mb-6">
-                    Your Apes - ({tribes.length} Total)
-                  </h4>
-                  <div className="flex justify-between">
-                    <span className="text-theme-grey hidden sm:block">
-                      {" "}
-                      {activetab === 0
-                        ? "Select the Apes to wish to stake"
-                        : "Select the Apes to wish to unstake"}
-                    </span>
-                    <span onClick={selectAll} className="gradtext">
-                      {!allselected ? "Select" : "UnSelect"} all
-                    </span>
-                  </div>
+        <div className="flex justify-center">
+          <div className="flex gap-[80px] min-h-[580px] flex-row mb-12 max-w-[1200px] w-full">
+            <div className="flex-[6] border border-theme-grey rounded-lg p-[20px] claim-box">
+              {stakingAddress === "" ? (
+                <div className="flex flex-col items-center justify-center h-full">
+                  <p className="mb-[40px]">Staking Live Soon</p>
                 </div>
-                <div className="pr-[10px] relative claim-box-container">
-                  <>
-                    <div className="tabOuter mx-[20px]">
-                      <div
-                        className={`tabs ${activetab === 0 ? "active" : ""}`}
-                        onClick={() => {
-                          setSelectedapes([]);
-                          setActivetab(0);
-                        }}
-                      >
-                        All
-                      </div>
-                      <div
-                        className={`tabs ${activetab === 1 ? "active" : ""}`}
-                        onClick={() => {
-                          setSelectedapes([]);
-                          setActivetab(1);
-                        }}
-                      >
-                        Staked
-                      </div>
+              ) : account ? (
+                <div className="h-full">
+                  <div className="p-[20px]">
+                    <h4 className="font-medium text-[20px] mb-6">
+                      Your Apes - ({tribes.length} Total)
+                    </h4>
+                    <div className="flex justify-between">
+                      <span className="text-theme-grey hidden sm:block">
+                        {" "}
+                        {activetab === 0
+                          ? "Select the Apes to wish to stake"
+                          : "Select the Apes to wish to unstake"}
+                      </span>
+                      <span onClick={selectAll} className="gradtext">
+                        {!allselected ? "Select" : "UnSelect"} all
+                      </span>
                     </div>
-                    <div
-                      className="stakeboxwrapper inpool px-[20px]"
-                      ref={stakeref}
-                    >
-                      {tribes.map(({ tokenId, contract, id, is_staked }) => (
-                        <ApeboxWrapperPool
-                          className={`${
-                            selectedapes.length > 0 && selectedapes.includes(id)
-                              ? "selected"
-                              : ""
-                          }`}
-                          style={{width: apebxwidth}}
+                  </div>
+                  <div className="pr-[10px] relative claim-box-container">
+                    <>
+                      <div className="tabOuter mx-[20px]">
+                        <div
+                          className={`tabs ${activetab === 0 ? "active" : ""}`}
                           onClick={() => {
-                            toggleApeSelector(id);
+                            setSelectedapes([]);
+                            setActivetab(0);
                           }}
-                          key={id}
                         >
-                          <img
-                            src={
-                              contract ===
-                              "0x77f649385ca963859693c3d3299d36dfc7324eb9"
-                                ? `https://cdn.0xworld.io/tribe-images/${
-                                    tokenId || 0
-                                  }.png`
-                                : `https://cdn.0xworld.io/0xworld-ape-images/${
-                                    tokenId || 0
-                                  }.png`
-                            }
-                            alt=""
-                          />
-                          {is_staked && (
-                            <div
-                              className={`lockOuter red`}
-                              data-te-toggle="tooltip"
-                              title={"Staked!"}
-                            >
-                              <LockIcon color={"red"} />
-                            </div>
-                          )}
-                          <div
+                          All
+                        </div>
+                        <div
+                          className={`tabs ${activetab === 1 ? "active" : ""}`}
+                          onClick={() => {
+                            setSelectedapes([]);
+                            setActivetab(1);
+                          }}
+                        >
+                          Staked
+                        </div>
+                      </div>
+                      <div
+                        className="stakeboxwrapper inpool px-[20px]"
+                        ref={stakeref}
+                      >
+                        {tribes.map(({ tokenId, contract, id, is_staked }) => (
+                          <ApeboxWrapperPool
                             className={`${
-                              selectedapes.includes(id) ? "gradbg" : ""
+                              selectedapes.length > 0 && selectedapes.includes(id)
+                                ? "selected"
+                                : ""
                             }`}
+                            style={{width: apebxwidth}}
+                            onClick={() => {
+                              toggleApeSelector(id);
+                            }}
+                            key={id}
                           >
-                            {selectedapes.includes(id) ? <GradIcon /> : null}
-                          </div>
-                        </ApeboxWrapperPool>
-                      ))}
-                    </div>
-                  </>
+                            <img
+                              src={
+                                contract ===
+                                "0x77f649385ca963859693c3d3299d36dfc7324eb9"
+                                  ? `https://cdn.0xworld.io/tribe-images/${
+                                      tokenId || 0
+                                    }.png`
+                                  : `https://cdn.0xworld.io/0xworld-ape-images/${
+                                      tokenId || 0
+                                    }.png`
+                              }
+                              alt=""
+                            />
+                            {is_staked && (
+                              <div
+                                className={`lockOuter red`}
+                                data-te-toggle="tooltip"
+                                title={"Staked!"}
+                              >
+                                <LockIcon color={"red"} />
+                              </div>
+                            )}
+                            <div
+                              className={`${
+                                selectedapes.includes(id) ? "gradbg" : ""
+                              }`}
+                            >
+                              {selectedapes.includes(id) ? <GradIcon /> : null}
+                            </div>
+                          </ApeboxWrapperPool>
+                        ))}
+                      </div>
+                    </>
 
-                  <div className="claim-box-gradient  h-full w-full absolute bottom-0 left-0 z-10 pointer-events-none"></div>
-                  <div className="w-full absolute bottom-0 left-0 z-10">
-                    <div className="flex justify-between flex-col gap-4 pb-4  md:flex-row items-center px-5">
-                      <p className="text-center md:text-right">
-                        You selected {selectedapes?.length} of {tribes.length}{" "}
-                        Apes
-                      </p>
-                      <div className="flex sm:gap-6 gap-3 flex-col sm:flex-row items-center ">
-                        {activetab == 0 ? (
-                          <Button
-                            onClick={() => setConfirmmodal(true)}
-                            disabled={selectedapes?.length === 0}
-                          >
-                            Stake
-                          </Button>
-                        ) : (
-                          <Button
-                            onClick={() => setUnstakemodal(true)}
-                            disabled={selectedapes?.length === 0}
-                          >
-                            Unstake
-                          </Button>
-                        )}
+                    <div className="claim-box-gradient  h-full w-full absolute bottom-0 left-0 z-10 pointer-events-none"></div>
+                    <div className="w-full absolute bottom-0 left-0 z-10">
+                      <div className="flex justify-between flex-col gap-4 pb-4  md:flex-row items-center px-5">
+                        <p className="text-center md:text-right">
+                          You selected {selectedapes?.length} of {tribes.length}{" "}
+                          Apes
+                        </p>
+                        <div className="flex sm:gap-6 gap-3 flex-col sm:flex-row items-center ">
+                          {activetab == 0 ? (
+                            <Button
+                              onClick={() => setConfirmmodal(true)}
+                              disabled={selectedapes?.length === 0}
+                            >
+                              Stake
+                            </Button>
+                          ) : (
+                            <Button
+                              onClick={() => setUnstakemodal(true)}
+                              disabled={selectedapes?.length === 0}
+                            >
+                              Unstake
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center h-full">
-                <p className="mb-[40px]">
-                  To stake you need to connect your wallet.
-                </p>
-                <Button onClick={openConnectModal} className="">
-                  Connect Wallet
-                </Button>
-              </div>
-            )}
+              ) : (
+                <div className="flex flex-col items-center justify-center h-full">
+                  <p className="mb-[40px]">
+                    To stake you need to connect your wallet.
+                  </p>
+                  <Button onClick={openConnectModal} className="">
+                    Connect Wallet
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
         {/* <PrizesPage /> */}
