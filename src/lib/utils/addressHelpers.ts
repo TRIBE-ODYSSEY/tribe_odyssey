@@ -1,6 +1,6 @@
 import addresses from "../config/contracts";
 
-export const getAddress = (address) => {
+export const getAddress = (address: { [key: string]: string }) => {
   const chainId = process.env.VITE_APP_NETWORK_ID || "1";
   return address[chainId] ? address[chainId] : address[1];
 };

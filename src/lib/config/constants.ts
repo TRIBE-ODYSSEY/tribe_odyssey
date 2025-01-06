@@ -1,4 +1,3 @@
-import { zeroAddress } from 'viem'
 import { mainnet, goerli } from 'wagmi/chains'
 
 export const DefaultChainID = parseInt(

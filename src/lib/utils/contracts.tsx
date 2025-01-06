@@ -1,4 +1,4 @@
-import { ethers, utils } from "ethers";
+import { ethers } from "ethers";
 import MulticallABI from "../config/abi/Multicall.json";
 import TribeABI from "../config/abi/tribe.json";
 import ApeABI from "../config/abi/erc721.json";
@@ -12,53 +12,51 @@ import {
   getMulticallAddress,
   getStakingAddress,
   getTribeAddress,
-} from "./addressHelpers";
-import getNodeUrl from "./getRpcUrl";
-import whitelist from "../config/constants/whitelist";
-import { getMerkleProof } from "./merkle";
-import { isAddress } from ".";
+} from "../utils/addressHelpers";
+import getNodeUrl from "../utils/getRcpUrl";
+import { getMerkleProof } from "../utils/merkle";
 import axios from "axios";
 
-export const simpleRpcProvider = new ethers.providers.JsonRpcProvider(
+export const simpleRpcProvider = new ethers.JsonRpcProvider(
   getNodeUrl()
 );
 
-export const getContract = (address, abi, signer) => {
+export const getContract = (address: string, abi: any, signer: any) => {
   const signerOrProvider = signer ? signer : simpleRpcProvider;
   return new ethers.Contract(address, abi, signerOrProvider);
 };
 
-export const getMulticallContract = (provider) => {
+export const getMulticallContract = (provider: any) => {
   return getContract(getMulticallAddress(), MulticallABI, provider);
 };
 
 // Get NFT Contract
-export const getTribeContract = (provider) => {
+export const getTribeContract = (provider: any) => {
   return getContract(getTribeAddress(), TribeABI, provider);
 };
 
-export const getApeContract = (provider) => {
+export const getApeContract = (provider: any) => {
   return getContract(getApeAddress(), ApeABI, provider);
 };
 
-export const getTokenContract = (currency, provider) => {
+export const getTokenContract = (currency: string, provider: any  ) => {
   return getContract(currency, ERC20ABI, provider);
 };
 
-export const getStakingContract = (provider) => {
+export const getStakingContract = (provider: any) => {
   return getContract(getStakingAddress(), StakingABI, provider);
 };
 
-export const getEnsRegistrarContract = (provider) => {
+export const getEnsRegistrarContract = (provider: any) => {
   return getContract(getEnsRegistrarAddress(), EnsRegistrarABI, provider);
 };
 
-export const mint = async (numToMint, signer) => {
+export const mint = async (numToMint: number, signer: any) => {
   const nftContract = getTribeContract(signer);
 
   try {
     const account = await signer.getAddress();
-    const proof = getMerkleProof(whitelist, account);
+    const proof = getMerkleProof(account, numToMint);
 
     const price = await nftContract.costForMint(numToMint, account, proof);
 
@@ -68,8 +66,8 @@ export const mint = async (numToMint, signer) => {
     }
 
     let gasPrice = await signer.getGasPrice();
-    if (gasPrice.lt(utils.parseUnits("20", "gwei"))) {
-      gasPrice = utils.parseUnits("20", "gwei");
+    if (gasPrice.lt(ethers.parseUnits("20", "gwei"))) {
+      gasPrice = ethers.parseUnits("20", "gwei");
     }
 
     const gasLimit = await nftContract.estimateGas.mint(numToMint, proof, {
@@ -99,7 +97,7 @@ export const mint = async (numToMint, signer) => {
   }
 };
 
-export const checkClaimed = async (id) => {
+export const checkClaimed = async (id: number) => {
   const nftContract = getTribeContract(simpleRpcProvider);
 
   try {
@@ -128,12 +126,12 @@ export const checkExist = async (ids: number[]) => {
   }
 };
 
-export const claim = async (ids, signer) => {
+export const claim = async (ids: number[], signer: any) => {
   const nftContract = getTribeContract(signer);
   try {
     let gasPrice = await signer.getGasPrice();
-    if (gasPrice.lt(utils.parseUnits("20", "gwei"))) {
-      gasPrice = utils.parseUnits("20", "gwei");
+    if (gasPrice.lt(ethers.parseUnits("20", "gwei"))) {
+      gasPrice = ethers.parseUnits("20", "gwei");
     }
 
     const exists = await checkExist(ids);
@@ -177,17 +175,17 @@ export const claim = async (ids, signer) => {
   }
 };
 
-export const register = async (name: string, signer) => {
+export const register = async (name: string, signer: any) => {
   const ensContract = getEnsRegistrarContract(signer);
   const nftContract = getTribeContract(signer);
   const address = await signer.getAddress();
   try {
     let gasPrice = await signer.getGasPrice();
-    if (gasPrice.lt(utils.parseUnits("10", "gwei"))) {
-      gasPrice = utils.parseUnits("10", "gwei");
+    if (gasPrice.lt(ethers.parseUnits("10", "gwei"))) {
+      gasPrice = ethers.parseUnits("10", "gwei");
     }
 
-    const label = utils.keccak256(utils.toUtf8Bytes("tribeodyssey"));
+    const label = ethers.keccak256(ethers.toUtf8Bytes("tribeodyssey"));
     const resolver = "0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41";
 
     const [exists, balance, allowed] = await Promise.all([
@@ -272,7 +270,7 @@ export const lookup = async (account: string) => {
   }
 };
 
-export const stake = async (ids, pid, signer) => {
+export const stake = async (ids: number[], pid: number, signer: any) => {
   const nftContract = getTribeContract(signer);
   const stakingContract = getStakingContract(signer);
   try {
@@ -326,7 +324,7 @@ export const stake = async (ids, pid, signer) => {
   }
 };
 
-export const unstake = async (ids, pid, signer) => {
+export const unstake = async (ids: number[], pid: number, signer: any) => {
   const stakingContract = getStakingContract(signer);
   try {
     let gasPrice = await signer.getGasPrice();
