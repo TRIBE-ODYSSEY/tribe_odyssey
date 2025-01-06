@@ -43,7 +43,7 @@ export const getContractInstance = (
   abi: any[], 
   client: Provider
 ) => {
-  return getContract({
+  return getApeContract({
     address: address as `0x${string}`,
     abi,
     publicClient: client as PublicClient,

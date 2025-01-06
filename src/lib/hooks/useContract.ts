@@ -1,7 +1,7 @@
 import { Contract, BaseContract, JsonRpcProvider } from "ethers";
 import { useMemo } from "react";
 import ERC20_ABI from '../config/abi/erc20.json';
-import { getContract } from "../utils/contracts";
+import { getApeContract } from "../utils/contracts";
 import { useWeb3React } from "./useWeb3React";
 
 // returns null on errors
@@ -21,14 +21,14 @@ export function useContract<T extends BaseContract = Contract>(
           // Wait for signer promise to resolve
           return signerPromise.then((signer) => {
             if (signer) {
-              return getContract(address, ABI, signer) as T;
+              return getApeContract(address, ABI, signer) as T;
             }
             return null;
           });
         }
       }
       if (provider instanceof JsonRpcProvider) {
-        return getContract(address, ABI, provider) as T;
+        return getApeContract(address, ABI, provider) as T;
       }
       return null;
     } catch (error) {
