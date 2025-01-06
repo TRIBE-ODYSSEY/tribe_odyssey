@@ -57,7 +57,7 @@ const ENSPage: React.FC = () => {
                 onClick={handleInfoClick}
                 className="flex items-center gap-2 mx-auto group"
               >
-                "How it works?"
+                <span>How it works?</span>
                 <InformationCircleIcon 
                   className="h-6 w-6 text-red-600 hover:text-red-700 transform transition-all duration-300 ease-in-out group-hover:scale-110"
                 />
