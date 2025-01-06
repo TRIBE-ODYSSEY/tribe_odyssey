@@ -3,7 +3,7 @@ import { FC, useState, useEffect, useRef, useMemo, useContext, useCallback } fro
 import Button from "@src/components/common/Button";
 import { useWalletConnect, useWeb3React } from "@src/lib/hooks/useWeb3React";
 import styled from "styled-components";
-import Modal from "react-modal";
+import Modal from "react-modal"; // @ts-ignore
 import useOwnTribes from "@src/lib/hooks/useOwnTribes";
 import { toast } from "react-toastify";
 import { ClockLoader } from "react-spinners";
