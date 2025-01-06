@@ -1,31 +1,32 @@
-import { Contract } from "ethers";
+import { Contract, ContractInterface } from "ethers";
 import { useMemo } from "react";
-import ERC20_ABI from "../config/abi/erc20.json";
+import ERC20_ABI from '../config/abi/erc20.json';
 import { getContract } from "../utils/contracts";
 import { useWeb3React } from "./useWeb3React";
 
 // returns null on errors
 export function useContract(
   address: string | undefined,
-  ABI: any,
+  ABI: ContractInterface,
   withSignerIfPossible = true
 ): Contract | null {
-  const { signer } = useWeb3React();
+  const { getSigner } = useWeb3React();
+  const signer = useMemo(() => getSigner(), [getSigner]);
 
   return useMemo(() => {
     if (!address || !ABI || !signer) return null;
     try {
-      return getContract(address, ABI, signer);
+      return getContract(address, ABI, withSignerIfPossible ? signer : undefined);
     } catch (error) {
       console.error("Failed to get contract", error);
       return null;
     }
-  }, [address, ABI, signer]);
+  }, [address, ABI, signer, withSignerIfPossible]);
 }
 
 export function useTokenContract(
   tokenAddress?: string,
-  withSignerIfPossible?: boolean
+  withSignerIfPossible = true
 ): Contract | null {
-  return useContract(tokenAddress, ERC20_ABI, withSignerIfPossible);
+  return useContract(tokenAddress, ERC20_ABI as unknown as ContractInterface, withSignerIfPossible);
 }

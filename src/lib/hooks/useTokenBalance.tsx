@@ -15,7 +15,7 @@ const useTokenBalance = (token: string) => {
       if (isZeroAddress(token) && getSigner && account) {
         const signer = await getSigner();
         if (signer) {
-          tempBalance = await signer.getBalance();
+          tempBalance = await signer.provider.getBalance(account);
         }
       } else if (account && tokenContract) {
         tempBalance = await tokenContract.balanceOf(account);
