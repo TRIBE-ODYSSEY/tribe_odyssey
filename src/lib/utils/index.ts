@@ -1,12 +1,8 @@
-import { getAddress, formatUnits, parseUnits } from 'viem'
-import { formatNumber } from 'viem/utils'
+import { getAddress, parseUnits } from 'viem'
+import { formatUnits } from 'viem/utils'
 
 const format = (value: number | string) => {
-  return formatNumber(Number(value), {
-    maximumFractionDigits: 2,
-    minimumFractionDigits: 0,
-    useGrouping: true,
-  })
+  return formatUnits(BigInt(value), 18)
 }
 
 // returns the checksummed address if the address is valid, otherwise returns false
