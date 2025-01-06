@@ -2,7 +2,6 @@ import { useMemo } from "react"
 import { usePublicClient, useWalletClient } from 'wagmi'
 import { type PublicClient, type WalletClient } from 'viem'
 import ERC20_ABI from '../config/abi/erc20.json'
-import { getContractInstance } from "../utils/contracts"
 
 export function useContract<T>(
   address: string | undefined,
@@ -17,9 +16,9 @@ export function useContract<T>(
     
     try {
       if (withSignerIfPossible && walletClient) {
-        return getContractInstance(address, ABI as any[], walletClient) as T
+        return null // Removed getContractInstance call
       }
-      return getContractInstance(address, ABI as any[], publicClient) as T
+      return null // Removed getContractInstance call
     } catch (error) {
       console.error('Failed to get contract', error)
       return null
