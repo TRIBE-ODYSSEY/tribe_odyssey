@@ -1,7 +1,24 @@
-import React, { useState } from 'react';
-import PageTitle from '@src/components/common/PageTitle';
-import PageLayout from '@src/components/common/layout/PageLayout';
+import React, { useState } from "react";
+import PageTitle from '../../components/common/PageTitle';
+import PageLayout from '../../components/common/layout/PageLayout';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
+import Button from '../../components/common/Button';
+import { Popover } from '@headlessui/react';
+
+// The HtmlTooltip component is used to show tooltips with information
+// It's used with the InformationCircleIcon button below
+const HtmlTooltip: React.FC<{ content: React.ReactNode; children: React.ReactNode }> = ({ content, children }) => {
+  return (
+    <Popover className="relative">
+      <Popover.Button>{children}</Popover.Button>
+      <Popover.Panel className="absolute z-10">
+        <div className="bg-gradient-to-b from-[#14121b] to-black border border-[rgba(128,131,154,0.5)] rounded-md p-3 max-w-[215px]">
+          {content}
+        </div>
+      </Popover.Panel>
+    </Popover>
+  );
+};
 
 const ENSPage: React.FC = () => {
   const [domainName, setDomainName] = useState('');
@@ -36,7 +53,7 @@ const ENSPage: React.FC = () => {
                 We look forward to seeing our loyal community repping their new and unique Tribe Odyssey subdomains and embracing the ENS revolution!
               </p>
 
-              <button 
+              <Button 
                 onClick={handleInfoClick}
                 className="flex items-center gap-2 mx-auto group"
               >
@@ -46,7 +63,7 @@ const ENSPage: React.FC = () => {
                 <InformationCircleIcon 
                   className="w-6 h-6 text-red-600 transition-transform duration-300 group-hover:scale-110" 
                 />
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -67,13 +84,13 @@ const ENSPage: React.FC = () => {
                   .tribeodyssey.eth
                 </span>
               </div>
-              <button
+              <Button
                 onClick={handleRegister}
                 className="px-6 py-4 bg-red-600 hover:bg-red-700 text-white rounded-full 
                          font-inter text-base transition-colors whitespace-nowrap"
               >
                 Register
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -83,7 +100,9 @@ const ENSPage: React.FC = () => {
               For more information about ENS subdomains click{' '}
             </span>
             <a 
-              href="#" 
+              href="https://www.one37pm.com/nft/what-is-a-ens-subdomain/amp" 
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-red-600 underline hover:opacity-80 transition-opacity"
             >
               here
