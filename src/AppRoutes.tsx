@@ -49,7 +49,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/wallpapers" element={<WallpapersPage />} />
         <Route path="/collection" element={<CollectionPage />} />
         <Route path="/account" element={<ProfilePage />} />
-        <Route path="/admin" element={<RaffleAdminPage />} />
+        <Route path="/admin" element={<RaffleAdminPage children={null} />} />
         {/* Strona 404 */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

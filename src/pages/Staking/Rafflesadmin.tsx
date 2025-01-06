@@ -8,7 +8,9 @@ import axios from "axios";
 import useRaffles from "@src/lib/hooks/useRaffles";
 import { useNavigate } from "react-router-dom";
 
-interface RaffleAdminPageProps {}
+interface RaffleAdminPageProps {
+  children: React.ReactNode;
+}
 
 interface RaffleCondition {
   entry: number;
