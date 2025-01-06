@@ -29,15 +29,14 @@ export const publicClient = createPublicClient({
 
 // Contract getter function
 export const getContractInstance = (
-  address: string, 
-  abi: any[], 
+  address: string,
+  abi: readonly unknown[],
   client: PublicClient | WalletClient
 ) => {
   return getContract({
     address: address as `0x${string}`,
     abi,
-    client: client as PublicClient,
-    publicClient: client as PublicClient
+    client
   })
 }
 
@@ -191,14 +190,14 @@ export const stake = async ({
   const nftContract = getTribeContract(signer);
   const stakingContract = getStakingContract(signer);
   try {
-    let gasPrice = await signer.getGasPrice();
+    const gasPrice = await signer.getGasPrice();
     const address = await signer.getAddress();
     const approved = await nftContract.isApprovedForAll(
       address,
       stakingContract.address
     );
     if (!approved) {
-      let approveTx = await nftContract.setApprovalForAll(
+      const approveTx = await nftContract.setApprovalForAll(
         stakingContract.address,
         true
       );
@@ -211,13 +210,13 @@ export const stake = async ({
     if (ids.length === 1) {
       gasLimit = await stakingContract.estimateGas.joinOne(pid, ids[0]);
       tx = await stakingContract.joinOne(pid, ids[0], {
-        gasLimit: gasLimit.mul(110).div(100),
+        gasLimit: BigInt(Number(gasLimit) * 110n / 100n),
         gasPrice,
       });
     } else {
       gasLimit = await stakingContract.estimateGas.joinMany(pid, ids);
       tx = await stakingContract.joinMany(pid, ids, {
-        gasLimit: gasLimit.mul(110).div(100),
+        gasLimit: BigInt(Number(gasLimit) * 110n / 100n),
         gasPrice,
       });
     }
@@ -249,20 +248,20 @@ export const unstake = async ({
 }: StakeParams): Promise<{ transactionHash: string; error: null | string }> => {
   const stakingContract = getStakingContract(signer);
   try {
-    let gasPrice = await signer.getGasPrice();
+    const gasPrice = await signer.getGasPrice();
     let gasLimit;
     let tx;
 
     if (ids.length === 1) {
       gasLimit = await stakingContract.estimateGas.leaveOne(pid, ids[0]);
       tx = await stakingContract.leaveOne(pid, ids[0], {
-        gasLimit: gasLimit.mul(110).div(100),
+        gasLimit: BigInt(Number(gasLimit) * 110n / 100n),
         gasPrice,
       });
     } else {
       gasLimit = await stakingContract.estimateGas.leaveMany(pid, ids);
       tx = await stakingContract.leaveMany(pid, ids, {
-        gasLimit: gasLimit.mul(110).div(100),
+        gasLimit: BigInt(Number(gasLimit) * 110n / 100n),
         gasPrice,
       });
     }
