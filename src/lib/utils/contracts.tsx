@@ -207,7 +207,7 @@ export const register = async (name: string, signer: JsonRpcSigner) => {
     }
 
     const label = ethers.keccak256(ethers.toUtf8Bytes("tribeodyssey"));
-    const resolver = "0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41");
+    const resolver = "0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41";
 
     const [exists, balance, allowed] = await Promise.all([
       ensContract.query(label, name),
