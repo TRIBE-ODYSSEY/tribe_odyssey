@@ -1,6 +1,5 @@
 import { FC, useState, ChangeEvent } from "react";
 import Button from "@src/components/common/Button";
-import styled from "styled-components/macro";
 import * as moment from "moment";
 import { toast } from "react-toastify";
 import { useWeb3React } from "@src/lib/hooks/useWeb3React";
@@ -579,25 +578,18 @@ const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
   );
 };
 
-const Layout = styled.div`
-  font-family: "Roboto Mono", monospace;
-  .boxflexouter {
-    display: flex;
-    align-items: flex-start;
-    @media screen and (max-width: 900px) {
-      flex-direction: column-reverse;
-    }
-  }
-  button {
-    height: 35px;
-  }
-`;
-const Card = styled.div`
-  height: 100%;
-  width: 100%;
-  border: 1px solid rgba(128, 131, 154, 0.5);
-  border-radius: 6px;
-  padding: 10px 10px;
-`;
+const Layout = ({ children }: { children: React.ReactNode }) => (
+  <div className="font-['Roboto_Mono'] [&_button]:h-[35px]">
+    <div className="boxflexouter flex items-start md:flex-row flex-col-reverse">
+      {children}
+    </div>
+  </div>
+);
+
+const Card = ({ children }: { children: React.ReactNode }) => (
+  <div className="h-full w-full border border-[rgba(128,131,154,0.5)] rounded-md p-2.5">
+    {children}
+  </div>
+);
 
 export default RaffleAdminPage;
