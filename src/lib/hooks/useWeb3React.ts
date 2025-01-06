@@ -28,9 +28,9 @@ async function walletClientToSigner(walletClient: WalletClient): Promise<JsonRpc
 function publicClientToProvider(publicClient: PublicClient) {
     const { chain, transport } = publicClient;
     const network = {
-        chainId: chain.id,
-        name: chain.name,
-        ensAddress: chain.contracts?.ensRegistry?.address
+        chainId: chain?.id ?? 1, // Default to mainnet if chain is undefined
+        name: chain?.name ?? 'mainnet',
+        ensAddress: chain?.contracts?.ensRegistry?.address
     };
     return new BrowserProvider(transport, network);
 }
