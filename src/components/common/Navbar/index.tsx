@@ -156,12 +156,14 @@ const Navbar: React.FC = () => {
     <nav className="sticky top-0 w-full bg-backgroundDark/95 backdrop-blur-sm z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
         <div className="flex items-center justify-between md:justify-center gap-4">
-          <img
-            data-src="images/logo.png"
-            alt="Logo"
-            loading="lazy"
-            className="w-20 sm:w-24 h-8 sm:h-10"
-          />
+          <Link to="/" className="flex items-center">
+            <img
+              data-src="images/logo.png"
+              alt="Logo"
+              loading="lazy"
+              className="w-20 sm:w-24 h-8 sm:h-10 hover:opacity-80 transition-opacity"
+            />
+          </Link>
 
           <div className="hidden md:flex items-center gap-4 sm:gap-6">
             <NavMenu />

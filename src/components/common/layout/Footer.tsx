@@ -12,13 +12,13 @@ export const Footer: React.FC = () => {
       <div className="container mx-auto max-w-7xl">
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
           {/* Logo Section */}
-          <div className="flex-shrink-0">
+          <Link to="/" className="flex-shrink-0">
             <img
               data-src="images/logored.png"
               alt="Tribe Logo"
-              className="w-20 h-8 object-cover"
+              className="w-20 h-8 object-cover hover:opacity-80 transition-opacity"
             />
-          </div>
+          </Link>
 
           {/* Links Section */}
           <div className="flex-grow">
