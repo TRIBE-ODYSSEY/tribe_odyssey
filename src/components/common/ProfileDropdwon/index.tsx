@@ -22,7 +22,7 @@ const ProfileDropdown: FC<ProfileDropdownProps> = () => {
   if (!isConnected || !address) return null;
 
   const handleProfileClick = () => {
-    navigate("/account");
+    navigate("/profile");
   };
 
   const handleLogout = () => {
