@@ -1,6 +1,6 @@
 import useLazyLoading from '@src/lib/hooks/useLazyLoading';
 import React, { useEffect, useState } from 'react';
-import { FaBars, FaInstagram, FaTelegram, FaTimes, FaTwitter } from 'react-icons/fa';
+import { FaBars, FaInstagram, FaTimes, FaTwitter } from 'react-icons/fa';
 import { ConnectKitButton } from 'connectkit';
 import ProfileDropdown from '@src/components/common/ProfileDropdwon';
 import { menuConfig } from '@src/lib/config/menuConfig';
@@ -61,7 +61,7 @@ const MenuDropdown: React.FC<{ title: string; items: Array<{ name: string; path:
 const SocialIcons: React.FC<{ className?: string }> = ({ className }) => {
   const socials = [
     { icon: <FaTwitter />, href: 'https://twitter.com/tribeodyssey' },
-    { icon: <FaTelegram />, href: '#' },
+    //{ icon: <FaTelegram />, href: '#' },
     { icon: <FaInstagram />, href: 'https://www.instagram.com/tribe.odyssey/' },
   ];
 

@@ -13,9 +13,9 @@ export const menuConfig = {
   ],
   Marketplace: [
     { name: 'Marketplace', path: '/marketplace' },
-    { name: 'Opensea', path: 'https://opensea.io/tribe' },
-    { name: 'Looksrare', path: 'https://looksrare.org/tribe' },
-    { name: 'X2Y2', path: 'https://x2y2.io/tribe' },
+    { name: 'Opensea', path: 'https://opensea.io/collection/tribe-odyssey' },
+    { name: 'Magic Eden', path: 'https://magiceden.io/collections/ethereum/0x77f649385ca963859693c3d3299d36dfc7324eb9' },
+    { name: 'Tribe Ordinals', path: 'https://magiceden.io/ordinals/marketplace/tribeordinals' },
   ],
   Staking: [
     { name: 'Stake Apes', path: '/staking' },
