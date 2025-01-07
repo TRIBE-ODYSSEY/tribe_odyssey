@@ -19,7 +19,7 @@ const CollectionPage = lazy(() => import('@src/pages/Element19/Collection'));
 const WallpapersPage = lazy(() => import('@src/pages/Assets/Wallpapers'));
 const WinnersPage = lazy(() => import('@src/pages/Staking/Winners'));
 const ProfilePage = lazy(() => import('@src/pages/Profile'));
-const RaffleAdminPage = lazy(() => import('@src/pages/Staking/RafflesAdmin'));
+//const RaffleAdminPage = lazy(() => import ('@src/pages/RafflesAdmin'));
 const NotFoundPage = lazy(
   () => import('@src/components/common/errors/network/NetworkErrors')
 );
@@ -49,7 +49,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/wallpapers" element={<WallpapersPage />} />
         <Route path="/collection" element={<CollectionPage />} />
         <Route path="/account" element={<ProfilePage />} />
-        <Route path="/admin" element={<RaffleAdminPage />} />
+        {/* <Route path="/admin" element={<RaffleAdminPage />} /> */}
         {/* Strona 404 */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

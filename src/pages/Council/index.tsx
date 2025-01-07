@@ -61,10 +61,14 @@ const HeroSection = () => (
             </p>
           </div>
 
-          <button className="px-8 py-3 bg-white hover:bg-white/90 text-dark 
-                         rounded-full font-inter text-lg transition-300">
+          <a 
+            href="https://app.aragon.org/#/daos/base/0xb88e7e7c71bdf1124d1b73093f2946dc153644d1/dashboard" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="inline-block px-8 py-3 bg-white hover:bg-white/90 text-red-600 rounded-full font-inter text-lg transition-300"
+          >
             Join the Council
-          </button>
+          </a>
 
           <div className="flex flex-col items-center lg:items-start gap-2 mt-8">
             <span className="text-white/50 text-sm">Powered by</span>
