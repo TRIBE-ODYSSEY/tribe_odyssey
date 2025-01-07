@@ -5,7 +5,7 @@ import { menuConfig } from '@src/lib/config/menuConfig';
 
 export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
-  const socialLinks = [{ Icon: Discord, href: '#discord' }];
+  const socialLinks = [{ Icon: Discord, href: 'https://discord.gg/T7Bv5JsFYd' }];
 
   return (
     <footer className="w-full px-4 py-8 sm:py-10 bg-gradient-to-b from-transparent to-[#14121b]">
