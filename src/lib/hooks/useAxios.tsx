@@ -11,7 +11,7 @@ export function useAxios(config?: AxiosConfig): AxiosInstance {
   const { token, logout } = useAuth();
   
   const instance = axios.create({
-    baseURL: config?.baseURL || `${process.env.REACT_APP_BASE_URL}/api/`,
+    baseURL: config?.baseURL || `${process.env.VITE_APP_BASE_URL}/api/`,
     timeout: config?.timeout || 300000,
     headers: {
       'Content-Type': 'application/json',
