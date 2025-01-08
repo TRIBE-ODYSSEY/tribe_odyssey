@@ -1,7 +1,6 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import useRefresh from "./useRefresh";
-import { getSubgraphEndpoint } from "../utils/addressHelpers";
+import axios from "axios";
 
 const usePools = (trigger: number) => {
   const [pools, setPools] = useState([]);
@@ -31,35 +30,36 @@ const usePools = (trigger: number) => {
         }
       `;
 
-      const variables = {};
-      axios
-        .post(getSubgraphEndpoint() || '', { query, variables })
-        .then((response) => {
-          if (response?.data?.data?.pools) {
-            setPools(
-              response?.data?.data?.pools
-                .map((p: any) => {
-                  const stakedTokenIds = [
-                    ...p.tokens1,
-                    ...p.tokens2,
-                    ...p.tokens3,
-                  ].map((o) => o.id);
-                  return {
-                    id: +p.id,
-                    lockDuration: +p.lockDuration,
-                    raffleAt: +p.raffleAt,
-                    active: p.active,
-                    totalLocked: +p.totalLocked,
-                    tokens: stakedTokenIds,
-                  };
-                })
-                .filter((p: any) => p.active)
-            );
-          }
-        })
-        .catch((error) => {
-          console.error(error);
+      try {
+        const response = await axios.post(process.env.VITE_SUBGRAPH_URL || '', {
+          query,
+          variables: {}
         });
+
+        if (response?.data?.data?.pools) {
+          setPools(
+            response?.data?.data?.pools
+              .map((p: any) => {
+                const stakedTokenIds = [
+                  ...p.tokens1,
+                  ...p.tokens2,
+                  ...p.tokens3,
+                ].map((o) => o.id);
+                return {
+                  id: +p.id,
+                  lockDuration: +p.lockDuration,
+                  raffleAt: +p.raffleAt,
+                  active: p.active,
+                  totalLocked: +p.totalLocked,
+                  tokens: stakedTokenIds,
+                };
+              })
+              .filter((p: any) => p.active)
+          );
+        }
+      } catch (error) {
+        console.error(error);
+      }
     };
 
     fetch();

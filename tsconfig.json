@@ -29,7 +29,8 @@
       "@lib/*": ["src/lib/*"],
       "@config/*": ["lib/config/*"],
       "@assets/*": ["assets/*"],
-      "@hooks/*": ["lib/hooks/*"]
+      "@hooks/*": ["lib/hooks/*"],
+      "@types/*": ["types/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts"],

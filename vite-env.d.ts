@@ -1,16 +1,27 @@
 /// <reference types="vite/client" />
-/// <reference types="@wagmi/core" />
-/// <reference types="ethers" />
 
 interface ImportMetaEnv {
-	readonly VITE_APP_API_URL: string;
 	readonly VITE_APP_NETWORK_ID: string;
-	readonly VITE_APP_CHAIN_ID: string;
-	readonly VITE_APP_CHAIN_NAME: string;
-	readonly VITE_APP_CHAIN_RPC_URL: string;
-	readonly VITE_WALLET_CONNECT_PROJECT_ID: string;
-	readonly VITE_ALCHEMY_ID: string;
-	readonly VITE_ENABLE_TESTNETS: string;
+	readonly VITE_RPC_URL: string;
+	readonly VITE_INFURA_API_KEY: string;
+	readonly VITE_ALCHEMY_API_KEY: string;
+	readonly VITE_OPENSEA_API_KEY: string;
+	readonly VITE_ETHERSCAN_API_KEY: string;
+	readonly VITE_TRIBE_CONTRACT: string;
+	readonly VITE_STAKING_CONTRACT: string;
+	readonly VITE_MULTICALL_CONTRACT: string;
+	readonly VITE_TRIBE_CONTRACT_TESTNET: string;
+	readonly VITE_STAKING_CONTRACT_TESTNET: string;
+	readonly VITE_MULTICALL_CONTRACT_TESTNET: string;
+	readonly VITE_API_URL: string;
+	readonly VITE_SUBGRAPH_URL: string;
+	readonly VITE_IPFS_GATEWAY: string;
+	readonly VITE_AUTH_DOMAIN: string;
+	readonly VITE_JWT_SECRET: string;
+	readonly VITE_ENABLE_TESTNET: string;
+	readonly VITE_ENABLE_STAKING: string;
+	readonly VITE_ENABLE_MARKETPLACE: string;
+	readonly VITE_GA_TRACKING_ID: string;
 }
 
 interface ImportMeta {

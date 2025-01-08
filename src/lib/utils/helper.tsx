@@ -1,5 +1,4 @@
-import { ethers } from "ethers";
-import { DefaultChainID } from "../config/constants";
+import { formatEther, parseEther, isAddress, isAddressEqual } from 'viem'
 
 export function shortenHex(hex: string, length = 4) {
   if (!hex) return "";
@@ -17,12 +16,10 @@ export function shortenHex(hex: string, length = 4) {
  *
  * @returns {string}
  */
-export const parseBalance = (balance: any, decimals = 18, decimalsToDisplay = 3) =>
-  Number(ethers.formatUnits(balance, decimals)).toFixed(
-    decimalsToDisplay
-  );
+export const parseBalance = (balance: bigint, decimals = 18, decimalsToDisplay = 3) =>
+  Number(formatEther(balance)).toFixed(decimalsToDisplay);
 
-export const numberWithCommas = (x: any) => {
+export const numberWithCommas = (x: number | string) => {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
@@ -46,52 +43,28 @@ export const nFormatter = (num: number, digits: number) => {
   return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
 };
 
-export function toWei(ether: string | number) {
-  return ethers.parseEther(String(ether));
-}
+export const toWei = (ether: string | number) => {
+  return parseEther(String(ether));
+};
 
-export function toEth(ether: bigint | string) {
-  return ethers.formatEther(ether);
-}
+export const toEth = (wei: bigint | string) => {
+  return formatEther(wei);
+};
 
-export function isSameAddress(addr1: string, addr2: string) {
-  return (
-    ethers.isAddress(addr1) &&
-    ethers.isAddress(addr2) &&
-    addr1?.toLowerCase() === addr2?.toLowerCase()
-  );
-}
+export const isSameAddress = (addr1: string, addr2: string) => {
+  return isAddress(addr1) && isAddress(addr2) && isAddressEqual(addr1, addr2);
+};
 
-export function getBigNumber(value: string | number) {
+export function getBigNumber(value: string | number): bigint {
   return BigInt(String(value));
 }
 
-export function formatPrice(price: bigint) {
+export function formatPrice(price: bigint): string {
   return `${nFormatter(Number(toEth(price)), 4)}`;
 }
 
-export function formatPriceUsd(price: bigint, usd: number) {
+export function formatPriceUsd(price: bigint, usd: number): string {
   return `${nFormatter(parseFloat(toEth(price)) * usd, 4)}`;
-}
-
-export function getEtherScanLink(data: string, type: "transaction" | "token" | "address") {
-  const prefix =
-    DefaultChainID == 4
-      ? `https://rinkeby.etherscan.io`
-      : `https://etherscan.io`;
-
-  switch (type) {
-    case "transaction": {
-      return `${prefix}/tx/${data}`;
-    }
-    case "token": {
-      return `${prefix}/token/${data}`;
-    }
-    case "address":
-    default: {
-      return `${prefix}/address/${data}`;
-    }
-  }
 }
 
 export function downloadFile(link: string) {

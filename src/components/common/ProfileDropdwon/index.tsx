@@ -2,10 +2,9 @@ import { FC } from "react";
 import { Menu } from "@headlessui/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { RiArrowDropDownLine, RiArrowDropUpLine, RiLogoutBoxRLine, RiAccountCircleLine } from "react-icons/ri";
-import { useAccount } from 'wagmi';
-import useAuth from "@src/lib/hooks/useAuth";
+import { useAccount, useDisconnect } from 'wagmi';
+import { useConnectKit } from 'connectkit';
 import useUserStaked from "@src/lib/hooks/useUserStaked";
-import { connectorLocalStorageKey } from "@src/lib/hooks";
 
 interface ProfileDropdownProps {
   trigger: number;
@@ -13,7 +12,8 @@ interface ProfileDropdownProps {
 
 const ProfileDropdown: FC<ProfileDropdownProps> = () => {
   const { address, isConnected } = useAccount();
-  const { logout } = useAuth();
+  const { disconnect } = useDisconnect();
+  const { signOut } = useConnectKit();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -25,9 +25,9 @@ const ProfileDropdown: FC<ProfileDropdownProps> = () => {
     navigate("/profile");
   };
 
-  const handleLogout = () => {
-    logout();
-    window.localStorage.removeItem(connectorLocalStorageKey);
+  const handleLogout = async () => {
+    await signOut();
+    disconnect();
   };
 
   // Format address manually

@@ -1,13 +1,19 @@
 import React, { createContext, useContext, useReducer, useCallback } from 'react';
 
+interface User {
+  id: string;
+  address: string;
+  // ... add other user properties
+}
+
 interface AuthState {
   token: string | null;
-  user: any | null;
+  user: User | null;
   isAuthenticated: boolean;
 }
 
 interface AuthContextType extends AuthState {
-  login: (token: string, user: any) => void;
+  login: (token: string, user: User) => void;
   logout: () => void;
 }
 
@@ -20,7 +26,7 @@ const initialState: AuthState = {
 };
 
 type AuthAction =
-  | { type: 'LOGIN'; payload: { token: string; user: any } }
+  | { type: 'LOGIN'; payload: { token: string; user: User } }
   | { type: 'LOGOUT' };
 
 function authReducer(state: AuthState, action: AuthAction): AuthState {
@@ -42,7 +48,7 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  const login = useCallback((token: string, user: any) => {
+  const login = useCallback((token: string, user: User) => {
     dispatch({ type: 'LOGIN', payload: { token, user } });
   }, []);
 

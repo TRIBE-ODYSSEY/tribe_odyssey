@@ -1,4 +1,17 @@
-export const menuConfig = {
+interface MenuItem {
+  name: string
+  path: string
+}
+
+interface MenuConfig {
+  Element19: MenuItem[]
+  Assets: MenuItem[]
+  Marketplace: MenuItem[]
+  Staking: MenuItem[]
+  'The Council': MenuItem[]
+}
+
+export const menuConfig: MenuConfig = {
   Element19: [
     { name: 'Drops', path: '/drops' },
     { name: 'Collection', path: '/collection' },
@@ -25,4 +38,4 @@ export const menuConfig = {
   'The Council': [
     { name: 'Council', path: '/council' }
   ],
-}; 
+} 

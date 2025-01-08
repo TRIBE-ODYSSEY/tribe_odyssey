@@ -1,46 +1,40 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import useRefresh from "@src/lib/hooks/useRefresh";
-import { useWeb3React } from "@src/lib/hooks/useWeb3React";
+import { useEffect, useState } from "react"
+import { useAccount } from 'wagmi'
+import useRefresh from "./useRefresh"
+import axios from "axios"
 
 const useOwnTribes = (trigger: number) => {
-  const [tribes, setTribes] = useState([]);
-  const [stakedTribes, setStakedTribes] = useState([]);
-  const { slowRefresh } = useRefresh();
-  const { account } = useWeb3React();
+  const [tribes, setTribes] = useState([])
+  const [stakedTribes, setStakedTribes] = useState([])
+  const { address } = useAccount()
+  const { slowRefresh } = useRefresh()
 
   useEffect(() => {
     const fetch = async () => {
-      axios
-        .get("/item", {
+      if (!address) return
+      
+      try {
+        const response = await axios.get("/item", {
           params: {
-            owner: account?.toLowerCase(),
-            //contract: "0x77f649385ca963859693c3d3299d36dfc7324eb9",
+            owner: address.toLowerCase(),
             limit: 1000,
           },
         })
-        .then((response) => {
-          const items = (response?.data?.items || []).map((item: any) => ({
-            ...item,
-            id: `${item.contract}-${item.tokenId}`,
-          }));
-          setTribes(items.filter((item: any) => !item.is_staked));
-          setStakedTribes(items.filter((item: any) => item.is_staked));
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    };
-
-    if (account) {
-      fetch();
+        const items = (response?.data?.items || []).map((item: any) => ({
+          ...item,
+          id: `${item.contract}-${item.tokenId}`,
+        }));
+        setTribes(items.filter((item: any) => !item.is_staked));
+        setStakedTribes(items.filter((item: any) => item.is_staked));
+      } catch (error) {
+        console.error(error)
+      }
     }
-  }, [slowRefresh, account, trigger]);
 
-  return {
-    tribes,
-    stakedTribes,
-  };
-};
+    fetch()
+  }, [slowRefresh, address, trigger])
 
-export default useOwnTribes;
+  return { tribes, stakedTribes }
+}
+
+export default useOwnTribes
