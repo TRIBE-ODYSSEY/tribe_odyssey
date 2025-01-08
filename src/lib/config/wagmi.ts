@@ -9,9 +9,9 @@ const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID
 export const config = createConfig(
   getDefaultConfig({
     appName: 'Tribe Odyssey',
-    appIcon: 'https://tribeodyssey.com/favicon.ico',
+    appIcon: 'https://tribeodyssey.net/favicon.ico',
     appDescription: 'Tribe Odyssey - The Expanse',
-    appUrl: 'https://tribeodyssey.com',
+    appUrl: 'https://tribeodyssey.net',
     chains: [mainnet, sepolia],
     transports: {
       [mainnet.id]: http(),
