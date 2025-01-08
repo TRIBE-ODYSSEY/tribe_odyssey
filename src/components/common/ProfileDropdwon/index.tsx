@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { RiArrowDropDownLine, RiArrowDropUpLine, RiLogoutBoxRLine, RiAccountCircleLine } from "react-icons/ri";
 import { useAccount, useDisconnect } from 'wagmi';
 import { useSIWE } from 'connectkit';
-import useUserStaked from "@src/lib/hooks/useUserStaked";
+import { useStakingRead } from "@src/generated";
 
 interface ProfileDropdownProps {
   trigger: number;
@@ -17,7 +17,10 @@ const ProfileDropdown: FC<ProfileDropdownProps> = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { userStaked } = useUserStaked({ userAddress: address || '' });
+  const { data: userStaked } = useStakingRead({
+    functionName: 'getUserStaked',
+    args: [address || '']
+  });
 
   if (!isConnected || !address) return null;
 

@@ -12,8 +12,8 @@ import axios from "axios";
 import { useAccount, useSignMessage, useContractRead } from "wagmi";
 import { useModal } from 'connectkit';
 import debounce from 'lodash/debounce';
-import { ABI } from '@src/lib/config/abi/index';
-import { STAKING_CONTRACT_ADDRESS } from '@src/lib/config/contracts';
+import { useStakingRead } from '@src/generated';
+import { useStakingWrite } from '@src/generated';
 
 const customStyles = {
   content: {
@@ -54,10 +54,12 @@ const StakingPage: FC = () => {
   const { setOpen: openConnectModal } = useModal();
   const { signMessageAsync } = useSignMessage();
   const { tribes: ownTribes, stakedTribes } = useOwnTribes(refreshTrigger);
-  const { data: isStakingEnabled } = useContractRead({
-    address: STAKING_CONTRACT_ADDRESS,
-    abi: ABI.staking,
-    functionName: 'isStakingEnabled',
+  const { data: isStakingEnabled } = useStakingRead({
+    functionName: 'isStakingEnabled'
+  });
+
+  const { writeAsync: stake } = useStakingWrite({
+    functionName: 'stake'
   });
 
   const [selectedapes, setSelectedapes] = useState<number[]>([]);
