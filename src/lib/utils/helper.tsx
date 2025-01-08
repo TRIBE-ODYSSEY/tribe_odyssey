@@ -11,12 +11,11 @@ export function shortenHex(hex: string, length = 4) {
  * @name parseBalance
  *
  * @param {import("@ethersproject/bignumber").BigNumberish} balance
- * @param {number} decimals
  * @param {number} decimalsToDisplay
  *
  * @returns {string}
  */
-export const parseBalance = (balance: bigint, decimals = 18, decimalsToDisplay = 3) =>
+export const parseBalance = (balance: bigint, _decimals = 18, decimalsToDisplay = 3) =>
   Number(formatEther(balance)).toFixed(decimalsToDisplay);
 
 export const numberWithCommas = (x: number | string) => {
@@ -48,7 +47,7 @@ export const toWei = (ether: string | number) => {
 };
 
 export const toEth = (wei: bigint | string) => {
-  return formatEther(wei);
+  return formatEther(typeof wei === 'string' ? BigInt(wei) : wei);
 };
 
 export const isSameAddress = (addr1: string, addr2: string) => {

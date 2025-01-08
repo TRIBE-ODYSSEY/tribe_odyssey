@@ -1,29 +1,45 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { useWeb3React } from "./useWeb3React";
+import { useEffect, useState } from "react"
+import { useAccount } from "wagmi"
+import axios from "axios"
 
-const useUserNonce = (trigger: number) => {
-  const [nonce, setNonce] = useState(null);
-  const { account } = useWeb3React();
+interface UseUserNonceProps {
+  trigger?: number
+}
+
+interface NonceResponse {
+  nonce: string
+}
+
+const useUserNonce = ({ trigger = 0 }: UseUserNonceProps = {}) => {
+  const [nonce, setNonce] = useState<string | null>(null)
+  const { address } = useAccount()
 
   useEffect(() => {
-    const fetch = async () => {
-      axios
-        .get("/user/nonce", { params: { address: account } })
-        .then((response) => {
-          setNonce(response.data.nonce);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    };
+    const fetchNonce = async () => {
+      if (!address) {
+        setNonce(null)
+        return
+      }
 
-    if (account) fetch();
-  }, [account, trigger]);
+      try {
+        const response = await axios.get<NonceResponse>("/api/auth/nonce", {
+          params: { address }
+        })
+        setNonce(response.data.nonce)
+      } catch (error) {
+        console.error("Failed to fetch nonce:", error)
+        setNonce(null)
+      }
+    }
+
+    fetchNonce()
+  }, [address, trigger])
 
   return {
     nonce,
-  };
-};
+    isLoading: address && !nonce,
+    error: !nonce && address ? new Error("Failed to fetch nonce") : null
+  }
+}
 
-export default useUserNonce;
+export default useUserNonce

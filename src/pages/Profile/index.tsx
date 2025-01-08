@@ -1,9 +1,8 @@
 import { FC, useEffect, useRef, useState } from "react";
 import { ClockLoader } from "react-spinners";
 import Button from "@src/components/common/Button";
-import { useWeb3React } from "@src/lib/hooks/useWeb3React";
+import { useAccount, useSignMessage } from "wagmi";
 import { toast } from "react-toastify";
-import { useSignMessage } from "wagmi";
 import axios from "axios";
 import useUserInfo from "@src/lib/hooks/useUserInfo";
 import { shortenAddress } from "@src/lib/utils/formatters";
@@ -12,7 +11,7 @@ import { PencilIcon } from "@heroicons/react/24/outline";
 interface ProfilePageProps {}
 
 const ProfilePage: FC<ProfilePageProps> = () => {
-  const { account } = useWeb3React();
+  const { address, isConnected } = useAccount();
   const { signMessageAsync } = useSignMessage();
 
   const [trigger, setTrigger] = useState(0);
@@ -28,8 +27,8 @@ const ProfilePage: FC<ProfilePageProps> = () => {
   const hiddenFileInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (user && account) {
-      if (user.address !== account.toLowerCase()) {
+    if (user && address) {
+      if (user.address !== address.toLowerCase()) {
         setUsername("");
         setBtcAddr("");
         setTwitter("");
@@ -49,7 +48,7 @@ const ProfilePage: FC<ProfilePageProps> = () => {
         setTwitter(user.twitter || "");
       }
     }
-  }, [user, account, username, btcAddr, twitter]);
+  }, [user, address, username, btcAddr, twitter]);
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -60,7 +59,7 @@ const ProfilePage: FC<ProfilePageProps> = () => {
   };
 
   const onSave = async () => {
-    if (!account) {
+    if (!isConnected || !address) {
       toast.error("Please connect wallet to update!");
       return;
     }
@@ -76,7 +75,7 @@ const ProfilePage: FC<ProfilePageProps> = () => {
     setLoading(true);
     try {
       const nonceResponse = await axios.get("/user/nonce", {
-        params: { address: account },
+        params: { address: address },
       });
       
       const nonce = nonceResponse.data.nonce;
@@ -88,7 +87,7 @@ const ProfilePage: FC<ProfilePageProps> = () => {
       if (image) {
         formData.append("image", image);
       }
-      formData.append("address", account);
+      formData.append("address", address);
       formData.append("username", username);
       formData.append("twitter", twitter);
       formData.append("btc", btcAddr);
@@ -118,11 +117,11 @@ const ProfilePage: FC<ProfilePageProps> = () => {
 
   return (
     <div className="flex flex-col items-center gap-[80px]">
-      {account ? (
+      {isConnected ? (
         <div className="text-center flex flex-col gap-[20px] max-w-[800px] mx-auto">
           <div className="mx-auto group relative">
             <img
-              src={imagePreview ?? user?.profile_image ?? `https://api.dicebear.com/7.x/identicon/svg?seed=${account}`}
+              src={imagePreview ?? user?.profile_image ?? `https://api.dicebear.com/7.x/identicon/svg?seed=${address}`}
               alt="Profile"
               className="w-[180px] h-[180px] rounded-full"
             />
@@ -141,9 +140,9 @@ const ProfilePage: FC<ProfilePageProps> = () => {
             />
           </div>
           <p className="text-theme text-white font-bold text-[28px]">
-            {user?.name || (account ? shortenAddress(account) : "")}
+            {user?.name || (address ? shortenAddress(address) : "")}
           </p>
-          <p className="text-theme-grey">{account}</p>
+          <p className="text-theme-grey">{address}</p>
 
           <div className="flex items-start gap-[10px] flex-col  border border-[#80839a80] rounded-lg p-[40px] ens-box-gradient mt-8 max-w-[600px] min-w-[400px]">
             <p>Personal Information</p>
@@ -172,7 +171,7 @@ const ProfilePage: FC<ProfilePageProps> = () => {
               className="h-[50px] rounded-lg border border-[#80839a80] w-full bg-transparent outline-none text-white px-4 hover:border-[#E5E5E5] focus:border-[#E5E5E5] ens-box-gradient"
               type="text"
               placeholder="Enter Eth Address"
-              value={account || ""}
+              value={address || ""}
               readOnly
             />
             <div className="text-theme-grey text-[12px]">
@@ -202,7 +201,7 @@ const ProfilePage: FC<ProfilePageProps> = () => {
                 <Button
                   onClick={onSave}
                   className="w-full"
-                  disabled={!account || !username || !btcAddr}
+                  disabled={!isConnected || !address || !username || !btcAddr}
                 >
                   Save Changes
                 </Button>

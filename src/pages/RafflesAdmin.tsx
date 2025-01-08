@@ -2,8 +2,7 @@ import { FC, useState, ChangeEvent } from "react";
 import Button from "@src/components/common/Button";
 import moment from "moment";
 import { toast } from "react-toastify";
-import { useWeb3React } from "@src/lib/hooks/useWeb3React";
-import { useSignMessage } from "wagmi";
+import { useAccount, useSignMessage } from "wagmi";
 import axios from "axios";
 import useRaffles from "@src/lib/hooks/useRaffles";
 import { useNavigate } from "react-router-dom";
@@ -18,7 +17,7 @@ interface RaffleCondition {
 }
 
 const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
-  const { account } = useWeb3React();
+  const { address, isConnected } = useAccount();
   const { signMessageAsync } = useSignMessage();
 
   const [trigger, setTrigger] = useState(0);
@@ -128,7 +127,7 @@ const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
 
   const submitForm = () => {
     // check
-    if (!account) {
+    if (!isConnected || !address) {
       toast.error("Please connect wallet");
       return;
     }
@@ -181,10 +180,10 @@ const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
     formData.append("onlyAllowOnce", data.only_allow_once ? "true" : "false");
     formData.append("raffleAt", String(data.raffle_at));
     formData.append("conditions", JSON.stringify(entryPoints));
-    formData.append("address", account);
+    formData.append("address", address);
 
     axios
-      .get("/user/nonce", { params: { address: account } })
+      .get("/user/nonce", { params: { address: address } })
       .then(async (response) => {
         const nonce = response.data.nonce;
         const signature = await signMessageAsync({
@@ -219,7 +218,7 @@ const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
 
   const onFinish = (id: string) => {
     axios
-      .get("/user/nonce", { params: { address: account } })
+      .get("/user/nonce", { params: { address: address } })
       .then(async (response) => {
         const nonce = response.data.nonce;
         const signature = await signMessageAsync({
@@ -228,7 +227,7 @@ const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
 
         axios
           .post("/staking/finish-raffle", {
-            address: account,
+            address: address,
             signature,
             id: id,
           })
@@ -246,7 +245,7 @@ const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
 
   const onClose = (id: string) => {
     axios
-      .get("/user/nonce", { params: { address: account } })
+      .get("/user/nonce", { params: { address: address } })
       .then(async (response) => {
         const nonce = response.data.nonce;
         const signature = await signMessageAsync({
@@ -255,7 +254,7 @@ const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
 
         axios
           .post("/staking/close-raffle", {
-            address: account,
+            address: address,
             signature,
             id: id,
           })

@@ -4,8 +4,8 @@ import { injected, metaMask, walletConnect } from 'wagmi/connectors'
 import { getDefaultConfig } from "connectkit"
 
 // Get environment variables
-const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID
-const alchemyId = import.meta.env.VITE_ALCHEMY_ID
+const projectId = (import.meta as any).env.VITE_WALLET_CONNECT_PROJECT_ID
+const alchemyId = (import.meta as any).env.VITE_ALCHEMY_ID
 
 if (!projectId) throw new Error('Missing VITE_WALLET_CONNECT_PROJECT_ID')
 
@@ -32,7 +32,6 @@ export const config = createConfig(
         shimDisconnect: true,
       }),
       metaMask({
-        shimDisconnect: true,
         UNSTABLE_shimOnConnectSelectAccount: true,
       }),
       walletConnect({

@@ -9,10 +9,11 @@ import useOwnTribes from "@src/lib/hooks/useOwnTribes";
 import { toast } from "react-toastify";
 import { ClockLoader } from "react-spinners";
 import axios from "axios";
-import { getStakingAddress } from "@src/lib/utils/addressHelpers";
-import { useAccount, useSignMessage } from "wagmi";
+import { useAccount, useSignMessage, useContractRead } from "wagmi";
 import { useModal } from 'connectkit';
 import debounce from 'lodash/debounce';
+import { ABI } from '@src/lib/config/abi/index';
+import { STAKING_CONTRACT_ADDRESS } from '@src/lib/config/contracts';
 
 const customStyles = {
   content: {
@@ -49,13 +50,17 @@ const useWindowSize = (delay = 250) => {
 
 const StakingPage: FC = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
-  const { address: account, isConnected } = useAccount();
+  const { address, isConnected } = useAccount();
   const { setOpen: openConnectModal } = useModal();
   const { signMessageAsync } = useSignMessage();
   const { tribes: ownTribes, stakedTribes } = useOwnTribes(refreshTrigger);
-  const stakingAddress = getStakingAddress();
+  const { data: isStakingEnabled } = useContractRead({
+    address: STAKING_CONTRACT_ADDRESS,
+    abi: ABI.staking,
+    functionName: 'isStakingEnabled',
+  });
 
-  const [selectedapes, setSelectedapes] = useState<any[]>([]);
+  const [selectedapes, setSelectedapes] = useState<number[]>([]);
   const [activetab, setActivetab] = useState(0);
   const [allselected, setAllselected] = useState(false);
   const [confirmmodal, setConfirmmodal] = useState(false);
@@ -82,26 +87,26 @@ const StakingPage: FC = () => {
 
   const toggleApeSelector = (id: number) => {
     if (selectedapes.includes(id)) {
-      setSelectedapes(selectedapes.filter((n) => n !== id)); // removing a number
+      setSelectedapes(selectedapes.filter((n) => n !== id));
     } else {
-      setSelectedapes([...selectedapes, id]); // adding a new number
+      setSelectedapes([...selectedapes, id]);
     }
   };
 
   const onStake = async () => {
     if (selectedapes.length === 0) {
-      toast.error("Please select Apes to stake!!");
+      toast.error("Please select Apes to stake!");
       return;
     }
 
-    if (!isConnected || !account) {
-      toast.error("Please connect wallet to stake!!");
+    if (!isConnected || !address) {
+      toast.error("Please connect wallet to stake!");
       return;
     }
 
     const msg = JSON.stringify({
       ids: selectedapes,
-      address: account.toLowerCase(),
+      address: address.toLowerCase(),
     });
 
     setWaiting(true);
@@ -111,13 +116,13 @@ const StakingPage: FC = () => {
       });
       
       const response = await axios.post("/staking/stake", {
-        address: account,
+        address,
         signature,
         ids: selectedapes,
       });
       
       toast.success(
-        `${response.data.staked.length} nft(s) have been staked successfully!!`
+        `${response.data.staked.length} nft(s) have been staked successfully!`
       );
       
       setConfirmmodal(false);
@@ -134,17 +139,17 @@ const StakingPage: FC = () => {
 
   const onUnStake = async () => {
     if (selectedapes.length === 0) {
-      toast.error("Please select Apes to unstake!!");
+      toast.error("Please select Apes to unstake!");
       return;
     }
-    if (!isConnected || !account) {
-      toast.error("Please connect wallet to unstake!!");
+    if (!isConnected || !address) {
+      toast.error("Please connect wallet to unstake!");
       return;
     }
 
     const msg = JSON.stringify({
       ids: selectedapes,
-      address: account.toLowerCase(),
+      address: address.toLowerCase(),
     });
 
     setWaiting(true);
@@ -154,13 +159,13 @@ const StakingPage: FC = () => {
       });
       
       const response = await axios.post("/staking/unstake", {
-        address: account,
+        address,
         signature,
         ids: selectedapes,
       });
       
       toast.success(
-        `${response.data.unstaked.length} nft(s) have been unstaked successfully!!`
+        `${response.data.unstaked.length} nft(s) have been unstaked successfully!`
       );
       
       setUnstakemodal(false);
@@ -175,36 +180,28 @@ const StakingPage: FC = () => {
     }
   };
 
-  const stakeref = useRef(null);
+  const stakeref = useRef<HTMLDivElement>(null);
   const onlyWidth = useWindowSize();
   const [apebxwidth, setApebxwidth] = useState(0);
 
   useEffect(() => {
-    // Update the document title using the browser API
-    // document.title = `You clicked ${count} times`;
-    // console.log(onlyWidth)
     if (stakeref.current) {
-      const current = stakeref!.current as HTMLCanvasElement;
-      if (current) {
-        const stakwwidth =
-          current.clientWidth -
-          parseFloat(getComputedStyle(current).paddingLeft) -
-          parseFloat(getComputedStyle(current).paddingRight);
-        let tempwidth;
-        if (onlyWidth >= 1200) {
-          tempwidth = stakwwidth / 8 - 2;
-          setApebxwidth(tempwidth);
-        } else if (onlyWidth >= 800) {
-          tempwidth = stakwwidth / 6 - 2;
-          setApebxwidth(tempwidth);
-        } else if (onlyWidth >= 400) {
-          tempwidth = stakwwidth / 4 - 2;
-          setApebxwidth(tempwidth);
-        } else {
-          tempwidth = stakwwidth / 2 - 2;
-          setApebxwidth(tempwidth);
-        }
+      const stakwwidth =
+        stakeref.current.clientWidth -
+        parseFloat(getComputedStyle(stakeref.current).paddingLeft) -
+        parseFloat(getComputedStyle(stakeref.current).paddingRight);
+      
+      let tempwidth;
+      if (onlyWidth >= 1200) {
+        tempwidth = stakwwidth / 8 - 2;
+      } else if (onlyWidth >= 800) {
+        tempwidth = stakwwidth / 6 - 2;
+      } else if (onlyWidth >= 400) {
+        tempwidth = stakwwidth / 4 - 2;
+      } else {
+        tempwidth = stakwwidth / 2 - 2;
       }
+      setApebxwidth(tempwidth);
     }
   }, [stakeref.current, onlyWidth]);
 
@@ -215,7 +212,7 @@ const StakingPage: FC = () => {
         <div className="flex justify-center">
           <div className="flex gap-[80px] min-h-[580px] flex-row mb-12 max-w-[1200px] w-full">
             <div className="flex-[6] border border-theme-grey rounded-lg p-[20px] claim-box">
-              {stakingAddress === "" ? (
+              {!isStakingEnabled ? (
                 <div className="flex flex-col items-center justify-center h-full">
                   <p className="mb-[40px]">Staking Live Soon</p>
                 </div>
@@ -227,7 +224,6 @@ const StakingPage: FC = () => {
                     </h4>
                     <div className="flex justify-between">
                       <span className="text-theme-grey hidden sm:block">
-                        {" "}
                         {activetab === 0
                           ? "Select the Apes to wish to stake"
                           : "Select the Apes to wish to unstake"}
@@ -266,59 +262,45 @@ const StakingPage: FC = () => {
                         {tribes.map(({ tokenId, contract, id, is_staked }) => (
                           <ApeboxWrapperPool
                             className={`${
-                              selectedapes.length > 0 && selectedapes.includes(id)
-                                ? "selected"
-                                : ""
+                              selectedapes.includes(id) ? "selected" : ""
                             }`}
                             style={{width: apebxwidth}}
-                            onClick={() => {
-                              toggleApeSelector(id);
-                            }}
+                            onClick={() => toggleApeSelector(id)}
                             key={id}
                           >
                             <img
                               src={
                                 contract ===
                                 "0x77f649385ca963859693c3d3299d36dfc7324eb9"
-                                  ? `https://cdn.0xworld.io/tribe-images/${
-                                      tokenId || 0
-                                    }.png`
-                                  : `https://cdn.0xworld.io/0xworld-ape-images/${
-                                      tokenId || 0
-                                    }.png`
+                                  ? `https://cdn.0xworld.io/tribe-images/${tokenId}.png`
+                                  : `https://cdn.0xworld.io/0xworld-ape-images/${tokenId}.png`
                               }
                               alt=""
                             />
                             {is_staked && (
                               <div
-                                className={`lockOuter red`}
+                                className="lockOuter red"
                                 data-te-toggle="tooltip"
-                                title={"Staked!"}
+                                title="Staked!"
                               >
-                                <LockIcon color={"red"} />
+                                <LockIcon color="red" />
                               </div>
                             )}
-                            <div
-                              className={`${
-                                selectedapes.includes(id) ? "gradbg" : ""
-                              }`}
-                            >
-                              {selectedapes.includes(id) ? <GradIcon /> : null}
+                            <div className={selectedapes.includes(id) ? "gradbg" : ""}>
+                              {selectedapes.includes(id) && <GradIcon />}
                             </div>
                           </ApeboxWrapperPool>
                         ))}
                       </div>
                     </>
-
-                    <div className="claim-box-gradient  h-full w-full absolute bottom-0 left-0 z-10 pointer-events-none"></div>
+                    <div className="claim-box-gradient h-full w-full absolute bottom-0 left-0 z-10 pointer-events-none" />
                     <div className="w-full absolute bottom-0 left-0 z-10">
-                      <div className="flex justify-between flex-col gap-4 pb-4  md:flex-row items-center px-5">
+                      <div className="flex justify-between flex-col gap-4 pb-4 md:flex-row items-center px-5">
                         <p className="text-center md:text-right">
-                          You selected {selectedapes?.length} of {tribes.length}{" "}
-                          Apes
+                          You selected {selectedapes?.length} of {tribes.length} Apes
                         </p>
-                        <div className="flex sm:gap-6 gap-3 flex-col sm:flex-row items-center ">
-                          {activetab == 0 ? (
+                        <div className="flex sm:gap-6 gap-3 flex-col sm:flex-row items-center">
+                          {activetab === 0 ? (
                             <Button
                               onClick={() => setConfirmmodal(true)}
                               disabled={selectedapes?.length === 0}
@@ -343,7 +325,7 @@ const StakingPage: FC = () => {
                   <p className="mb-[40px]">
                     To stake you need to connect your wallet.
                   </p>
-                  <Button onClick={() => openConnectModal(true)} className="">
+                  <Button onClick={() => openConnectModal()}>
                     Connect Wallet
                   </Button>
                 </div>
@@ -351,13 +333,13 @@ const StakingPage: FC = () => {
             </div>
           </div>
         </div>
-        {/* <PrizesPage /> */}
       </StakeWrapper>
+
       <Modal
         isOpen={confirmmodal}
         onRequestClose={() => setConfirmmodal(false)}
         style={customStyles}
-        contentLabel="Example Modal"
+        contentLabel="Stake Confirmation"
       >
         <h1>Please confirm this information</h1>
         <button onClick={() => setConfirmmodal(false)} className="closebtn">
@@ -374,19 +356,20 @@ const StakingPage: FC = () => {
             </Button>
             {waiting ? (
               <Button>
-                <ClockLoader color={"#ffffff"} loading={true} size={20} />
+                <ClockLoader color="#ffffff" loading={true} size={20} />
               </Button>
             ) : (
-              <Button onClick={() => onStake()}>Agree & Stake</Button>
+              <Button onClick={onStake}>Agree & Stake</Button>
             )}
           </div>
         </div>
       </Modal>
+
       <Modal
         isOpen={unstakemodal}
         onRequestClose={() => setUnstakemodal(false)}
         style={customStyles}
-        contentLabel="Example Modal"
+        contentLabel="Unstake Confirmation"
       >
         <h1>Unstake Pool</h1>
         <button onClick={() => setUnstakemodal(false)} className="closebtn">
@@ -403,10 +386,10 @@ const StakingPage: FC = () => {
             </Button>
             {waiting ? (
               <Button>
-                <ClockLoader color={"#ffffff"} loading={true} size={20} />
+                <ClockLoader color="#ffffff" loading={true} size={20} />
               </Button>
             ) : (
-              <Button onClick={() => onUnStake()}>Yes</Button>
+              <Button onClick={onUnStake}>Yes</Button>
             )}
           </div>
         </div>
@@ -425,12 +408,14 @@ const ApeboxWrapper = styled.div`
   position: relative;
   width: calc(100px - 6px);
   border: 0px solid transparent;
+  
   img {
     width: 100%;
     height: 100%;
     border-radius: 14px;
     box-sizing: border-box;
   }
+  
   .gradbg {
     position: absolute;
     border-radius: 14px;
@@ -442,20 +427,24 @@ const ApeboxWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: Center;
+    
     svg {
       z-index: 99;
     }
+    
     &.blackbg {
       background: rgba(0, 0, 0, 0.7);
     }
   }
+  
   &.selected {
     background: linear-gradient(to right, #9a34ef, #d826ff);
   }
-`;
+`
 
 const ApeboxWrapperPool = styled(ApeboxWrapper)`
   position: Relative;
+  
   .lockOuter {
     position: absolute;
     top: 10px;
@@ -469,56 +458,104 @@ const ApeboxWrapperPool = styled(ApeboxWrapper)`
     align-items: Center;
     justify-content: center;
     z-index: 9999;
+    
     &.green {
       border: 1px solid green;
     }
+    
     &.red {
       border: 1px solid red;
     }
   }
-`;
+`
 
 const StakeWrapper = styled.div`
   font-family: "Roboto Mono", monospace !important;
+  
   .stakeboxwrapper {
     display: flex;
-    flex-flow: wrap;
-    overflow: auto;
+    flex-wrap: wrap;
+    gap: 4px;
     max-height: 400px;
-    box-sizing: border-box;
-    ${ApeboxWrapper} {
-      width: 100px;
+    overflow-y: auto;
+    position: relative;
+    padding-bottom: 80px;
+    
+    &.inpool {
+      padding-bottom: 120px;
+    }
+    
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: ${({ theme }) => theme.colors.primary};
+      border-radius: 4px;
     }
   }
-  .gradtext {
-    cursor: pointer;
-    font-weight: 600;
-    background: linear-gradient(to right, #9a34ef, #d826ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+  
+  .claim-box {
+    position: relative;
+    overflow: hidden;
   }
-
+  
+  .claim-box-container {
+    height: calc(100% - 100px);
+    overflow-y: auto;
+  }
+  
+  .claim-box-gradient {
+    background: linear-gradient(
+      180deg,
+      rgba(20, 18, 27, 0) 0%,
+      rgba(20, 18, 27, 0.8) 50%,
+      #14121b 100%
+    );
+  }
+  
   .tabOuter {
     display: flex;
-    align-items: Center;
-    border-bottom: 1px solid #464756;
-    padding-bottom: 12px;
-    margin-bottom: 30px;
+    gap: 20px;
+    margin-bottom: 20px;
+    
     .tabs {
-      font-weight: 600;
-      color: #fff;
-      background: transparent;
       cursor: pointer;
-      margin-right: 30px;
-      // min-width:80px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      background: transparent;
+      color: ${({ theme }) => theme.colors.text};
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+      
       &.active {
-        background: linear-gradient(to right, #9a34ef, #d826ff);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        background: ${({ theme }) => theme.colors.primary};
+        color: white;
       }
     }
   }
-`;
+  
+  .modalcontent {
+    margin-top: 20px;
+    
+    p {
+      margin-bottom: 20px;
+    }
+    
+    .buttonsflex {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+  }
+`
 
 const GradIcon = () => {
   return (
@@ -584,3 +621,4 @@ const LockIcon = (props: { color: string }) => {
 };
 
 export default StakingPage;
+
