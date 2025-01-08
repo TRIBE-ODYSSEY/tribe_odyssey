@@ -4,6 +4,7 @@ import stakingAbi from './src/lib/config/abi/staking.json'
 import tribeAbi from './src/lib/config/abi/tribe.json'
 import multicallAbi from './src/lib/config/abi/multicall.json'
 import ensRegistrarAbi from './src/lib/config/abi/EthRegistrarSubdomainRegistrar.json'
+import { erc20Abi } from 'viem'
 
 // Hardcoded addresses for development
 const ADDRESSES = {
@@ -45,6 +46,10 @@ export default defineConfig({
       address: ADDRESSES.ENS_REGISTRAR,
       abi: ensRegistrarAbi,
     },
+    {
+      name: 'ERC20',
+      abi: erc20Abi,
+    }
   ],
   plugins: [react()],
 })

@@ -1,5 +1,5 @@
 import { useAccount, useBalance, useReadContract } from 'wagmi'
-import { erc20Abi } from '@src/generated'
+import { erc20Abi } from 'viem'
 import { zeroAddress } from 'viem'
 
 const useTokenBalance = (tokenAddress: string) => {
