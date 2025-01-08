@@ -4,11 +4,12 @@ import AppRoutes from './AppRoutes';
 import { WagmiProvider } from 'wagmi';
 import { config } from '@src/lib/config/wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AuthProvider } from './lib/contexts/AuthContext';
 import { RefreshContextProvider } from './lib/contexts/RefreshContext';
 import { ConnectKitProvider, SIWEProvider } from 'connectkit';
 import type { SIWEConfig } from 'connectkit';
 import axios from 'axios';
-import { AuthProvider } from '@src/lib/contexts/AuthContext';
+
 const queryClient = new QueryClient();
 
 const siweConfig: SIWEConfig = {
@@ -36,34 +37,34 @@ const siweConfig: SIWEConfig = {
   }
 };
 
-const App: React.FC = () => {
+const App = () => {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <RefreshContextProvider>
-            <Suspense
-              fallback={
-                <div className="">
-                  <Spinner color="warning" aria-label="Info spinner example" />
-                </div>
-              }
-            >
-              <ConnectKitProvider
-                theme="auto"
-                mode="light"
-                options={{
-                  language: 'en-US',
-                  overlayBlur: 0
-                }}
-              >
-                <SIWEProvider {...siweConfig}>
+        <ConnectKitProvider
+          theme="auto"
+          mode="light"
+          options={{
+            language: 'en-US',
+            overlayBlur: 0
+          }}
+        >
+          <SIWEProvider {...siweConfig}>
+            <AuthProvider>
+              <RefreshContextProvider>
+                <Suspense
+                  fallback={
+                    <div className="flex items-center justify-center h-screen">
+                      <Spinner color="warning" aria-label="Loading..." />
+                    </div>
+                  }
+                >
                   <AppRoutes />
-                </SIWEProvider>
-              </ConnectKitProvider>
-            </Suspense>
-          </RefreshContextProvider>
-        </AuthProvider>
+                </Suspense>
+              </RefreshContextProvider>
+            </AuthProvider>
+          </SIWEProvider>
+        </ConnectKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );
