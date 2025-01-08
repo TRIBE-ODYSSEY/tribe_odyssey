@@ -325,7 +325,7 @@ const StakingPage: FC = () => {
                   <p className="mb-[40px]">
                     To stake you need to connect your wallet.
                   </p>
-                  <Button onClick={() => openConnectModal()}>
+                  <Button onClick={() => openConnectModal?.()}>
                     Connect Wallet
                   </Button>
                 </div>

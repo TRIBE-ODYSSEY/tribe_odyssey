@@ -3,7 +3,7 @@ import { Menu } from "@headlessui/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { RiArrowDropDownLine, RiArrowDropUpLine, RiLogoutBoxRLine, RiAccountCircleLine } from "react-icons/ri";
 import { useAccount, useDisconnect } from 'wagmi';
-import { useConnectKit } from 'connectkit';
+import { useSIWE } from 'connectkit';
 import useUserStaked from "@src/lib/hooks/useUserStaked";
 
 interface ProfileDropdownProps {
@@ -13,11 +13,11 @@ interface ProfileDropdownProps {
 const ProfileDropdown: FC<ProfileDropdownProps> = () => {
   const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
-  const { signOut } = useConnectKit();
+  const { signOut } = useSIWE();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { userStaked } = useUserStaked(0);
+  const { userStaked } = useUserStaked({ userAddress: address || '' });
 
   if (!isConnected || !address) return null;
 

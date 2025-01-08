@@ -1,24 +1,19 @@
-// src/main.tsx
-// import React from 'react';
-import ErrorBoundary from '@src/components/common/errors/ErrorBoundary.tsx';
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
-import '../index.css';
-import App from './AppRoutes.tsx';
-import Layout from './components/common/layout/Layout';
-//import { Web3Provider } from './lib/config/web3Provider';
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
+import ErrorBoundary from '@src/components/common/errors/ErrorBoundary'
+import App from './App'
+import '../index.css'
 
-createRoot(document.getElementById('root')!).render(
+const rootElement = document.getElementById('root')
+if (!rootElement) throw new Error('Failed to find the root element')
+
+createRoot(rootElement).render(
   <StrictMode>
     <BrowserRouter>
-      {/* <Web3Provider> */}
-        <ErrorBoundary>
-          <Layout>
-            <App />
-          </Layout>
-        </ErrorBoundary>
-      {/* </Web3Provider> */}
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
     </BrowserRouter>
   </StrictMode>
-);
+)
