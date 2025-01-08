@@ -1,5 +1,4 @@
 import { mainnet, goerli } from 'wagmi/chains'
-import { BigNumberish } from 'ethers'
 
 export const isZeroAddress = "0x0000000000000000000000000000000000000000"
 export const isZeroAddressBigNumber = BigInt(0)
