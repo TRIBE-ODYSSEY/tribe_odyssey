@@ -10,6 +10,7 @@ interface ImportMetaEnv {
 	readonly VITE_APP_CHAIN_RPC_URL: string;
 	readonly VITE_WALLET_CONNECT_PROJECT_ID: string;
 	readonly VITE_ALCHEMY_ID: string;
+	readonly VITE_APP_BASE_URL: string;
 	readonly VITE_ENABLE_TESTNETS: string;
 }
 

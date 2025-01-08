@@ -12,7 +12,7 @@ export const menuConfig = {
     { name: 'Molten', path: '/molten' },
   ],
   Marketplace: [
-    { name: 'Marketplace', path: '/marketplace' },
+    { name: 'Marketplace', path: 'https://apeshop.tribeodyssey.com/' },
     { name: 'Opensea', path: 'https://opensea.io/collection/tribe-odyssey' },
     { name: 'Magic Eden', path: 'https://magiceden.io/collections/ethereum/0x77f649385ca963859693c3d3299d36dfc7324eb9' },
     { name: 'Tribe Ordinals', path: 'https://magiceden.io/ordinals/marketplace/tribeordinals' },
