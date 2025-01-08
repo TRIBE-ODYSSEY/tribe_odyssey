@@ -32,7 +32,7 @@ export const config = createConfig(
         shimDisconnect: true,
       }),
       metaMask({
-        UNSTABLE_shimOnConnectSelectAccount: true,
+        shimDisconnect: true,
       }),
       walletConnect({
         projectId,

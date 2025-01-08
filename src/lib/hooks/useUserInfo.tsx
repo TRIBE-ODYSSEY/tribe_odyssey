@@ -1,15 +1,15 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useWeb3React } from "./useWeb3React";
+import { useAccount } from "wagmi";
 
 const useUserInfo = (trigger: number) => {
   const [info, setInfo] = useState<any>(null);
-  const { account } = useWeb3React();
+  const { address } = useAccount();
 
   useEffect(() => {
     const fetch = async () => {
       axios
-        .get("/user", { params: { address: account, statistic: false } })
+        .get("/user", { params: { address: address, statistic: false } })
         .then((response) => {
           setInfo(response.data.user);
         })
@@ -18,8 +18,8 @@ const useUserInfo = (trigger: number) => {
         });
     };
 
-    if (account) fetch();
-  }, [account, trigger]);
+    if (address) fetch();
+  }, [address, trigger]);
 
   return info;
 };
