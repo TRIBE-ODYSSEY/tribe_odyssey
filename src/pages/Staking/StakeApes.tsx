@@ -14,6 +14,7 @@ import { useModal } from 'connectkit';
 import debounce from 'lodash/debounce';
 import { useStakingRead } from '@src/generated';
 import { useStakingWrite } from '@src/generated';
+import { useQueryClient } from '@tanstack/react-query'
 
 const customStyles = {
   content: {
@@ -94,6 +95,18 @@ const StakingPage: FC = () => {
       setSelectedapes([...selectedapes, id]);
     }
   };
+
+  const queryClient = useQueryClient()
+
+  const handleStake = async () => {
+    try {
+      await stake()
+      // Invalidate all queries that start with 'staking'
+      await queryClient.invalidateQueries({ queryKey: ['staking'] })
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   const onStake = async () => {
     if (selectedapes.length === 0) {
