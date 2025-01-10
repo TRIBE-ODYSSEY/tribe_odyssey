@@ -1,14 +1,23 @@
 import { Spinner } from 'flowbite-react';
 import React, { Suspense } from 'react';
 import AppRoutes from './AppRoutes';
-import { WagmiConfig } from 'wagmi';
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { WagmiConfig } from 'wagmi';
 import { config } from './wagmi';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const App: React.FC = () => {
   return (
     <WagmiConfig config={config}>
+      <QueryClientProvider client={queryClient}>
         <Suspense
           fallback={
             <div className="flex h-screen items-center justify-center">
@@ -20,6 +29,7 @@ const App: React.FC = () => {
             <AppRoutes />
           </RainbowKitProvider>
         </Suspense>
+      </QueryClientProvider>
     </WagmiConfig>
   );
 };
