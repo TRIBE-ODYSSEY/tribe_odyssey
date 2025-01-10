@@ -1124,6 +1124,11 @@
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.11.8.tgz#6b79032e760a0899cd4204710beede972a3a185f"
   integrity sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==
 
+"@rainbow-me/rainbowkit-siwe-next-auth@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@rainbow-me/rainbowkit-siwe-next-auth/-/rainbowkit-siwe-next-auth-0.5.0.tgz#b36a09332093ad9ff6ff1f7115e28c8330efd5d0"
+  integrity sha512-Phd7bYa/fyjXn01/fFHtimuno4iKzlih3kr1nc96ZWnN0b9brHcheJ3pq63BVp3FLuRdXqgNuW2/a36u6Ctn+g==
+
 "@rainbow-me/rainbowkit@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@rainbow-me/rainbowkit/-/rainbowkit-2.2.1.tgz#1ad672aa87be3e8e4135bc12d13b03cc0a784221"
