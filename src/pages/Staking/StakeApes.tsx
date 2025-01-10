@@ -1,7 +1,7 @@
-import React from 'react';
 import PageTitle from '@src/components/common/PageTitle';
+import React from 'react';
 
-const StakeApes = () => {
+const StakeApes: React.FC = () => {
   return (
     <div>
       <PageTitle>Stake Apes</PageTitle>
@@ -9,4 +9,4 @@ const StakeApes = () => {
   );
 };
 
-  export default StakeApes;
+export default StakeApes;
