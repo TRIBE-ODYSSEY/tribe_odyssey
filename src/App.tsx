@@ -2,7 +2,7 @@ import { Spinner } from 'flowbite-react';
 import React, { Suspense } from 'react';
 import AppRoutes from './AppRoutes';
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
-import { WagmiConfig } from 'wagmi';
+import { createConfig, WagmiProvider } from 'wagmi';
 import { config } from './wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
@@ -16,7 +16,7 @@ const queryClient = new QueryClient({
 
 const App: React.FC = () => {
   return (
-    <WagmiConfig config={config}>
+    <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <Suspense
           fallback={
@@ -30,7 +30,7 @@ const App: React.FC = () => {
           </RainbowKitProvider>
         </Suspense>
       </QueryClientProvider>
-    </WagmiConfig>
+    </WagmiProvider>
   );
 };
 
