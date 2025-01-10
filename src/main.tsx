@@ -1,6 +1,6 @@
 import '@rainbow-me/rainbowkit/styles.css';
 import ErrorBoundary from '@src/components/common/errors/ErrorBoundary.tsx';
-import { StrictMode } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import '../index.css';
@@ -9,7 +9,8 @@ import Layout from './components/common/layout/Layout';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
-import { WagmiProvider } from 'wagmi';
+// @ts-ignore
+import { WagmiProvider } from 'wagmi'
 import { config } from './wagmi';
 
 const queryClient = new QueryClient({
@@ -21,7 +22,7 @@ const queryClient = new QueryClient({
 });
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <StrictMode>
+  <React.StrictMode>
     <BrowserRouter>
       <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>
@@ -35,5 +36,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         </QueryClientProvider>
       </WagmiProvider>
     </BrowserRouter>
-  </StrictMode>
+  </React.StrictMode>
 );

@@ -1,6 +1,7 @@
 import { Spinner } from 'flowbite-react';
 import React, { Suspense } from 'react';
 import AppRoutes from './AppRoutes';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 const App: React.FC = () => {
   return (
@@ -12,6 +13,7 @@ const App: React.FC = () => {
       }
     >
       <AppRoutes />
+      <ConnectButton />
     </Suspense>
   );
 };
