@@ -15,22 +15,37 @@ const tribeAbi = tribeAbiJson as Abi
 const multicallAbi = multicallAbiJson as Abi
 const ensRegistrarAbi = ensRegistrarAbiJson as Abi
 
-// Contract addresses configuration
+// Contract addresses configuration from environment variables
 const ADDRESSES = {
   STAKING: {
-    1: '0x220224422F2C2A9781F3EB5A0aA36F661DA9aA8F', // Mainnet
-    5: '0xbE93Aa1C070563DC9827eb7Dc65211dE28A822BB'  // Goerli
+    1: import.meta.env.VITE_STAKING_CONTRACT_MAINNET,
+    5: import.meta.env.VITE_STAKING_CONTRACT_GOERLI
   },
   TRIBE: {
-    1: '0x77F649385cA963859693C3d3299D36dfC7324EB9'
+    1: import.meta.env.VITE_TRIBE_CONTRACT_MAINNET
   },
   MULTICALL: {
-    1: '0xeefba1e63905ef1d7acba5a8513c70307c1ce441'
+    1: import.meta.env.VITE_MULTICALL_CONTRACT_MAINNET
   },
   ENS_REGISTRAR: {
-    1: '0x6Bb87da9Ea7E1B636dBccB1b664239BC38a46fbB'
+    1: import.meta.env.VITE_ENS_REGISTRAR_CONTRACT_MAINNET
   }
 } as const
+
+// Validate required environment variables
+const requiredEnvVars = [
+  'VITE_STAKING_CONTRACT_MAINNET',
+  'VITE_STAKING_CONTRACT_GOERLI',
+  'VITE_TRIBE_CONTRACT_MAINNET',
+  'VITE_MULTICALL_CONTRACT_MAINNET',
+  'VITE_ENS_REGISTRAR_CONTRACT_MAINNET'
+]
+
+requiredEnvVars.forEach(envVar => {
+  if (!import.meta.env[envVar]) {
+    throw new Error(`Missing required environment variable: ${envVar}`)
+  }
+})
 
 export default defineConfig({
   out: 'src/generated.ts',

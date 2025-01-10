@@ -25,3 +25,11 @@ dist-ssr
 *.env
 
 .codegpt
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.development
+.env.test
+.env.production
