@@ -1,6 +1,6 @@
-import { config } from '@config/wagmi';
-import Card from '@src/components/common/card/Card'; // Importuj komponent Card
+import Card from '@src/components/common/card/Card';
 import React from 'react';
+import { config } from '@src/wagmi';
 
 const HealthChecker: React.FC = () => {
   const checkHealth = config && config.chains && config.chains.length > 0;
@@ -25,7 +25,7 @@ const HealthChecker: React.FC = () => {
           <p>Connecting to Wagmi...</p>
         </div>
       )}
-      <Card {...cardProps} /> {/* Użyj komponentu Card */}
+      <Card {...cardProps} />
     </div>
   );
 };
