@@ -1,14 +1,10 @@
 import { Spinner } from 'flowbite-react';
 import React, { Suspense } from 'react';
 import AppRoutes from './AppRoutes';
-import { WagmiProvider } from 'wagmi';
-import { config } from '@src/lib/config/wagmi';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ConnectKitProvider, SIWEProvider } from 'connectkit';
-import type { SIWEConfig } from 'connectkit';
+import type { SIWEConfig, SIWESession } from 'connectkit';
 import axios from 'axios';
-
-const queryClient = new QueryClient();
+import { AuthProvider } from './lib/contexts/AuthContext';
 
 const siweConfig: SIWEConfig = {
   getNonce: async () => {
@@ -27,18 +23,26 @@ const siweConfig: SIWEConfig = {
   },
   getSession: async () => {
     const response = await axios.get('/api/auth/session');
-    return response.data;
+    return response.data as SIWESession;
   },
   signOut: async () => {
     await axios.post('/api/auth/signout');
-    return true;
+    return true; // Return boolean to match expected return type
   }
 };
 
-const App = () => {
+const App: React.FC = () => {
+  const auth = AuthProvider({ children: null });
+  
   return (
-    <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>
+    <auth.Provider value={auth.value}>
+      <Suspense
+        fallback={
+          <div className="">
+            <Spinner color="warning" aria-label="Info spinner example" />
+          </div>
+        }
+      >
         <ConnectKitProvider
           theme="auto"
           mode="light"
@@ -48,19 +52,11 @@ const App = () => {
           }}
         >
           <SIWEProvider {...siweConfig}>
-            <Suspense
-              fallback={
-                <div className="flex items-center justify-center h-screen">
-                  <Spinner color="warning" aria-label="Loading..." />
-                </div>
-              }
-            >
-              <AppRoutes />
-            </Suspense>
+            <AppRoutes />
           </SIWEProvider>
         </ConnectKitProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
+      </Suspense>
+    </auth.Provider>
   );
 };
 

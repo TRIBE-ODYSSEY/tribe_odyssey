@@ -29,7 +29,7 @@ export const Footer: React.FC = () => {
                     {title}
                   </h6>
                   <div className="flex flex-col gap-2">
-                    {links.map((link: { name: string; path: string }) =>
+                    {links.map((link) =>
                       link.path.startsWith('http') ? (
                         <a
                           key={link.name}

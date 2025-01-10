@@ -54,7 +54,11 @@ const useAuth = () => {
   );
 
   const logout = useCallback(async () => {
-    await disconnectAsync();
+    try {
+      await disconnectAsync();
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   }, [disconnectAsync]);
 
   return { logout, login };

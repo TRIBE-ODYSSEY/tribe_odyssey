@@ -69,8 +69,7 @@
     "build": "tsc -b && vite build",
     "dev": "vite",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "wagmi": "wagmi generate"
+    "preview": "vite preview"
   },
   "resolutions": {
     "@types/react": "18.3.1",

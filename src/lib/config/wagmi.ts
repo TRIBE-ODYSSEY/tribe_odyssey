@@ -1,20 +1,27 @@
-import { createConfig, http } from 'wagmi'
-import { mainnet, goerli } from 'wagmi/chains'
-import { connectkit } from 'connectkit'
+import { http, createConfig } from 'wagmi'
+import { mainnet, sepolia } from 'wagmi/chains'
+import { injected, metaMask, walletConnect } from 'wagmi/connectors'
+import { getDefaultConfig } from "connectkit";
 
-export const config = createConfig({
-  chains: [mainnet, goerli],
-  connectors: [
-    connectkit({
-      options: {
-        walletConnectProjectId: process.env.VITE_WALLETCONNECT_PROJECT_ID || 'e6937fb240cd6f4df6739b75bf0b324d',
-      }
-    })
-  ],
-  transports: {
-    [mainnet.id]: http(),
-    [goerli.id]: http()
-  }
-})
+// Your WalletConnect project ID
+const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID
 
-  
+export const config = createConfig(
+  getDefaultConfig({
+    appName: 'Tribe Odyssey',
+    appIcon: 'https://tribeodyssey.net/favicon.ico',
+    appDescription: 'Tribe Odyssey - The Expanse',
+    appUrl: 'https://tribeodyssey.net',
+    chains: [mainnet, sepolia],
+    transports: {
+      [mainnet.id]: http(),
+      [sepolia.id]: http(),
+    },
+    connectors: [
+      injected(),
+      metaMask(),
+      walletConnect({ projectId }),
+    ],
+    walletConnectProjectId: projectId,
+  })
+)

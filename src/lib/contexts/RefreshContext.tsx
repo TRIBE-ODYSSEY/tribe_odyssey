@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState, useContext } from 'react';
+import { createContext, useEffect, useState } from 'react';
 
 const FAST_INTERVAL = 10000; // 10 seconds
 const SLOW_INTERVAL = 60000; // 60 seconds
@@ -15,11 +15,11 @@ export const RefreshContextProvider = ({ children }: { children: React.ReactNode
   const [slow, setSlow] = useState(0);
 
   useEffect(() => {
-    const fastInterval = setInterval(() => {
+    const fastInterval = setInterval(async () => {
       setFast((prev) => prev + 1);
     }, FAST_INTERVAL);
 
-    const slowInterval = setInterval(() => {
+    const slowInterval = setInterval(async () => {
       setSlow((prev) => prev + 1);
     }, SLOW_INTERVAL);
 
@@ -30,16 +30,13 @@ export const RefreshContextProvider = ({ children }: { children: React.ReactNode
   }, []);
 
   return (
-    <RefreshContext.Provider value={{ fast, slow }}>
+    <RefreshContext.Provider
+      value={{
+        fast,
+        slow,
+      }}
+    >
       {children}
     </RefreshContext.Provider>
   );
-};
-
-export const useRefresh = () => {
-  const context = useContext(RefreshContext);
-  if (context === undefined) {
-    throw new Error('useRefresh must be used within a RefreshContextProvider');
-  }
-  return context;
 }; 

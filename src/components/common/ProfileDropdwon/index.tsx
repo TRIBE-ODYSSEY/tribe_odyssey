@@ -1,41 +1,37 @@
-import { FC } from "react"
-import { Menu } from "@headlessui/react"
-import { useLocation, useNavigate } from "react-router-dom"
-import { RiArrowDropDownLine, RiArrowDropUpLine, RiLogoutBoxRLine, RiAccountCircleLine } from "react-icons/ri"
-import { useAccount, useDisconnect, useReadContract } from 'wagmi'
-import { useSIWE } from 'connectkit'
-import { stakingAbi, stakingAddress } from "@src/generated"
+import { FC } from "react";
+import { Menu } from "@headlessui/react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { RiArrowDropDownLine, RiArrowDropUpLine, RiLogoutBoxRLine, RiAccountCircleLine } from "react-icons/ri";
+import { useAccount } from 'wagmi';
+import useAuth from "@src/lib/hooks/useAuth";
+import useUserStaked from "@src/lib/hooks/useUserStaked";
+import { connectorLocalStorageKey } from "@src/lib/hooks";
 
 interface ProfileDropdownProps {
-  trigger: number
+  trigger: number;
 }
 
 const ProfileDropdown: FC<ProfileDropdownProps> = () => {
-  const { address, isConnected } = useAccount()
-  const { disconnect } = useDisconnect()
-  const { signOut } = useSIWE()
-  const location = useLocation()
-  const navigate = useNavigate()
+  const { address, isConnected } = useAccount();
+  const { logout } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const { data: userStaked } = useReadContract({
-    address: stakingAddress[1], // or use chainId for dynamic network
-    abi: stakingAbi,
-    functionName: 'getUserStaked',
-    args: [address || '0x0000000000000000000000000000000000000000']
-  })
+  const { userStaked } = useUserStaked(0);
 
-  if (!isConnected || !address) return null
+  if (!isConnected || !address) return null;
 
   const handleProfileClick = () => {
-    navigate("/profile")
-  }
+    navigate("/profile");
+  };
 
-  const handleLogout = async () => {
-    await signOut()
-    disconnect()
-  }
+  const handleLogout = () => {
+    logout();
+    window.localStorage.removeItem(connectorLocalStorageKey);
+  };
 
-  const displayAddress = address ? `${address.slice(0, 6)}...${address.slice(-4)}` : ''
+  // Format address manually
+  const displayAddress = address ? `${address.slice(0, 6)}...${address.slice(-4)}` : '';
 
   return (
     <Menu>
@@ -105,7 +101,7 @@ const ProfileDropdown: FC<ProfileDropdownProps> = () => {
         </div>
       )}
     </Menu>
-  )
-}
+  );
+};
 
-export default ProfileDropdown
+export default ProfileDropdown;
