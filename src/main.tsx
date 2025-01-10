@@ -1,24 +1,33 @@
-// src/main.tsx
-// import React from 'react';
+import '@rainbow-me/rainbowkit/styles.css';
 import ErrorBoundary from '@src/components/common/errors/ErrorBoundary.tsx';
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import '../index.css';
 import App from './AppRoutes.tsx';
 import Layout from './components/common/layout/Layout';
-import { Web3Provider } from './lib/config/web3Provider';
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { WagmiProvider } from 'wagmi';
+import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { config } from './wagmi';
+
+const queryClient = new QueryClient();
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
     <BrowserRouter>
-      <Web3Provider>
-        <ErrorBoundary>
-          <Layout>
-            <App />
-          </Layout>
-        </ErrorBoundary>
-      </Web3Provider>
+      <WagmiProvider config={config}>
+        <QueryClientProvider client={queryClient}>
+          <RainbowKitProvider>
+            <ErrorBoundary>
+              <Layout>
+                <App />
+              </Layout>
+            </ErrorBoundary>
+          </RainbowKitProvider>
+        </QueryClientProvider>
+      </WagmiProvider>
     </BrowserRouter>
-  </StrictMode>
+  </React.StrictMode>
 );

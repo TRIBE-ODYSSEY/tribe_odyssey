@@ -1,13 +1,11 @@
 import useLazyLoading from '@src/lib/hooks/useLazyLoading';
 import React, { useEffect, useState } from 'react';
 import { FaBars, FaInstagram, FaTimes, FaTwitter } from 'react-icons/fa';
-import { ConnectKitButton } from 'connectkit';
-import ProfileDropdown from '@src/components/common/ProfileDropdwon';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { menuConfig } from '@src/lib/config/menuConfig';
 import { Menu } from '@headlessui/react';
 import { Link } from 'react-router-dom';
 import { RiArrowDropDownLine, RiArrowDropUpLine } from 'react-icons/ri';
-import { useAccount } from 'wagmi';
 
 const MenuDropdown: React.FC<{ title: string; items: Array<{ name: string; path: string }> }> = ({ 
   title, 
@@ -95,15 +93,9 @@ const NavMenu: React.FC<{ isMobile?: boolean; onClose?: () => void }> = ({ isMob
 };
 
 const WalletSection: React.FC = () => {
-  const { isConnected } = useAccount();
-  
   return (
     <div className="flex items-center gap-2">
-      {isConnected ? (
-        <ProfileDropdown trigger={0} />
-      ) : (
-        <ConnectKitButton />
-      )}
+      <ConnectButton />
     </div>
   );
 };
