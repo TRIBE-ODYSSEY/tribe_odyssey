@@ -9,31 +9,24 @@ import Layout from './components/common/layout/Layout';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
-import { createConfig, http } from 'wagmi'
-import { mainnet, base } from 'wagmi/chains'
+import { WagmiConfig } from 'wagmi'
+import { config } from './wagmi'
 
 const queryClient = new QueryClient();
-
-// Create wagmi config
-const wagmiConfig = createConfig({
-  chains: [mainnet, base],
-  transports: {
-    [mainnet.id]: http(),
-    [base.id]: http(),
-  },
-})
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider>
-          <ErrorBoundary>
-            <Layout>
-              <App />
-            </Layout>
-          </ErrorBoundary>
-        </RainbowKitProvider>
+        <WagmiConfig config={config}>
+          <RainbowKitProvider>
+            <ErrorBoundary>
+              <Layout>
+                <App />
+              </Layout>
+            </ErrorBoundary>
+          </RainbowKitProvider>
+        </WagmiConfig>
       </QueryClientProvider>
     </BrowserRouter>
   </React.StrictMode>
