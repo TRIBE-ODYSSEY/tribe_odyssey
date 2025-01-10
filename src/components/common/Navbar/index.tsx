@@ -4,8 +4,9 @@ import { FaBars, FaInstagram, FaTimes, FaTwitter } from 'react-icons/fa';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { menuConfig } from '@src/lib/config/menuConfig';
 import { Menu } from '@headlessui/react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { RiArrowDropDownLine, RiArrowDropUpLine } from 'react-icons/ri';
+import { FaDiscord } from 'react-icons/fa';
 
 const MenuDropdown: React.FC<{ title: string; items: Array<{ name: string; path: string }> }> = ({ 
   title, 
@@ -93,9 +94,24 @@ const NavMenu: React.FC<{ isMobile?: boolean; onClose?: () => void }> = ({ isMob
 };
 
 const WalletSection: React.FC = () => {
+  const location = useLocation();
+  const isStakingPath = location.pathname.includes('/staking');
+
   return (
     <div className="flex items-center gap-2">
-      <ConnectButton />
+      {isStakingPath ? (
+        <ConnectButton />
+      ) : (
+        <a
+          href="https://discord.gg/T7Bv5JsFYd"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 w-[130px] h-[40px] justify-center bg-gradient-to-r from-white/40 via-white/80 to-white hover:bg-gradient-to-r hover:from-white/10 hover:via-white/10 hover:to-white/10 text-white rounded-lg transition-all shadow-[2_4_8px_rgba(255,255,255,0.08)]"
+        >
+          <FaDiscord className="text-xl" />
+          Join Discord
+        </a>
+      )}
     </div>
   );
 };
