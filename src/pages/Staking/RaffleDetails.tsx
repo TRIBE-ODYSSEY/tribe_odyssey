@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import PageTitle from '@src/components/common/PageTitle';
 import PageLayout from '@src/components/common/layout/PageLayout';
 import Button from '@src/components/common/Button';
-// @ts-ignore
 import { useAccount } from 'wagmi';
 import { toast } from 'react-toastify';
 import { RaffleDetails as IRaffleDetails } from '@src/lib/types/raffle';
