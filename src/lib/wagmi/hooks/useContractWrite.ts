@@ -1,12 +1,10 @@
 import { useState } from 'react'
 import { type Hash, type Address } from 'viem'
-import { writeContract } from '../actions/contracts'
-
-type ContractName = 'joinMany' | 'leaveMany' // Add other contract function names as needed
+import { writeContract, type ContractName as ActionContractName } from '../actions/contracts'
 
 interface UseContractWriteProps {
   address: Address
-  functionName: ContractName 
+  functionName: string
 }
 
 export function useContractWrite({ address, functionName }: UseContractWriteProps) {
@@ -18,7 +16,7 @@ export function useContractWrite({ address, functionName }: UseContractWriteProp
     try {
       setIsLoading(true)
       setError(null)
-      const txHash = await writeContract(address, functionName as ContractName, args, {})
+      const txHash = await writeContract(address, 'staking' as ActionContractName, functionName, args)
       setHash(txHash)
       return txHash
     } catch (err) {
