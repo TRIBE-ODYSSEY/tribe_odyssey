@@ -13,14 +13,14 @@ const StakingStats: React.FC = () => {
     functionName: 'getUserStakedNfTs',
     args: [address!, '0x0'],
     account: address,
-  });
+  }) as { data: any[] };  // Type assertion to handle unknown type
 
   const { data: poolInfo = { 0: BigInt(0) } } = useReadContract({
     address: '0x220224422F2C2A9781F3EB5A0aA36F661DA9aA8F',  // Your staking contract address
     abi: stakingABI,
     functionName: 'getPoolInfo',
     args: [BigInt(0)],
-  });
+  }) as { data: { 0: bigint } };  // Type assertion to handle unknown type
 
   const stats = [
     { 
@@ -29,15 +29,15 @@ const StakingStats: React.FC = () => {
     },
     { 
       label: 'Total NANA/Day', 
-      value: (userStakedNFTs.length * 10).toString()
+      value: ((userStakedNFTs?.length || 0) * 10).toString()
     },
     { 
       label: 'Your Staked', 
-      value: userStakedNFTs.length.toString()
+      value: (userStakedNFTs?.length || 0).toString()
     },
     { 
       label: 'Your NANA/Day', 
-      value: (userStakedNFTs.length * 10).toString()
+      value: ((userStakedNFTs?.length || 0) * 10).toString()
     },
   ];
 

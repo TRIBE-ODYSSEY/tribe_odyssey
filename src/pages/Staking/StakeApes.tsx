@@ -101,7 +101,7 @@ const StakeApes: React.FC = () => {
             </p>
           </div>
           
-          <StakingStats refreshTrigger={refreshTrigger} />
+          <StakingStats />
           
           <StakingTabs 
             onStake={handleStake}

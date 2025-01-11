@@ -24,7 +24,9 @@ const UnstakeTab: React.FC<UnstakeTabProps> = ({
   
   const { write: unstakeNFTs, isLoading: isPending } = useContractWrite({
     address: '0x77f649385ca963859693c3d3299d36dfc7324eb9',  // Your staking contract address
-    abi: stakingABI,
+    config: {
+      abi: stakingABI
+    },
     functionName: 'leaveMany'
   });
 

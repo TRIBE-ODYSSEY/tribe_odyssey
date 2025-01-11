@@ -4,7 +4,7 @@ import { erc20ABI } from '@src/lib/config/abi/erc20.json'
 import { erc721ABI } from '@src/lib/config/abi/erc721.json'
 import { stakingABI } from '@src/lib/config/abi/staking.json'
 import { tribeABI } from '@src/lib/config/abi/tribe.json'
-import { multicallABI } from '@src/lib/config/abi/multicall.json'
+import { multiCallABI } from '@src/lib/config/abi/multiCall.json'
 import { EthRegistrarSubdomainRegistrarABI } from '@src/lib/config/abi/EthRegistrarSubdomainRegistrar.json'
 
 // Contract type mapping
@@ -13,7 +13,7 @@ export type ContractName =
   | 'erc721'
   | 'staking'
   | 'tribe'
-  | 'multicall'
+  | 'multiCall'
   | 'ethRegistrarSubdomainRegistrar'
 
 // ABI mapping
@@ -22,7 +22,7 @@ const abiMap = {
   erc721: erc721ABI,
   staking: stakingABI,
   tribe: tribeABI,
-  multicall: multicallABI,
+  multiCall: multiCallABI,
   ethRegistrarSubdomainRegistrar: EthRegistrarSubdomainRegistrarABI,
 } as const
 
@@ -52,7 +52,7 @@ export async function writeContract(
     abi: abiMap[contractName],
     functionName,
     args,
-    account: walletClient.account,
+    account: walletClient.account as Account,
   })
   return hash
 }

@@ -24,8 +24,10 @@ const StakeTab: React.FC<StakeTabProps> = ({
 
   const { write: stakeNFTs, isLoading: isPending } = useContractWrite({
     address: '0x77f649385ca963859693c3d3299d36dfc7324eb9',  // Your staking contract address
-    abi: stakingABI,
-    functionName: 'joinMany'
+    functionName: 'joinMany',
+    config: {
+      abi: stakingABI
+    }
   });
 
   useEffect(() => {

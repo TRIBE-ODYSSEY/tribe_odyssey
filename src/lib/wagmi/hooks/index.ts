@@ -3,6 +3,7 @@ import { usePublicClient } from './usePublicClient'
 import { useContractWrite } from './useContractWrite'
 import { type WalletClient, type PublicClient, type Transport, type Account } from 'viem'
 import { type Chain } from 'viem/chains'
+import { writeContract } from '../actions/contracts'
 
 // Re-export wagmi core hooks with proper types
 export {
@@ -17,13 +18,16 @@ export {
   useSwitchChain,
   useTransaction,
   useWaitForTransactionReceipt,
-} from '@wagmi/core'
+  useReadContract,
+  useContractRead,
+} from 'wagmi'
 
 // Export our custom hooks
 export {
   useWalletClient,
   usePublicClient,
   useContractWrite,
+  writeContract,
 }
 
 // Export types
@@ -54,6 +58,8 @@ export const wagmiHooks = {
   useSwitchChain,
   useTransaction,
   useWaitForTransactionReceipt,
+  useReadContract,
+  useContractRead,
 } as const
 
 // Export hook types
@@ -62,6 +68,5 @@ export type {
   UseContractWriteConfig,
   UseContractWriteResult,
   UseReadContractConfig,
-  UseReadContractResult,  
-  useReadContract  
+  UseReadContractResult, 
 } from './useContractWrite'
