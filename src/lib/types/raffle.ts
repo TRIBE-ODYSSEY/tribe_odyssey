@@ -1,78 +1,39 @@
-export interface RaffleData {
-    id: string;
-    nft_id: string;
-    project_name: string;
-    project_status: 'Open' | 'Closed' | 'Finished';
-    prize_image: string;
-    description: string;
-    raffle_at: string;
-    ended_at?: string;
-    winner?: string;
-    entry_count: number;
-    conditions: RaffleCondition[];
-  }
-  
-  export interface RaffleCondition {
-    id: string;
+export interface Raffle {
+  id: string;
+  title: string;
+  description: string;
+  endDate: Date;
+  prizeImage: string;
+  prizeValue: string;
+  project_key: string;
+  nft_id: string;
+  winner?: string;
+  conditions: {
+    entry: number;
     points: number;
-    entry: number;
-  }
-  
-  export interface Participant {
-    id: string;
+  }[];
+  only_allow_once: boolean;
+  participantCount: number;
+  status: 'active' | 'completed' | 'cancelled';
+}
+
+export interface RaffleDetails extends Raffle {
+  participants: {
     address: string;
-    entry: number;
-    entered_at: string;
-    user?: {
-      name: string;
-      profile_image: string;
-      btc_address?: string;
-    };
-  }
-  
-  export interface Activity {
-    id: string;
-    address: string;
-    entry: number;
-    entered_at: string;
-    user?: {
-      name: string;
-      profile_image: string;
-    };
-  }
-  
-  export interface RaffleWinner {
-    address: string;
-    name?: string;
-    profile_image?: string;
-    btc_address?: string;
-  }
-  
-  // API Response types
-  export interface RaffleResponse {
-    raffle: RaffleData;
-    participants: Participant[];
-    activities: Activity[];
-    winner?: RaffleWinner;
-  }
-  
-  export interface RafflesListResponse {
-    raffles: RaffleData[];
-    total: number;
-    page: number;
-    limit: number;
-  }
-  
-  // Request types
-  export interface EnterRaffleRequest {
-    id: string;
     points: number;
-    address: string;
-    signature: string;
-  }
-  
-  export interface RaffleQueryParams {
-    status?: 'Open' | 'Closed' | 'Finished';
-    page?: number;
-    limit?: number;
-  }
+    joinedAt: Date;
+  }[];
+}
+
+export interface CompletedRaffle {
+  id: string;
+  title: string;
+  description: string;
+  endDate: Date;
+  ended_at: string;
+  prizeImage: string;
+  winner: string;
+  prizeValue: string;
+  participantCount: number;
+  project_key: string;
+}

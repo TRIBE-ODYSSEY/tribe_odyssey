@@ -17,6 +17,46 @@ interface Participant {
   Weight: number;
 }
 
+interface Raffle {
+  id: string;
+  title: string;
+  description: string;
+  endDate: Date;
+  prizeImage: string;
+  prizeValue: string;
+  project_key: string;
+  nft_id: string;
+  winner?: string;
+  conditions: {
+    entry: number;
+    points: number;
+  }[];
+  only_allow_once: boolean;
+  participantCount: number;
+  status: 'active' | 'completed' | 'cancelled';
+}
+
+interface RaffleDetails extends Raffle {
+  participants: {
+    address: string;
+    points: number;
+    joinedAt: Date;
+  }[];
+}
+
+interface CompletedRaffle {
+  id: string;
+  title: string;
+  description: string;
+  endDate: Date;
+  ended_at: string;
+  prizeImage: string;
+  winner: string;
+  prizeValue: string;
+  participantCount: number;
+  project_key: string;
+}
+
 class RandomPickerService {
   private token: string | null = null;
   private config: RandomPickerConfig;
@@ -157,6 +197,105 @@ class RandomPickerService {
       }
     }
     return [];
+  }
+
+  async getActiveRaffles(): Promise<Raffle[]> {
+    if (!this.token) await this.login();
+    
+    try {
+      const response = await axios.post(`${this.config.baseUrl}/Project.asmx/ProjectSelectList`, {
+        projectSelectListInput: {
+          ID_Login: this.token,
+          Status: 'Active'
+        }
+      });
+
+      return response.data.ProjectSelectListResult.map((project: any) => ({
+        id: project.ID,
+        title: project.DisplayName,
+        description: project.Conditions || '',
+        endDate: new Date(project.DrawDate),
+        prizeImage: project.ImageURL || '/images/placeholder.png',
+        prizeValue: project.Prizes[0]?.PrizeName || 'N/A',
+        project_key: project.ID_Method,
+        nft_id: project.ID_NFT || '',
+        conditions: project.EntryPoints || [],
+        only_allow_once: project.OnlyAllowOnce || false,
+        participantCount: project.ParticipantCount || 0,
+        status: 'active'
+      }));
+    } catch (error) {
+      console.error('Failed to fetch active raffles:', error);
+      throw error;
+    }
+  }
+
+  async getRaffleDetails(raffleId: string): Promise<RaffleDetails | null> {
+    if (!this.token) await this.login();
+
+    try {
+      const response = await axios.post(`${this.config.baseUrl}/Project.asmx/ProjectSelect`, {
+        projectSelectInput: {
+          ID_Login: this.token,
+          ID: raffleId
+        }
+      });
+
+      const project = response.data.ProjectSelectResult;
+      if (!project) return null;
+
+      return {
+        id: project.ID,
+        title: project.DisplayName,
+        description: project.Conditions || '',
+        endDate: new Date(project.DrawDate),
+        prizeImage: project.ImageURL || '/images/placeholder.png',
+        prizeValue: project.Prizes[0]?.PrizeName || 'N/A',
+        project_key: project.ID_Method,
+        nft_id: project.ID_NFT || '',
+        conditions: project.EntryPoints || [],
+        only_allow_once: project.OnlyAllowOnce || false,
+        participantCount: project.ParticipantCount || 0,
+        status: project.Status.toLowerCase(),
+        participants: project.Participants.map((p: any) => ({
+          address: p.PublicInfo,
+          points: p.Weight,
+          joinedAt: new Date(p.CreatedAt)
+        }))
+      };
+    } catch (error) {
+      console.error('Failed to fetch raffle details:', error);
+      throw error;
+    }
+  }
+
+  async getCompletedRaffles(): Promise<CompletedRaffle[]> {
+    if (!this.token) await this.login();
+    
+    try {
+      const response = await axios.post(`${this.config.baseUrl}/Project.asmx/ProjectSelectList`, {
+        projectSelectListInput: {
+          ID_Login: this.token,
+          Status: 'Complete'
+        }
+      });
+
+      return response.data.ProjectSelectListResult.map((project: any) => ({
+        id: project.ID,
+        title: project.DisplayName,
+        description: project.Conditions || '',
+        endDate: new Date(project.DrawDate),
+        ended_at: project.DrawDate,
+        prizeImage: project.ImageURL || '/images/placeholder.png',
+        winner: project.Winner?.PublicInfo || '',
+        prizeValue: project.Prizes[0]?.PrizeName || 'N/A',
+        participantCount: project.ParticipantCount || 0,
+        project_key: project.ID_Method
+      }));
+    } catch (error) {
+      console.error('Failed to fetch completed raffles:', error);
+      throw error;
+    }
   }
 }
 

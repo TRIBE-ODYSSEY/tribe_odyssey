@@ -1,349 +1,408 @@
 import React, { useState, useEffect } from 'react';
-import PageTitle from '@src/components/common/PageTitle';
-import PageLayout from '@src/components/common/layout/PageLayout';
-// @ts-ignore
-import { useAccount } from 'wagmi';
-import { motion, AnimatePresence } from 'framer-motion';
-import Button from '@src/components/common/Button';
-import { toast } from 'react-toastify';
-import RaffleFormModal from '@src/components/Raffles/RaffleFormModal';
 import { useNavigate } from 'react-router-dom';
-import { randomPicker } from '@src/lib/services/randomPicker';
-import AddressAvatar from '@src/components/common/AddressAvatar';
+// @ts-ignore
+import { useAccount, useSignMessage } from 'wagmi';
+import { toast } from 'react-toastify';
+import moment from 'moment';
+import axios from 'axios';
+import PageLayout from '@src/components/common/layout/PageLayout';
+import PageTitle from '@src/components/common/PageTitle';
+import Button from '@src/components/common/Button';
 
-
-interface RaffleData {
+interface RaffleFormData {
   id: string;
-  title: string;
+  name: string;
   description: string;
-  endDate: Date;
-  prizeImage: string;
-  totalTickets: number;
-  ticketsSold: number;
-  prizeValue: string;
-  ticketPrice: string;
-  status: 'active' | 'completed' | 'draft';
-  participants: {
-    address: string;
-    tickets: number;
-    joinedAt: Date;
-  }[];
-  winner?: string;
-  project_key?: string;
+  prize_name: string;
+  nft_id: number;
+  raffle_at: number;
+  entry: number[];
+  points: number[];
+  only_allow_once: boolean;
+}
+
+interface Raffle {
+  id: string;
+  project_name: string;
+  description: string;
+  prize_image: string;
+  nft_id: string;
+  raffle_at: number;
+  prizes: { name: string }[];
+  conditions: { entry: number; points: number }[];
+  only_allow_once: boolean;
 }
 
 const ADMIN_ADDRESSES = [
-  '0xc570F1B8D14971c6cd73eA8db4F7C44E4AAdC6f2',
+  '0xc570F1B8D14971c6cd73eA8db4F7C44E4AAdC6f2', // Your admin address
 ];
 
 const RafflesAdmin: React.FC = () => {
   const { address } = useAccount();
+  const { signMessageAsync } = useSignMessage();
   const navigate = useNavigate();
-  const [isCreating, setIsCreating] = useState(false);
-  const [selectedRaffle, setSelectedRaffle] = useState<RaffleData | null>(null);
-  const [raffles, setRaffles] = useState<RaffleData[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [trigger, setTrigger] = useState(0);
+  const [raffles, setRaffles] = useState<Raffle[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const checkAuthAndFetch = async () => {
+    if (!address || !ADMIN_ADDRESSES.includes(address)) {
+      toast.error('Unauthorized access');
+      navigate('/raffles');
+      return;
+    }
+  }, [address, navigate]);
+
+  useEffect(() => {
+    const fetchRaffles = async () => {
       try {
-        if (!address) {
-          toast.error('Please connect your wallet');
-          navigate('/raffles');
-          return;
-        }
-
-        if (!ADMIN_ADDRESSES.includes(address)) {
-          toast.error('Unauthorized access');
-          navigate('/raffles');
-          return;
-        }
-
-        await fetchRaffles();
+        const response = await axios.get('/staking/raffles');
+        setRaffles(response.data);
       } catch (error) {
-        console.error('Error in auth check:', error);
-        toast.error('Something went wrong');
-      } finally {
-        setIsLoading(false);
+        console.error('Failed to fetch raffles:', error);
+        toast.error('Failed to load raffles');
       }
     };
 
-    checkAuthAndFetch();
-  }, [address, navigate]);
+    fetchRaffles();
+  }, [trigger]);
 
-  const fetchRaffles = async () => {
+  const [formData, setFormData] = useState<RaffleFormData>({
+    id: "",
+    name: "",
+    description: "",
+    prize_name: "",
+    nft_id: 0,
+    raffle_at: 0,
+    entry: [0, 0, 0, 0],
+    points: [0, 0, 0, 0],
+    only_allow_once: false,
+  });
+
+  const [image, setImage] = useState<File>();
+  const [imagePreview, setImagePreview] = useState<string>();
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      setImage(event.target.files[0]);
+      setImagePreview(URL.createObjectURL(event.target.files[0]));
+    }
+  };
+
+  const handleInputChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = event.target;
+
+    if (name.includes('entry') || name.includes('points')) {
+      const index = parseInt(name.match(/\[(\d+)\]/)?.[1] || '0');
+      const field = name.includes('entry') ? 'entry' : 'points';
+      
+      setFormData(prev => ({
+        ...prev,
+        [field]: prev[field].map((val, i) => 
+          i === index ? parseInt(value) || 0 : val
+        )
+      }));
+      return;
+    }
+
+    if (name === 'only_allow_once') {
+      setFormData(prev => ({
+        ...prev,
+        only_allow_once: !prev.only_allow_once
+      }));
+      return;
+    }
+
+    if (name === 'raffle_at') {
+      setFormData(prev => ({
+        ...prev,
+        raffle_at: moment.utc(value).valueOf() / 1000
+      }));
+      return;
+    }
+
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async () => {
     try {
-      // Replace with actual API call
-      const mockRaffles: RaffleData[] = [
-        {
-          id: '1',
-          title: 'Exclusive Tribe NFT',
-          description: 'Win a rare Tribe NFT from our exclusive collection',
-          endDate: new Date('2024-04-01'),
-          prizeImage: '/images/placeholder.png',
-          totalTickets: 100,
-          ticketsSold: 45,
-          prizeValue: '2 ETH',
-          ticketPrice: '0.1 ETH',
-          status: 'active',
-          participants: []
+      setIsLoading(true);
+
+      if (!address) {
+        toast.error('Please connect wallet');
+        return;
+      }
+
+      // Validation
+      if (formData.id === '' && !image) {
+        toast.error('Please select image!');
+        return;
+      }
+
+      const requiredFields = ['name', 'description', 'prize_name', 'nft_id', 'raffle_at'];
+      for (const field of requiredFields) {
+        if (!formData[field as keyof RaffleFormData]) {
+          toast.error(`Please input ${field.replace('_', ' ')}!`);
+          return;
         }
-      ];
-      setRaffles(mockRaffles);
-    } catch (error) {
-      console.error('Failed to fetch raffles:', error);
-      toast.error('Failed to load raffles');
-    }
-  };
-
-  const handleCreateRaffle = async (formData: FormData) => {
-    try {
-      // Add validation
-      if (!formData.get('title') || !formData.get('description')) {
-        toast.error('Please fill in all required fields');
-        return;
       }
 
-      const newRaffle: RaffleData = {
-        id: String(Date.now()),
-        title: formData.get('title') as string,
-        description: formData.get('description') as string,
-        endDate: new Date(formData.get('endDate') as string),
-        prizeImage: formData.get('prizeImage') as string,
-        totalTickets: Number(formData.get('totalTickets')),
-        ticketsSold: 0,
-        prizeValue: formData.get('prizeValue') as string,
-        ticketPrice: formData.get('ticketPrice') as string,
-        status: 'draft',
-        participants: []
-      };
-
-      // Replace with actual API call
-      setRaffles([...raffles, newRaffle]);
-      toast.success('Raffle created successfully!');
-      setIsCreating(false);
-    } catch (error) {
-      console.error('Failed to create raffle:', error);
-      toast.error('Failed to create raffle');
-    }
-  };
-
-  const handleUpdateRaffle = async (raffleId: string, updates: Partial<RaffleData>) => {
-    try {
-      // Replace with actual API call
-      setRaffles(raffles.map(raffle => 
-        raffle.id === raffleId 
-          ? { ...raffle, ...updates }
-          : raffle
-      ));
-      toast.success('Raffle updated successfully!');
-    } catch (error) {
-      console.error('Failed to update raffle:', error);
-      toast.error('Failed to update raffle');
-    }
-  };
-
-  const handleEndRaffle = async (raffleId: string) => {
-    try {
-      // Add confirmation dialog
-      if (!window.confirm('Are you sure you want to end this raffle?')) {
-        return;
-      }
-
-      await handleUpdateRaffle(raffleId, { status: 'completed' });
-    } catch (error) {
-      console.error('Failed to end raffle:', error);
-      toast.error('Failed to end raffle');
-    }
-  };
-
-  const handleDrawWinner = async (raffleId: string) => {
-    try {
-      const raffle = raffles.find(r => r.id === raffleId);
-      if (!raffle || raffle.participants.length === 0) {
-        toast.error('No participants in this raffle');
-        return;
-      }
-
-      // Create RandomPicker project
-      const projectId = await randomPicker.createProject({
-        displayName: raffle.title,
-        conditions: raffle.description,
-        prizes: [{ Count: 1, PrizeName: raffle.prizeValue }]
-      });
-
-      // Add all participants
-      await randomPicker.addMultipleParticipants(
-        projectId,
-        raffle.participants.map(p => ({
-          PublicInfo: p.address,
-          PrivateInfo: '',
-          Weight: p.tickets
+      const entryPoints = formData.entry
+        .map((entry, i) => ({
+          entry,
+          points: formData.points[i]
         }))
-      );
+        .filter(ep => ep.entry > 0 && ep.points > 0);
 
-      // Draw winner
-      await randomPicker.drawWinner(projectId);
+      const form = new FormData();
+      if (formData.id) form.append('id', formData.id);
+      if (image) form.append('image', image);
 
-      // Update raffle with project key and winner
-      await handleUpdateRaffle(raffleId, { 
-        project_key: projectId,
-        status: 'completed',
-        winner: raffle.participants[0].address
+      Object.entries(formData).forEach(([key, value]) => {
+        if (key !== 'entry' && key !== 'points') {
+          form.append(key, String(value));
+        }
       });
 
-      toast.success('Winner drawn successfully!');
+      form.append('conditions', JSON.stringify(entryPoints));
+      form.append('address', address);
+
+      const { data: { nonce } } = await axios.get('/user/nonce', {
+        params: { address }
+      });
+
+      const signature = await signMessageAsync({
+        message: `I am signing my one-time nonce: ${nonce}`
+      });
+
+      form.append('signature', signature);
+
+      const endpoint = formData.id ? '/staking/update-raffle' : '/staking/create-raffle';
+      await axios.post(endpoint, form);
+
+      toast.success(`Successfully ${formData.id ? 'updated' : 'created'}!`);
+      setTrigger(prev => prev + 1);
+      navigate('/raffles');
+
     } catch (error) {
-      console.error('Failed to draw winner:', error);
-      toast.error('Failed to draw winner');
+      console.error('Submit error:', error);
+      toast.error('Failed to submit raffle');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  if (isLoading) {
-    return (
-      <PageLayout>
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-red-500"></div>
-        </div>
-      </PageLayout>
-    );
-  }
+  const handleFinish = async (id: string) => {
+    try {
+      const { data: { nonce } } = await axios.get('/user/nonce', { 
+        params: { address } 
+      });
+
+      const signature = await signMessageAsync({
+        message: `I am signing my one-time nonce: ${nonce}`
+      });
+
+      await axios.post('/staking/finish-raffle', {
+        address,
+        signature,
+        id
+      });
+
+      toast.success('Successfully finished!');
+      setTrigger(prev => prev + 1);
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to finish raffle');
+    }
+  };
+
+  const handleClose = async (id: string) => {
+    try {
+      const { data: { nonce } } = await axios.get('/user/nonce', { 
+        params: { address } 
+      });
+
+      const signature = await signMessageAsync({
+        message: `I am signing my one-time nonce: ${nonce}`
+      });
+
+      await axios.post('/staking/close-raffle', {
+        address,
+        signature,
+        id
+      });
+
+      toast.success('Successfully closed!');
+      setTrigger(prev => prev + 1);
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to close raffle');
+    }
+  };
+
+  const handleEdit = (id: string) => {
+    const raffle = raffles.find(r => r.id === id);
+    if (!raffle) return;
+
+    setFormData({
+      id: raffle.id,
+      name: raffle.project_name,
+      description: raffle.description,
+      prize_name: raffle.prizes[0].name,
+      nft_id: +raffle.nft_id,
+      raffle_at: moment.utc(raffle.raffle_at).valueOf() / 1000,
+      entry: raffle.conditions.map(c => c.entry),
+      points: raffle.conditions.map(c => c.points),
+      only_allow_once: raffle.only_allow_once ?? false,
+    });
+    setImagePreview(raffle.prize_image);
+  };
 
   return (
     <PageLayout>
-      <div className="container mx-auto px-4 py-8 sm:py-12">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex justify-between items-center mb-8">
-            <PageTitle>Raffle Administration</PageTitle>
-            <Button onClick={() => setIsCreating(true)}>
-              Create New Raffle
-            </Button>
-          </div>
-
-          {/* Raffle List */}
-          <div className="space-y-6">
+      <div className="container mx-auto px-4 py-8">
+        <PageTitle>Raffle Administration</PageTitle>
+        
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-4">Active Raffles</h2>
+          <div className="space-y-4">
             {raffles.map((raffle) => (
-              <motion.div
-                key={raffle.id}
-                layout
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 overflow-hidden"
-              >
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                  <img 
-                    src={raffle.prizeImage} 
-                    alt={raffle.title}
-                    className="w-full h-48 md:h-full object-cover"
-                  />
-                  <div className="p-6 md:col-span-3">
-                    <div className="flex justify-between items-start mb-4">
-                      <div>
-                        <h3 className="text-xl font-semibold text-white">
-                          {raffle.title}
-                        </h3>
-                        <p className="text-white/60 mt-1">
-                          {raffle.description}
-                        </p>
-                      </div>
-                      <span className={`
-                        px-3 py-1 rounded-full text-sm
-                        ${raffle.status === 'active' ? 'bg-green-500/20 text-green-400' : 
-                          raffle.status === 'completed' ? 'bg-gray-500/20 text-gray-400' : 
-                          'bg-yellow-500/20 text-yellow-400'}
-                      `}>
-                        {raffle.status.charAt(0).toUpperCase() + raffle.status.slice(1)}
-                      </span>
-                    </div>
-
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                      <div>
-                        <span className="text-white/60 block text-sm">Prize Value:</span>
-                        <span className="text-white">{raffle.prizeValue}</span>
-                      </div>
-                      <div>
-                        <span className="text-white/60 block text-sm">Tickets Sold:</span>
-                        <span className="text-white">
-                          {raffle.ticketsSold} / {raffle.totalTickets}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-white/60 block text-sm">End Date:</span>
-                        <span className="text-white">
-                          {raffle.endDate.toLocaleDateString()}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-white/60 block text-sm">Progress:</span>
-                        <div className="w-full bg-white/10 rounded-full h-2 mt-2">
-                          <div 
-                            className="bg-red-500 h-2 rounded-full"
-                            style={{ 
-                              width: `${(raffle.ticketsSold / raffle.totalTickets) * 100}%` 
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Participants Section */}
-                    {raffle.participants.length > 0 && (
-                      <div className="mb-6">
-                        <h4 className="text-white/80 mb-2">Participants</h4>
-                        <div className="flex flex-wrap gap-2">
-                          {raffle.participants.map((participant, index) => (
-                            <div key={index} className="flex items-center gap-2">
-                              <AddressAvatar 
-                                address={participant.address} 
-                                size={40} 
-                                className="flex-shrink-0"
-                              />
-                              <span>
-                                {participant.address.slice(0,6)}...{participant.address.slice(-4)}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    <div className="flex gap-4">
-                      <Button onClick={() => setSelectedRaffle(raffle)}>
-                        Edit
-                      </Button>
-                      {raffle.status === 'active' && (
-                        <>
-                          <Button onClick={() => handleEndRaffle(raffle.id)}>
-                            End Raffle
-                          </Button>
-                          <Button onClick={() => handleDrawWinner(raffle.id)}>
-                            Draw Winner
-                          </Button>
-                        </>
-                      )}
-                    </div>
-                  </div>
+              <div key={raffle.id} className="bg-white/5 p-4 rounded-lg flex items-center justify-between">
+                <div>
+                  <h3 className="font-medium">{raffle.project_name}</h3>
+                  <p className="text-sm text-gray-400">Ends: {moment.unix(raffle.raffle_at).format('MMMM D, YYYY')}</p>
                 </div>
-              </motion.div>
+                <div className="flex gap-2">
+                  <Button onClick={() => handleEdit(raffle.id)}>Edit</Button>
+                  <Button onClick={() => handleClose(raffle.id)}>Close</Button>
+                  <Button onClick={() => handleFinish(raffle.id)}>Finish</Button>
+                </div>
+              </div>
             ))}
           </div>
         </div>
-      </div>
 
-      {/* Create/Edit Modal */}
-      <AnimatePresence>
-        {(isCreating || selectedRaffle) && (
-          <RaffleFormModal
-            raffle={selectedRaffle}
-            onClose={() => {
-              setIsCreating(false);
-              setSelectedRaffle(null);
-            }}
-            onSubmit={handleCreateRaffle}
-          />
-        )}
-      </AnimatePresence>
+        <form className="max-w-2xl mx-auto space-y-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Image</label>
+            <input
+              type="file"
+              onChange={handleImageChange}
+              accept="image/*"
+              className="mt-1 block w-full"
+            />
+            {imagePreview && (
+              <img src={imagePreview} alt="Preview" className="mt-2 h-32 object-contain"/>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Name</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Description</label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleInputChange}
+              rows={3}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Prize Name</label>
+            <input
+              type="text"
+              name="prize_name"
+              value={formData.prize_name}
+              onChange={handleInputChange}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">NFT ID</label>
+            <input
+              type="number"
+              name="nft_id"
+              value={formData.nft_id}
+              onChange={handleInputChange}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Raffle Date</label>
+            <input
+              type="datetime-local"
+              name="raffle_at"
+              onChange={handleInputChange}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+            />
+          </div>
+
+          <div className="space-y-4">
+            <label className="block text-sm font-medium text-gray-700">Entry Points</label>
+            {formData.entry.map((_, index) => (
+              <div key={index} className="flex gap-4">
+                <input
+                  type="number"
+                  name={`entry[${index}]`}
+                  value={formData.entry[index]}
+                  onChange={handleInputChange}
+                  placeholder="Entry"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                />
+                <input
+                  type="number"
+                  name={`points[${index}]`}
+                  value={formData.points[index]}
+                  onChange={handleInputChange}
+                  placeholder="Points"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                />
+              </div>
+            ))}
+          </div>
+
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              name="only_allow_once"
+              checked={formData.only_allow_once}
+              onChange={handleInputChange}
+              className="h-4 w-4 rounded border-gray-300"
+            />
+            <label className="ml-2 block text-sm text-gray-700">
+              Only allow once
+            </label>
+          </div>
+
+          <div className="pt-5">
+            <Button
+              onClick={handleSubmit}
+              disabled={isLoading}
+              className="w-full"
+            >
+              {isLoading ? 'Processing...' : formData.id ? 'Update Raffle' : 'Create Raffle'}
+            </Button>
+          </div>
+        </form>
+      </div>
     </PageLayout>
   );
 };

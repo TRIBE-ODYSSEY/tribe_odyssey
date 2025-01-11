@@ -21,6 +21,9 @@ interface ImportMetaEnv {
 	readonly VITE_TWITTER_URL: string
 	readonly VITE_INSTAGRAM_URL: string
 	readonly VITE_GA_TRACKING_ID: string
+	readonly VITE_RANDOM_PICKER_BASE_URL: string
+	readonly VITE_RANDOM_PICKER_USERNAME: string
+	readonly VITE_RANDOM_PICKER_PASSWORD: string
   }
   
   interface ImportMeta {
