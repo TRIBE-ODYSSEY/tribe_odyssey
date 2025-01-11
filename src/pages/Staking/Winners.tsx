@@ -58,7 +58,7 @@ const Winners: React.FC = () => {
               wonAt: new Date(project.DrawDate),
               project_key: project.ID_Method,
               transactionHash: project.Winner.PrivateInfo
-            };
+            } as Winner;
           } catch (error) {
             console.error(`Failed to process winner for project ${project.ID}:`, error);
             return null;
@@ -67,7 +67,7 @@ const Winners: React.FC = () => {
       );
 
       // Filter out any null values from failed processing
-      setWinners(formattedWinners.filter((winner): winner is Winner => winner !== null) as Winner[]);
+      setWinners(formattedWinners.filter((winner): winner is Winner => winner !== null));
     } catch (error) {
       console.error('Failed to fetch winners:', error);
       toast.error('Failed to load winners');
