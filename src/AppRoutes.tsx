@@ -19,10 +19,11 @@ const CollectionPage = lazy(() => import('@src/pages/Element19/Collection'));
 const WallpapersPage = lazy(() => import('@src/pages/Assets/Wallpapers'));
 const WinnersPage = lazy(() => import('@src/pages/Staking/Winners'));
 const ProfilePage = lazy(() => import('@src/pages/Profile'));
-//const RaffleAdminPage = lazy(() => import ('@src/pages/RafflesAdmin'));
+const RafflesAdminPage = lazy(() => import('@src/pages/RafflesAdmin'));
 const NotFoundPage = lazy(
   () => import('@src/components/common/errors/network/NetworkErrors')
 );
+const RaffleDetails = lazy(() => import('@src/pages/Staking/RaffleDetails'));
 
 const AppRoutes: React.FC = () => {
   useLazyLoading();
@@ -43,6 +44,8 @@ const AppRoutes: React.FC = () => {
         <Route path="/checker" element={<Tribal19CheckerPage />} />
         <Route path="/council" element={<CouncilPage />} />
         <Route path="/raffles" element={<RafflesPage />} />
+        <Route path="/raffles/:id" element={<RaffleDetails />} />
+        <Route path="/raffles/admin" element={<RafflesAdminPage />} />
         <Route path="/winners" element={<WinnersPage />} />
         <Route path="/staking" element={<StakingApesPage />} />
         <Route path="/drops" element={<DropsPage />} />

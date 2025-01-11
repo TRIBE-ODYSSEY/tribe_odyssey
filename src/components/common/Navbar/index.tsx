@@ -96,10 +96,12 @@ const NavMenu: React.FC<{ isMobile?: boolean; onClose?: () => void }> = ({ isMob
 const WalletSection: React.FC = () => {
   const location = useLocation();
   const isStakingPath = location.pathname.includes('/staking');
+  const isRafflesAdminPath = location.pathname.includes('/raffles/admin');
+  const isRafflesPath = location.pathname.includes('/raffles');
 
   return (
     <div className="flex items-center gap-2">
-      {isStakingPath ? (
+      {isStakingPath || isRafflesAdminPath || isRafflesPath ? (
         <ConnectButton.Custom>
           {({
             account,
