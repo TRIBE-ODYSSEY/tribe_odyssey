@@ -1,12 +1,12 @@
 import useLazyLoading from '@src/lib/hooks/useLazyLoading';
 import React, { useEffect, useState } from 'react';
-import { FaBars, FaInstagram, FaTimes, FaTwitter } from 'react-icons/fa';
+import { FaBars, FaInstagram, FaTimes, FaTwitter, FaDiscord } from 'react-icons/fa';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { menuConfig } from '@src/lib/config/menuConfig';
 import { Menu } from '@headlessui/react';
 import { Link, useLocation } from 'react-router-dom';
 import { RiArrowDropDownLine, RiArrowDropUpLine } from 'react-icons/ri';
-import { FaDiscord } from 'react-icons/fa';
+import CustomButton from './button';
 
 const MenuDropdown: React.FC<{ title: string; items: Array<{ name: string; path: string }> }> = ({ 
   title, 
@@ -100,17 +100,57 @@ const WalletSection: React.FC = () => {
   return (
     <div className="flex items-center gap-2">
       {isStakingPath ? (
-        <ConnectButton />
+        <ConnectButton.Custom>
+          {({
+            account,
+            chain,
+            openAccountModal,
+            openConnectModal,
+            mounted,
+          }) => {
+            const ready = mounted;
+            const connected = ready && account && chain;
+
+            return (
+              <div
+                {...(!ready && {
+                  'aria-hidden': true,
+                  style: {
+                    opacity: 0,
+                    pointerEvents: 'none',
+                    userSelect: 'none',
+                  },
+                })}
+              >
+                {(() => {
+                  if (!connected) {
+                    return (
+                      <CustomButton onClick={openConnectModal}>
+                        Connect Wallet
+                      </CustomButton>
+                    );
+                  }
+
+                  return (
+                    <CustomButton 
+                      onClick={openAccountModal}
+                      isWalletConnected={true}
+                    >
+                      {account.displayName}
+                    </CustomButton>
+                  );
+                })()}
+              </div>
+            );
+          }}
+        </ConnectButton.Custom>
       ) : (
-        <a
-          href="https://discord.gg/T7Bv5JsFYd"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-2 w-[130px] h-[40px] justify-center bg-gradient-to-r from-white/40 via-white/80 to-white hover:bg-gradient-to-r hover:from-white/10 hover:via-white/10 hover:to-white/10 text-white rounded-lg transition-all shadow-[2_4_8px_rgba(255,255,255,0.08)]"
+        <CustomButton
+          onClick={() => window.open('https://discord.gg/T7Bv5JsFYd', '_blank')}
         >
           <FaDiscord className="text-xl" />
           Join Discord
-        </a>
+        </CustomButton>
       )}
     </div>
   );
