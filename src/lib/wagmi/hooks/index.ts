@@ -1,3 +1,4 @@
+//ts-ignore
 import { useWalletClient } from './useWalletClient'
 import { usePublicClient } from './usePublicClient'
 import { useContractWrite } from './useContractWrite'
@@ -9,13 +10,13 @@ export {
   useBlockNumber,
   useConnect,
   useDisconnect,
-  useEnsAddress,
-  useEnsName,
-  useNetwork,
-  useSwitchNetwork,
+  useEnsResolver,
+  useEnsText,
+  useChainId,
+  useSwitchChain,
   useTransaction,
-  useWaitForTransaction,
-} from 'wagmi'
+  useWaitForTransactionReceipt,
+} from '@wagmi/core'
 
 // Export our custom hooks
 export {
@@ -26,8 +27,8 @@ export {
 
 // Export hook types
 export type {
-  UseContractWriteConfig,
-  UseContractWriteResult,
+  ContractWriteConfig,
+  ContractWriteResult,
 } from './useContractWrite'
 
 // Create a hooks object for easier imports
@@ -35,6 +36,19 @@ export const wagmiHooks = {
   useWalletClient,
   usePublicClient,
   useContractWrite,
+  
+  // Wagmi core hooks
+  useAccount,
+  useBalance,
+  useBlockNumber,
+  useConnect,
+  useDisconnect,
+  useEnsResolver,
+  useEnsText,
+  useChainId,
+  useSwitchChain,
+  useTransaction,
+  useWaitForTransactionReceipt,
 } as const
 
 export type WagmiHooks = typeof wagmiHooks
