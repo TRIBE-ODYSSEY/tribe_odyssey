@@ -9,14 +9,16 @@ import Layout from './components/common/layout/Layout';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
-// @ts-ignore
-import { WagmiProvider } from 'wagmi'
-import { config } from './wagmi';
+import { WagmiProvider } from 'wagmi';
+import { config } from '@src/lib/wagmi/config';
 
+// Create a client for React Query
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
+      retry: 1,
+      staleTime: 5 * 1000, // 5 seconds
     },
   },
 });

@@ -1,8 +1,8 @@
 // src/AppRoutes.tsx
 import useLazyLoading from '@hooks/useLazyLoading';
-import { Spinner } from 'flowbite-react';
 import React, { Suspense, lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
+
 // Lazy loaded pages
 const HomePage = lazy(() => import('@src/pages/HomePage'));
 const HealthChecker = lazy(() => import('@src/pages/health/health_checker'));
@@ -20,43 +20,46 @@ const WallpapersPage = lazy(() => import('@src/pages/Assets/Wallpapers'));
 const WinnersPage = lazy(() => import('@src/pages/Staking/Winners'));
 const ProfilePage = lazy(() => import('@src/pages/Profile'));
 const RafflesAdminPage = lazy(() => import('@src/pages/RafflesAdmin'));
-const NotFoundPage = lazy(
-  () => import('@src/components/common/errors/network/NetworkErrors')
-);
 const RaffleDetails = lazy(() => import('@src/pages/Staking/RaffleDetails'));
+const NotFoundPage = lazy(() => import('@src/components/common/errors/network/NetworkErrors'));
 
 const AppRoutes: React.FC = () => {
   useLazyLoading();
+
   return (
-    <Suspense
-      fallback={
-        
-        <Spinner color="warning" aria-label="Warning spinner example" />
-      }
-    >
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/health" element={<HealthChecker />} />
-        <Route path="/ens" element={<ENSPage />} />
-        <Route path="/4kTribe" element={<FourKPage />} />
-        <Route path="/molten" element={<MoltenPage />} />
-        <Route path="/tribalbeats" element={<TribalBeatsPage />} />
-        <Route path="/checker" element={<Tribal19CheckerPage />} />
-        <Route path="/council" element={<CouncilPage />} />
-        <Route path="/raffles" element={<RafflesPage />} />
-        <Route path="/raffles/:id" element={<RaffleDetails />} />
-        <Route path="/raffles/admin" element={<RafflesAdminPage />} />
-        <Route path="/winners" element={<WinnersPage />} />
-        <Route path="/staking" element={<StakingApesPage />} />
-        <Route path="/drops" element={<DropsPage />} />
-        <Route path="/wallpapers" element={<WallpapersPage />} />
-        <Route path="/collection" element={<CollectionPage />} />
-        <Route path="/account" element={<ProfilePage />} />
-        {/* <Route path="/admin" element={<RaffleAdminPage />} /> */}
-        {/* Strona 404 */}
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </Suspense>
+    <Routes>
+      {/* Public Routes */}
+      <Route path="/" element={<HomePage />} />
+      <Route path="/health" element={<HealthChecker />} />
+      <Route path="/ens" element={<ENSPage />} />
+      <Route path="/4kTribe" element={<FourKPage />} />
+      <Route path="/molten" element={<MoltenPage />} />
+      <Route path="/tribalbeats" element={<TribalBeatsPage />} />
+      <Route path="/checker" element={<Tribal19CheckerPage />} />
+      <Route path="/council" element={<CouncilPage />} />
+      
+      {/* Raffle Routes */}
+      <Route path="/raffles" element={<RafflesPage />} />
+      <Route path="/raffles/:id" element={<RaffleDetails />} />
+      <Route path="/raffles/admin" element={<RafflesAdminPage />} />
+      <Route path="/winners" element={<WinnersPage />} />
+      
+      {/* Staking Routes */}
+      <Route path="/staking" element={<StakingApesPage />} />
+      
+      {/* Element19 Routes */}
+      <Route path="/drops" element={<DropsPage />} />
+      <Route path="/collection" element={<CollectionPage />} />
+      
+      {/* Asset Routes */}
+      <Route path="/wallpapers" element={<WallpapersPage />} />
+      
+      {/* User Routes */}
+      <Route path="/account" element={<ProfilePage />} />
+      
+      {/* 404 Route */}
+      <Route path="*" element={<NotFoundPage />} />
+    </Routes>
   );
 };
 
