@@ -40,6 +40,10 @@ const RafflesAdmin: React.FC = () => {
   const [raffles, setRaffles] = useState<RaffleData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   useEffect(() => {
     if (!address || !ADMIN_ADDRESSES.includes(address)) {
       toast.error('Unauthorized access');
