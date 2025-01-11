@@ -29,6 +29,7 @@ interface RaffleData {
     joinedAt: Date;
   }[];
   winner?: string;
+  project_key?: string;
 }
 
 const ADMIN_ADDRESSES = [
@@ -184,10 +185,11 @@ const RafflesAdmin: React.FC = () => {
       // Draw winner
       await randomPicker.drawWinner(projectId);
 
-      // Update raffle with project key for verification
+      // Update raffle with project key and winner
       await handleUpdateRaffle(raffleId, { 
         project_key: projectId,
-        status: 'completed'
+        status: 'completed',
+        winner: raffle.participants[0].address
       });
 
       toast.success('Winner drawn successfully!');

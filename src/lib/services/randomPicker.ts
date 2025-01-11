@@ -131,8 +131,8 @@ class RandomPickerService {
 
 // Create and export a singleton instance
 export const randomPicker = new RandomPickerService({
-  username: process.env.VITE_APP_RANDOMPICKER_USERNAME || '',
-  password: process.env.VITE_APP_RANDOMPICKER_PASSWORD || '',
+  username: import.meta.env.VITE_RANDOMPICKER_USERNAME || '',
+  password: import.meta.env.VITE_RANDOMPICKER_PASSWORD || '',
   baseUrl: 'https://app.randompicker.com/Webservice'
 });
 

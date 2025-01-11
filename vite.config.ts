@@ -9,6 +9,9 @@ console.log('PORT from .env:', process.env.PORT);
 
 export default defineConfig({
   plugins: [react()],
+  define: {
+    'import.meta.env': JSON.stringify(process.env),
+  },
   server: {
     host: '0.0.0.0',
 
