@@ -1,35 +1,43 @@
 import React from 'react';
 import Card from '@src/components/common/card/Card';
-// @ts-ignore
 import { useAccount } from 'wagmi';
-import { useReadStakingUserStakedNfTs, useReadStakingPoolInfo } from '@src/generated';
+import { useReadContract } from 'wagmi';
+import { stakingABI } from '@src/lib/config/abi/staking.json';
 
 const StakingStats: React.FC = () => {
   const { address } = useAccount();
-  const { data: userStakedNFTs } = useReadStakingUserStakedNfTs({
-    args: [address!, '0x0']
+
+  const { data: userStakedNFTs = [] } = useReadContract({
+    address: '0x220224422F2C2A9781F3EB5A0aA36F661DA9aA8F',  // Your staking contract address
+    abi: stakingABI,
+    functionName: 'getUserStakedNfTs',
+    args: [address!, '0x0'],
+    account: address,
   });
 
-  const { data: poolInfo } = useReadStakingPoolInfo({
-    args: [BigInt(0)]
+  const { data: poolInfo = { 0: BigInt(0) } } = useReadContract({
+    address: '0x220224422F2C2A9781F3EB5A0aA36F661DA9aA8F',  // Your staking contract address
+    abi: stakingABI,
+    functionName: 'getPoolInfo',
+    args: [BigInt(0)],
   });
 
   const stats = [
     { 
       label: 'Total Staked', 
-      value: poolInfo ? Number(poolInfo[0]) : '0'
+      value: Number(poolInfo[0]).toString()
     },
     { 
       label: 'Total NANA/Day', 
-      value: userStakedNFTs ? Number(userStakedNFTs.length) * 10 : '0'
+      value: (userStakedNFTs.length * 10).toString()
     },
     { 
       label: 'Your Staked', 
-      value: userStakedNFTs?.length || '0'
+      value: userStakedNFTs.length.toString()
     },
     { 
       label: 'Your NANA/Day', 
-      value: (userStakedNFTs?.length || 0) * 10
+      value: (userStakedNFTs.length * 10).toString()
     },
   ];
 

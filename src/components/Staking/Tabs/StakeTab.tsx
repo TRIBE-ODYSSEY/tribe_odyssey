@@ -1,17 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import NFTCard from '../NFTCard';
 import Button from '@src/components/common/Button';
-// @ts-ignore
 import { useAccount } from 'wagmi';
-import { useWriteStakingJoinMany, useReadStakingUserStakedNfTs } from '@src/generated';
+import { useContractWrite } from '@src/lib/wagmi/hooks';
 import { toast } from 'react-toastify';
-
-interface NFT {
-  id: string;
-  tokenId: string;
-  contract: string;
-  is_staked: boolean;
-}
+import { stakingABI } from '@src/lib/config/abi/staking.json';
 
 interface StakeTabProps {
   onStake: (selectedNFTs: string[]) => Promise<void>;
@@ -20,18 +13,19 @@ interface StakeTabProps {
 }
 
 const StakeTab: React.FC<StakeTabProps> = ({
-  onStake: _onStake, // Prefix with _ to indicate intentionally unused
+  onStake,
   isWaiting,
   refreshTrigger
 }) => {
   const { address } = useAccount();
-  const [nfts, setNfts] = useState<NFT[]>([]);
+  const [nfts, setNfts] = useState<any[]>([]);
   const [selectedNFTs, setSelectedNFTs] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const { writeContract: stakeNFTs } = useWriteStakingJoinMany();
-  const { data: _stakedNFTs } = useReadStakingUserStakedNfTs({
-    args: [address!, '0x0']
+  const { write: stakeNFTs, isLoading: isPending } = useContractWrite({
+    address: '0x77f649385ca963859693c3d3299d36dfc7324eb9',  // Your staking contract address
+    abi: stakingABI,
+    functionName: 'joinMany'
   });
 
   useEffect(() => {
@@ -48,9 +42,10 @@ const StakeTab: React.FC<StakeTabProps> = ({
         args: [BigInt(0), selectedNFTs.map(id => BigInt(id))],
       });
       
+      await onStake(selectedNFTs);
       toast.success('NFTs staked successfully!');
       setSelectedNFTs([]);
-      fetchUnstakedNFTs(); // Refresh NFT list
+      fetchUnstakedNFTs();
     } catch (error) {
       console.error('Staking error:', error);
       toast.error('Failed to stake NFTs');
@@ -60,12 +55,12 @@ const StakeTab: React.FC<StakeTabProps> = ({
   const fetchUnstakedNFTs = async () => {
     setLoading(true);
     try {
-      // Replace with your actual API call
-      const response = await fetch('/api/nfts/unstaked');
+      const response = await fetch(`/api/nfts/unstaked/${address}`);
       const data = await response.json();
       setNfts(data);
     } catch (error) {
       console.error('Failed to fetch NFTs:', error);
+      toast.error('Failed to load NFTs');
     } finally {
       setLoading(false);
     }
@@ -80,11 +75,9 @@ const StakeTab: React.FC<StakeTabProps> = ({
   };
 
   const selectAll = () => {
-    if (selectedNFTs.length === nfts.length) {
-      setSelectedNFTs([]);
-    } else {
-      setSelectedNFTs(nfts.map(nft => nft.id));
-    }
+    setSelectedNFTs(prev => 
+      prev.length === nfts.length ? [] : nfts.map(nft => nft.id)
+    );
   };
 
   return (
@@ -124,18 +117,13 @@ const StakeTab: React.FC<StakeTabProps> = ({
             ))}
           </div>
 
-          <div className="flex justify-between items-center pt-4 border-t border-white/10">
-            <span className="text-white/60">
-              Selected: {selectedNFTs.length} of {nfts.length}
-            </span>
-            <Button
-              onClick={handleStake}
-              disabled={selectedNFTs.length === 0 || isWaiting}
-              className="min-w-[120px]"
-            >
-              {isWaiting ? 'Staking...' : 'Stake'}
-            </Button>
-          </div>
+          <Button
+            onClick={handleStake}
+            disabled={selectedNFTs.length === 0 || !address || isPending || isWaiting}
+            className="w-full"
+          >
+            {isPending || isWaiting ? 'Staking...' : `Stake Selected (${selectedNFTs.length})`}
+          </Button>
         </>
       )}
     </div>

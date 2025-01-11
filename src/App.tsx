@@ -9,6 +9,13 @@ const App: React.FC = () => {
   const { isConnected } = useAccount();
   const navigate = useNavigate();
 
+  // Use isConnected to conditionally render content
+  React.useEffect(() => {
+    if (!isConnected) {
+      navigate('/'); // Redirect to home if not connected
+    }
+  }, [isConnected, navigate]);
+
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black">

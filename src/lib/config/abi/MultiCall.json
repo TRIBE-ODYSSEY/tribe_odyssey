@@ -1,4 +1,5 @@
-[
+{
+  "multicallABI": [
     {
       "inputs": [
         {
@@ -163,4 +164,4 @@
       "type": "function"
     }
   ]
-  
+}

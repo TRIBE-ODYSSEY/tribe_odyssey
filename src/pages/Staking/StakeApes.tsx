@@ -3,7 +3,6 @@ import PageTitle from '@src/components/common/PageTitle';
 import StakingStats from '@src/components/Staking/StakingStats';
 import StakingTabs from '@src/components/Staking/StakingTabs';
 import PageLayout from '@src/components/common/layout/PageLayout';
-// @ts-ignore
 import { useAccount, useSignMessage } from 'wagmi';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -102,10 +101,8 @@ const StakeApes: React.FC = () => {
             </p>
           </div>
           
-          {/* @ts-ignore */}
           <StakingStats refreshTrigger={refreshTrigger} />
           
-          {/* @ts-ignore */}
           <StakingTabs 
             onStake={handleStake}
             onUnstake={handleUnstake}

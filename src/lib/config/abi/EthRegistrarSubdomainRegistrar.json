@@ -1,4 +1,5 @@
-[
+{
+  "EthRegistrarSubdomainRegistrarABI": [
     {
       "inputs": [
         {
@@ -380,4 +381,4 @@
       "type": "function"
     }
   ]
-  
+}

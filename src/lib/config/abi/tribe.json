@@ -1,4 +1,5 @@
-[
+{
+  "tribeABI": [
     {
       "inputs": [
         { "internalType": "address", "name": "_ape", "type": "address" },
@@ -449,4 +450,4 @@
     },
     { "stateMutability": "payable", "type": "receive" }
   ]
-  
+}
