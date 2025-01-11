@@ -66,9 +66,25 @@ interface EnterRaffleParams {
   }[];
 }
 
+interface CreateRaffleParams {
+  title: string;
+  description: string;
+  prizeValue: string;
+  endDate: string;
+  conditions: {
+    entry: number;
+    points: number;
+  }[];
+  onlyAllowOnce: boolean;
+  image: File;
+  signature: string;
+  address: string;
+}
+
 class RandomPickerService {
   private token: string | null = null;
   private config: RandomPickerConfig;
+  private nonces: Map<string, string> = new Map();
 
   constructor(config: RandomPickerConfig) {
     this.config = config;
@@ -94,6 +110,47 @@ class RandomPickerService {
     } catch (error) {
       console.error('RandomPicker login failed:', error);
       throw new Error('Failed to login to RandomPicker');
+    }
+  }
+
+  async getNonce(address: string): Promise<{ data: { nonce: string } }> {
+    const nonce = Math.random().toString(36).substring(7);
+    this.nonces.set(address, nonce);
+    return { data: { nonce } };
+  }
+
+  async createRaffle(params: CreateRaffleParams): Promise<void> {
+    if (!this.token) await this.login();
+
+    const storedNonce = this.nonces.get(params.address);
+    if (!storedNonce) {
+      throw new Error('No nonce found for this address');
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append('image', params.image);
+
+      // Upload image first
+      const imageUploadResponse = await axios.post(`${this.config.baseUrl}/upload`, formData);
+      const imageUrl = imageUploadResponse.data.url;
+
+      const projectResponse = await this.createProject({
+        displayName: params.title,
+        conditions: params.description,
+        prizes: [{
+          Count: 1,
+          PrizeName: params.prizeValue
+        }]
+      });
+
+      // Additional raffle setup logic here
+      // You may need to add more API calls based on your requirements
+
+      this.nonces.delete(params.address);
+    } catch (error) {
+      console.error('Failed to create raffle:', error);
+      throw new Error('Failed to create raffle');
     }
   }
 
