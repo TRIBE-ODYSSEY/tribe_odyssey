@@ -132,10 +132,9 @@ class RandomPickerService {
       formData.append('image', params.image);
 
       // Upload image first
-      const imageUploadResponse = await axios.post(`${this.config.baseUrl}/upload`, formData);
-      const imageUrl = imageUploadResponse.data.url;
+      await axios.post(`${this.config.baseUrl}/upload`, formData);
 
-      const projectResponse = await this.createProject({
+      await this.createProject({
         displayName: params.title,
         conditions: params.description,
         prizes: [{
