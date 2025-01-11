@@ -42,7 +42,7 @@ const AppRoutes: React.FC = () => {
         {/* Raffle Routes */}
         <Route path="/raffles" element={<RafflesPage />} />
         <Route path="/raffles/:id" element={<RaffleDetails />} />
-        <Route path="/raffles/admin" element={<RafflesAdminPage />} />
+        <Route path="/admin" element={<RafflesAdminPage />} />
         <Route path="/winners" element={<WinnersPage />} />
         
         {/* Staking Routes */}
