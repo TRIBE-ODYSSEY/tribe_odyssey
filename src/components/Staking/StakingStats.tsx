@@ -8,7 +8,6 @@ const StakingStats: React.FC = () => {
   const { address } = useAccount();
   const { data: userStakedNFTs } = useReadStakingUserStakedNfTs({
     args: [address!, '0x0'],
-    enabled: !!address,
   });
 
   const stats = [

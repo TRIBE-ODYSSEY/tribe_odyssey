@@ -20,7 +20,7 @@ const StakeTab: React.FC = () => {
   const handleStake = async () => {
     try {
       await stakeNFTs({
-        args: [BigInt(selectedNFTs[0])],
+        args: [BigInt(0), selectedNFTs.map(id => BigInt(id))],
       });
       toast.success('NFTs staked successfully!');
       setSelectedNFTs([]);

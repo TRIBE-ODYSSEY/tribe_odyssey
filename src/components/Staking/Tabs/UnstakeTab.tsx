@@ -11,8 +11,7 @@ const UnstakeTab: React.FC = () => {
   const [selectedNFTs, setSelectedNFTs] = useState<string[]>([]);
   
   const { data: stakedNFTs } = useReadStakingUserStakedNfTs({
-    args: [address!, '0x0'],
-    enabled: !!address,
+    args: [address!, '0x0']
   });
 
   const { writeContract: unstakeNFTs, isPending } = useWriteStakingLeaveMany();
@@ -20,7 +19,7 @@ const UnstakeTab: React.FC = () => {
   const handleUnstake = async () => {
     try {
       await unstakeNFTs({
-        args: [BigInt(selectedNFTs[0])],
+        args: [BigInt(0), selectedNFTs.map(id => BigInt(id))],
       });
       toast.success('NFTs unstaked successfully!');
       setSelectedNFTs([]);
