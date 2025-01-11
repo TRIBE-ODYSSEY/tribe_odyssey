@@ -9,11 +9,6 @@ import Button from '@src/components/common/Button';
 import { randomPicker } from '@src/lib/services/randomPicker';
 import { motion } from 'framer-motion';
 
-const ADMIN_ADDRESSES = [
-  '0xc570F1B8D14971c6cd73eA8db4F7C44E4AAdC6f2',
-  // Add other admin addresses here
-] as const;
-
 const RafflesAdmin: React.FC = () => {
   const { address } = useAccount();
   const { signMessageAsync } = useSignMessage();
