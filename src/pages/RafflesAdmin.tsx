@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-// @ts-ignore
 import { useAccount, useSignMessage } from 'wagmi';
 import { toast } from 'react-toastify';
 import moment from 'moment';
