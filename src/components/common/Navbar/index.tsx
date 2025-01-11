@@ -20,7 +20,7 @@ const MenuDropdown: React.FC<{ title: string; items: Array<{ name: string; path:
             {title}
             {open ? <RiArrowDropUpLine /> : <RiArrowDropDownLine />}
           </Menu.Button>
-          <Menu.Items className="absolute left-0 mt-2 w-48 rounded-md bg-theme-dark border border-theme-grey shadow-lg">
+          <Menu.Items className="absolute left-0 mt-2 w-48 rounded-md bg-[#1A1A1A] border border-[#2A2A2A] shadow-lg backdrop-blur-sm">
             <div className="py-1">
               {items.map((item) => (
                 <Menu.Item key={item.name}>
@@ -31,8 +31,8 @@ const MenuDropdown: React.FC<{ title: string; items: Array<{ name: string; path:
                         target="_blank"
                         rel="noopener noreferrer"
                         className={`${
-                          active ? 'bg-theme-grey/10 text-white' : 'text-white/70'
-                        } block px-4 py-2 text-sm`}
+                          active ? 'bg-[#2A2A2A] text-white' : 'text-white/70'
+                        } block px-4 py-2 text-sm transition-colors`}
                       >
                         {item.name}
                       </a>
@@ -40,8 +40,8 @@ const MenuDropdown: React.FC<{ title: string; items: Array<{ name: string; path:
                       <Link
                         to={item.path}
                         className={`${
-                          active ? 'bg-theme-grey/10 text-white' : 'text-white/70'
-                        } block px-4 py-2 text-sm`}
+                          active ? 'bg-[#2A2A2A] text-white' : 'text-white/70'
+                        } block px-4 py-2 text-sm transition-colors`}
                       >
                         {item.name}
                       </Link>
