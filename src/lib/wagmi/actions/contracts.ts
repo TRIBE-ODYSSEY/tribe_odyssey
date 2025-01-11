@@ -4,7 +4,6 @@ import { erc20ABI } from '@src/lib/config/abi/erc20.json'
 import { erc721ABI } from '@src/lib/config/abi/erc721.json'
 import { stakingABI } from '@src/lib/config/abi/staking.json'
 import { tribeABI } from '@src/lib/config/abi/tribe.json'
-import { multiCallABI } from '@src/lib/config/abi/multiCall.json'
 import { EthRegistrarSubdomainRegistrarABI } from '@src/lib/config/abi/EthRegistrarSubdomainRegistrar.json'
 
 // Contract type mapping
@@ -13,7 +12,6 @@ export type ContractName =
   | 'erc721'
   | 'staking'
   | 'tribe'
-  | 'multiCall'
   | 'ethRegistrarSubdomainRegistrar'
 
 // ABI mapping
@@ -22,7 +20,6 @@ const abiMap = {
   erc721: erc721ABI,
   staking: stakingABI,
   tribe: tribeABI,
-  multiCall: multiCallABI,
   ethRegistrarSubdomainRegistrar: EthRegistrarSubdomainRegistrarABI,
 } as const
 

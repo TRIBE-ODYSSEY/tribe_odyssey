@@ -4,7 +4,6 @@ import Button from '@src/components/common/Button';
 import { useAccount } from 'wagmi';
 import { useContractWrite } from '@src/lib/wagmi/hooks';
 import { toast } from 'react-toastify';
-import { stakingABI } from '@src/lib/config/abi/staking.json';
 
 interface UnstakeTabProps {
   onUnstake: (selectedNFTs: string[]) => Promise<void>;
@@ -24,9 +23,6 @@ const UnstakeTab: React.FC<UnstakeTabProps> = ({
   
   const { write: unstakeNFTs, isLoading: isPending } = useContractWrite({
     address: '0x77f649385ca963859693c3d3299d36dfc7324eb9',  // Your staking contract address
-    config: {
-      abi: stakingABI
-    },
     functionName: 'leaveMany'
   });
 

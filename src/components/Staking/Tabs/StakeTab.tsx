@@ -4,7 +4,6 @@ import Button from '@src/components/common/Button';
 import { useAccount } from 'wagmi';
 import { useContractWrite } from '@src/lib/wagmi/hooks';
 import { toast } from 'react-toastify';
-import { stakingABI } from '@src/lib/config/abi/staking.json';
 
 interface StakeTabProps {
   onStake: (selectedNFTs: string[]) => Promise<void>;
@@ -24,10 +23,7 @@ const StakeTab: React.FC<StakeTabProps> = ({
 
   const { write: stakeNFTs, isLoading: isPending } = useContractWrite({
     address: '0x77f649385ca963859693c3d3299d36dfc7324eb9',  // Your staking contract address
-    functionName: 'joinMany',
-    config: {
-      abi: stakingABI
-    }
+    functionName: 'joinMany'
   });
 
   useEffect(() => {
