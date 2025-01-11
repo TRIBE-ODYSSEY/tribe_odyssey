@@ -44,6 +44,12 @@ const UnstakeTab: React.FC<UnstakeTabProps> = ({
   const handleUnstake = async () => {
     if (!address || selectedNFTs.length === 0) return;
 
+    // Check if user has staking info before unstaking
+    if (!userInfo) {
+      toast.error('No staking info found');
+      return;
+    }
+
     try {
       await unstakeNFTs({
         args: [BigInt(0), selectedNFTs.map(id => BigInt(id))],
