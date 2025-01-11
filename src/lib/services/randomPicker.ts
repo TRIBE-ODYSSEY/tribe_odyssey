@@ -57,6 +57,15 @@ interface CompletedRaffle {
   project_key: string;
 }
 
+interface EnterRaffleParams {
+  address: string;
+  points: number;
+  conditions: {
+    entry: number;
+    points: number;
+  }[];
+}
+
 class RandomPickerService {
   private token: string | null = null;
   private config: RandomPickerConfig;
@@ -266,6 +275,21 @@ class RandomPickerService {
     } catch (error) {
       console.error('Failed to fetch raffle details:', error);
       throw error;
+    }
+  }
+
+  async enterRaffle(raffleId: string, params: EnterRaffleParams): Promise<void> {
+    if (!this.token) await this.login();
+
+    try {
+      await this.addParticipant(raffleId, {
+        publicInfo: params.address,
+        privateInfo: '',
+        weight: params.points
+      });
+    } catch (error) {
+      console.error('Failed to enter raffle:', error);
+      throw new Error('Failed to enter raffle');
     }
   }
 
