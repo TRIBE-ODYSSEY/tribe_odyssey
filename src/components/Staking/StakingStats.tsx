@@ -6,13 +6,13 @@ import { useReadStakingUserStakedNfTs } from '@src/generated';
 const StakingStats: React.FC = () => {
   const { address } = useAccount();
   const { data: userStakedNFTs } = useReadStakingUserStakedNfTs({
-    args: [address!],
+    args: [address!, '0x0'],
     enabled: !!address,
   });
 
   const stats = [
     { label: 'Total Staked', value: userStakedNFTs?.length || '0' },
-    { label: 'Total NANA', value: (userStakedNFTs?.length || 0) * 10 },
+    { label: 'Total NANA/Day', value: (userStakedNFTs?.length || 0) * 10 },
     { label: 'Your Staked', value: userStakedNFTs?.length || '0' },
     { label: 'Your NANA/Day', value: (userStakedNFTs?.length || 0) * 10 },
   ];
