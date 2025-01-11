@@ -33,7 +33,9 @@ class RandomPickerService {
           Password: this.config.password,
         }
       });
-
+      if (!response.data?.LoginInsertResult?.ID) {
+        throw new Error('Invalid login response from RandomPicker');
+      }
       this.token = response.data.LoginInsertResult.ID;
       return this.token;
     } catch (error) {
