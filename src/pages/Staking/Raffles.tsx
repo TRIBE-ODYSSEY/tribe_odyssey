@@ -35,10 +35,10 @@ const Raffles: React.FC = () => {
           <div className="flex justify-between items-center mb-8">
             <PageTitle>Active Raffles</PageTitle>
             <Link 
-              to="/raffles/opened"
+              to="/winners"
               className="text-red-400 hover:text-red-300 transition-colors"
             >
-              View Past Raffles
+              View Past Winners
             </Link>
           </div>
 
