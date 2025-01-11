@@ -1,5 +1,6 @@
 import React from 'react';
 import Card from '@src/components/common/card/Card';
+// @ts-ignore
 import { useAccount } from 'wagmi';
 import { useReadStakingUserStakedNfTs } from '@src/generated';
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Card from '@src/components/common/card/Card';
 import Button from '@src/components/common/Button';
+// @ts-ignore
 import { useAccount } from 'wagmi';
 import { useWriteStakingJoinMany } from '@src/generated';
 import { toast } from 'react-toastify';
