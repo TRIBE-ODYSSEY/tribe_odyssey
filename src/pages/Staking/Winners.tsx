@@ -31,8 +31,22 @@ const Winners: React.FC = () => {
     try {
       const completedProjects = await randomPicker.getWinnersWithRetry();
       
-      const formattedWinners: Winner[] = await Promise.all(
-        completedProjects.map(async (project: any) => {
+      interface Project {
+        Winner: {
+          PublicInfo: string;
+          PrivateInfo?: string;
+        };
+        ID: string;
+        DisplayName: string;
+        Prizes: Array<{PrizeName: string}>;
+        ImageURL?: string;
+        DrawDate: string;
+        ID_Method: string;
+      }
+
+      const formattedWinners = await Promise.all(
+        completedProjects.filter((project): project is Project => project !== null)
+          .map(async (project) => {
           try {
             // Additional error handling for each winner
             return {
@@ -53,7 +67,7 @@ const Winners: React.FC = () => {
       );
 
       // Filter out any null values from failed processing
-      setWinners(formattedWinners.filter((winner): winner is Winner => winner !== null));
+      setWinners(formattedWinners.filter((winner): winner is Winner => winner !== null) as Winner[]);
     } catch (error) {
       console.error('Failed to fetch winners:', error);
       toast.error('Failed to load winners');

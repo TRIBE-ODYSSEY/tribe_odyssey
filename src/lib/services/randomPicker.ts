@@ -36,8 +36,12 @@ class RandomPickerService {
       if (!response.data?.LoginInsertResult?.ID) {
         throw new Error('Invalid login response from RandomPicker');
       }
-      this.token = response.data.LoginInsertResult.ID;
-      return this.token;
+      const token = response.data.LoginInsertResult.ID;
+      if (typeof token !== 'string') {
+        throw new Error('Invalid token type received from RandomPicker');
+      }
+      this.token = token;
+      return token;
     } catch (error) {
       console.error('RandomPicker login failed:', error);
       throw new Error('Failed to login to RandomPicker');
@@ -128,6 +132,31 @@ class RandomPickerService {
       console.error('Failed to draw winner:', error);
       throw new Error('Failed to draw raffle winner');
     }
+  }
+
+  async getWinnersWithRetry(maxRetries = 3): Promise<any[]> {
+    if (!this.token) await this.login();
+    
+    let retries = 0;
+    while (retries < maxRetries) {
+      try {
+        const response = await axios.post(`${this.config.baseUrl}/Project.asmx/ProjectSelectList`, {
+          projectSelectListInput: {
+            ID_Login: this.token,
+            Status: 'Complete'
+          }
+        });
+        return response.data.ProjectSelectListResult || [];
+      } catch (error) {
+        retries++;
+        if (retries === maxRetries) {
+          console.error('Failed to fetch winners after max retries:', error);
+          throw new Error('Failed to fetch winners');
+        }
+        await new Promise(resolve => setTimeout(resolve, 1000 * retries));
+      }
+    }
+    return [];
   }
 }
 
