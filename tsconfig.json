@@ -29,7 +29,11 @@
       "@lib/*": ["src/lib/*"],
       "@config/*": ["lib/config/*"],
       "@assets/*": ["assets/*"],
-      "@hooks/*": ["lib/hooks/*"]
+      "@hooks/*": ["lib/hooks/*"],
+      "@abi/*": ["lib/config/abi/*"],
+      "@actions/*": ["lib/wagmi/actions/*"],
+      "@wagmi/*": ["lib/wagmi/*"],
+      "@viem/*": ["lib/viem/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts"],
