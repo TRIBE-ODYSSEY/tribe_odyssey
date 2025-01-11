@@ -1,5 +1,5 @@
 import Card from '@src/components/common/card/Card';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAccount, useChainId } from 'wagmi';
 import { usePublicClient } from '@src/lib/wagmi/hooks';
 
@@ -7,6 +7,7 @@ const HealthChecker: React.FC = () => {
   const { isConnected } = useAccount();
   const chainId = useChainId();
   const publicClient = usePublicClient();
+  const [isHealthy, setIsHealthy] = useState(false);
 
   const checkHealth = async () => {
     if (!publicClient) return false;
@@ -18,6 +19,14 @@ const HealthChecker: React.FC = () => {
       return false;
     }
   };
+
+  useEffect(() => {
+    const runHealthCheck = async () => {
+      const health = await checkHealth();
+      setIsHealthy(health);
+    };
+    runHealthCheck();
+  }, [publicClient]);
 
   const getChainName = (id: number) => {
     switch (id) {
@@ -58,6 +67,12 @@ const HealthChecker: React.FC = () => {
             <span>Chain ID:</span>
             <span className={chainId ? 'text-green-400' : 'text-red-400'}>
               {chainId || 'Unknown'}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span>Node Health:</span>
+            <span className={isHealthy ? 'text-green-400' : 'text-red-400'}>
+              {isHealthy ? 'Healthy' : 'Unhealthy'}
             </span>
           </div>
         </div>

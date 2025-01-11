@@ -16,7 +16,7 @@ export function useContractWrite({ address, functionName }: UseContractWriteProp
     try {
       setIsLoading(true)
       setError(null)
-      const txHash = await writeContract(address as ContractName, functionName, args, {})
+      const txHash = await writeContract(address, functionName, args, {})
       setHash(txHash)
       return txHash
     } catch (err) {

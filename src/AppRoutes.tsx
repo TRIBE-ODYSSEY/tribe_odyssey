@@ -27,39 +27,41 @@ const AppRoutes: React.FC = () => {
   useLazyLoading();
 
   return (
-    <Routes>
-      {/* Public Routes */}
-      <Route path="/" element={<HomePage />} />
-      <Route path="/health" element={<HealthChecker />} />
-      <Route path="/ens" element={<ENSPage />} />
-      <Route path="/4kTribe" element={<FourKPage />} />
-      <Route path="/molten" element={<MoltenPage />} />
-      <Route path="/tribalbeats" element={<TribalBeatsPage />} />
-      <Route path="/checker" element={<Tribal19CheckerPage />} />
-      <Route path="/council" element={<CouncilPage />} />
-      
-      {/* Raffle Routes */}
-      <Route path="/raffles" element={<RafflesPage />} />
-      <Route path="/raffles/:id" element={<RaffleDetails />} />
-      <Route path="/raffles/admin" element={<RafflesAdminPage />} />
-      <Route path="/winners" element={<WinnersPage />} />
-      
-      {/* Staking Routes */}
-      <Route path="/staking" element={<StakingApesPage />} />
-      
-      {/* Element19 Routes */}
-      <Route path="/drops" element={<DropsPage />} />
-      <Route path="/collection" element={<CollectionPage />} />
-      
-      {/* Asset Routes */}
-      <Route path="/wallpapers" element={<WallpapersPage />} />
-      
-      {/* User Routes */}
-      <Route path="/account" element={<ProfilePage />} />
-      
-      {/* 404 Route */}
-      <Route path="*" element={<NotFoundPage />} />
-    </Routes>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<HomePage />} />
+        <Route path="/health" element={<HealthChecker />} />
+        <Route path="/ens" element={<ENSPage />} />
+        <Route path="/4kTribe" element={<FourKPage />} />
+        <Route path="/molten" element={<MoltenPage />} />
+        <Route path="/tribalbeats" element={<TribalBeatsPage />} />
+        <Route path="/checker" element={<Tribal19CheckerPage />} />
+        <Route path="/council" element={<CouncilPage />} />
+        
+        {/* Raffle Routes */}
+        <Route path="/raffles" element={<RafflesPage />} />
+        <Route path="/raffles/:id" element={<RaffleDetails />} />
+        <Route path="/raffles/admin" element={<RafflesAdminPage />} />
+        <Route path="/winners" element={<WinnersPage />} />
+        
+        {/* Staking Routes */}
+        <Route path="/staking" element={<StakingApesPage />} />
+        
+        {/* Element19 Routes */}
+        <Route path="/drops" element={<DropsPage />} />
+        <Route path="/collection" element={<CollectionPage />} />
+        
+        {/* Asset Routes */}
+        <Route path="/wallpapers" element={<WallpapersPage />} />
+        
+        {/* User Routes */}
+        <Route path="/account" element={<ProfilePage />} />
+        
+        {/* 404 Route */}
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </Suspense>
   );
 };
 

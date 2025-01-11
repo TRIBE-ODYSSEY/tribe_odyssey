@@ -1,5 +1,5 @@
 import { type Hash, type Address } from 'viem'
-import { walletClient } from '../../viem/clients'
+import { walletClient, publicClient } from '../../viem/clients'
 import { mainnet } from 'viem/chains'
 
 export async function sendTransaction(to: Address, value: bigint): Promise<Hash> {
@@ -41,7 +41,7 @@ export async function signTypedData(domain: any, types: any, value: any): Promis
 }
 
 export async function getBalance(address: Address): Promise<bigint> {
-  const balance = await walletClient.getBalance({ address })
+  const balance = await publicClient.getBalance({ address })
   return balance
 }
 

@@ -38,35 +38,3 @@ export type {
   Account,
   Chain,
 }
-
-// Create a hooks object for easier imports
-export const wagmiHooks = {
-  // Custom hooks
-  useWalletClient,
-  usePublicClient,
-  useContractWrite,
-  
-  // Wagmi core hooks
-  useAccount,
-  useBalance,
-  useBlockNumber,
-  useConnect,
-  useDisconnect,
-  useEnsResolver,
-  useEnsText,
-  useChainId,
-  useSwitchChain,
-  useTransaction,
-  useWaitForTransactionReceipt,
-  useReadContract,
-  useContractRead,
-} as const
-
-// Export hook types
-export type WagmiHooks = typeof wagmiHooks
-export type { 
-  UseContractWriteConfig,
-  UseContractWriteResult,
-  UseReadContractConfig,
-  UseReadContractResult, 
-} from './useContractWrite'

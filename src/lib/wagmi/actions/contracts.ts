@@ -1,4 +1,4 @@
-import { type Address, type Hash } from 'viem'
+import { Account, type Address, type Hash } from 'viem'
 import { publicClient, walletClient } from '../../viem/clients'
 import { erc20ABI } from '@src/lib/config/abi/erc20.json'
 import { erc721ABI } from '@src/lib/config/abi/erc721.json'
@@ -52,7 +52,7 @@ export async function writeContract(
     abi: abiMap[contractName],
     functionName,
     args,
-    account: walletClient.account as Account,
+    account: walletClient.account as unknown as Account,
   })
   return hash
 }
