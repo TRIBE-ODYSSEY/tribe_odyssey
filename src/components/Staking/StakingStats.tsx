@@ -2,19 +2,35 @@ import React from 'react';
 import Card from '@src/components/common/card/Card';
 // @ts-ignore
 import { useAccount } from 'wagmi';
-import { useReadStakingUserStakedNfTs } from '@src/generated';
+import { useReadStakingUserStakedNfTs, useReadStakingPoolInfo } from '@src/generated';
 
 const StakingStats: React.FC = () => {
   const { address } = useAccount();
   const { data: userStakedNFTs } = useReadStakingUserStakedNfTs({
-    args: [address!, '0x0'],
+    args: [address!, '0x0']
+  });
+
+  const { data: poolInfo } = useReadStakingPoolInfo({
+    args: [BigInt(0)]
   });
 
   const stats = [
-    { label: 'Total Staked', value: userStakedNFTs?.length || '0' },
-    { label: 'Total NANA/Day', value: (userStakedNFTs?.length || 0) * 10 },
-    { label: 'Your Staked', value: userStakedNFTs?.length || '0' },
-    { label: 'Your NANA/Day', value: (userStakedNFTs?.length || 0) * 10 },
+    { 
+      label: 'Total Staked', 
+      value: poolInfo ? Number(poolInfo[0]) : '0'
+    },
+    { 
+      label: 'Total NANA/Day', 
+      value: userStakedNFTs ? Number(userStakedNFTs.length) * 10 : '0'
+    },
+    { 
+      label: 'Your Staked', 
+      value: userStakedNFTs?.length || '0'
+    },
+    { 
+      label: 'Your NANA/Day', 
+      value: (userStakedNFTs?.length || 0) * 10
+    },
   ];
 
   return (

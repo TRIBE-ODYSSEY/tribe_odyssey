@@ -3,7 +3,19 @@ import { Tab } from '@headlessui/react';
 import StakeTab from '@src/components/Staking/Tabs/StakeTab';
 import UnstakeTab from '@src/components/Staking/Tabs/UnstakeTab';
 
-const StakingTabs: React.FC = () => {
+interface StakingTabsProps {
+  onStake: (selectedNFTs: string[]) => Promise<void>;
+  onUnstake: (selectedNFTs: string[]) => Promise<void>;
+  isWaiting: boolean;
+  refreshTrigger: number;
+}
+
+const StakingTabs: React.FC<StakingTabsProps> = ({
+  onStake,
+  onUnstake,
+  isWaiting,
+  refreshTrigger
+}) => {
   const [selectedTab, setSelectedTab] = useState(0);
 
   return (
@@ -27,10 +39,18 @@ const StakingTabs: React.FC = () => {
         </Tab.List>
         <Tab.Panels>
           <Tab.Panel>
-            <StakeTab />
+            <StakeTab 
+              onStake={onStake}
+              isWaiting={isWaiting}
+              refreshTrigger={refreshTrigger}
+            />
           </Tab.Panel>
           <Tab.Panel>
-            <UnstakeTab />
+            <UnstakeTab 
+              onUnstake={onUnstake}
+              isWaiting={isWaiting}
+              refreshTrigger={refreshTrigger}
+            />
           </Tab.Panel>
         </Tab.Panels>
       </Tab.Group>
