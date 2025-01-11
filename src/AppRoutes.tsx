@@ -56,16 +56,20 @@ const AppRoutes: React.FC = () => {
       {/* Public Routes */}
       <Route path="/" element={<HomePage />} />
       <Route path="/health" element={<HealthChecker />} />
+      <Route path="/4kTribe" element={<FourKPage />} />
+      <Route path="/molten" element={<MoltenPage />} />
+      <Route path="/tribalbeats" element={<TribalBeatsPage />} />
+      <Route path="/checker" element={<Tribal19CheckerPage />} />
+      <Route path="/council" element={<CouncilPage />} />
+      <Route path="/drops" element={<DropsPage />} />
+      <Route path="/collection" element={<CollectionPage />} />
+      <Route path="/wallpapers" element={<WallpapersPage />} />
+      <Route path="/winners" element={<WinnersPage />} />
       
       {/* Protected Routes */}
       <Route path="/ens" element={<ProtectedRoute element={<ENSPage />} />} />
-      <Route path="/4kTribe" element={<ProtectedRoute element={<FourKPage />} />} />
-      <Route path="/molten" element={<ProtectedRoute element={<MoltenPage />} />} />
-      <Route path="/tribalbeats" element={<ProtectedRoute element={<TribalBeatsPage />} />} />
-      <Route path="/checker" element={<ProtectedRoute element={<Tribal19CheckerPage />} />} />
-      <Route path="/council" element={<ProtectedRoute element={<CouncilPage />} />} />
       
-      {/* Raffle Routes */}
+      {/* Raffle Routes - Protected */}
       <Route path="/raffles" element={<ProtectedRoute element={<RafflesPage />} />} />
       <Route path="/raffles/:id" element={<ProtectedRoute element={<RaffleDetails />} />} />
       <Route 
@@ -78,19 +82,11 @@ const AppRoutes: React.FC = () => {
           />
         } 
       />
-      <Route path="/winners" element={<ProtectedRoute element={<WinnersPage />} />} />
       
-      {/* Staking Routes */}
+      {/* Staking Routes - Protected */}
       <Route path="/staking" element={<ProtectedRoute element={<StakingApesPage />} />} />
       
-      {/* Element19 Routes */}
-      <Route path="/drops" element={<ProtectedRoute element={<DropsPage />} />} />
-      <Route path="/collection" element={<ProtectedRoute element={<CollectionPage />} />} />
-      
-      {/* Asset Routes */}
-      <Route path="/wallpapers" element={<ProtectedRoute element={<WallpapersPage />} />} />
-      
-      {/* User Routes */}
+      {/* User Routes - Protected */}
       <Route path="/account" element={<ProtectedRoute element={<ProfilePage />} />} />
       
       {/* 404 Route */}
