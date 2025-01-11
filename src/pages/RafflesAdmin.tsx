@@ -8,6 +8,9 @@ import Button from '@src/components/common/Button';
 import { toast } from 'react-toastify';
 import RaffleFormModal from '@src/components/Raffles/RaffleFormModal';
 import { useNavigate } from 'react-router-dom';
+import { randomPicker } from '@src/lib/services/randomPicker';
+import AddressAvatar from '@src/components/common/AddressAvatar';
+
 
 interface RaffleData {
   id: string;
@@ -41,16 +44,33 @@ const RafflesAdmin: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!address || !ADMIN_ADDRESSES.includes(address)) {
-      toast.error('Unauthorized access');
-      navigate('/raffles');
-      return;
-    }
-    fetchRaffles();
-  }, [address]);
+    const checkAuthAndFetch = async () => {
+      try {
+        if (!address) {
+          toast.error('Please connect your wallet');
+          navigate('/raffles');
+          return;
+        }
+
+        if (!ADMIN_ADDRESSES.includes(address)) {
+          toast.error('Unauthorized access');
+          navigate('/raffles');
+          return;
+        }
+
+        await fetchRaffles();
+      } catch (error) {
+        console.error('Error in auth check:', error);
+        toast.error('Something went wrong');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkAuthAndFetch();
+  }, [address, navigate]);
 
   const fetchRaffles = async () => {
-    setIsLoading(true);
     try {
       // Replace with actual API call
       const mockRaffles: RaffleData[] = [
@@ -72,8 +92,6 @@ const RafflesAdmin: React.FC = () => {
     } catch (error) {
       console.error('Failed to fetch raffles:', error);
       toast.error('Failed to load raffles');
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -146,21 +164,48 @@ const RafflesAdmin: React.FC = () => {
         return;
       }
 
-      // Replace with actual winner selection logic
-      const winnerIndex = Math.floor(Math.random() * raffle.participants.length);
-      const winner = raffle.participants[winnerIndex];
+      // Create RandomPicker project
+      const projectId = await randomPicker.createProject({
+        displayName: raffle.title,
+        conditions: raffle.description,
+        prizes: [{ Count: 1, PrizeName: raffle.prizeValue }]
+      });
 
+      // Add all participants
+      await randomPicker.addMultipleParticipants(
+        projectId,
+        raffle.participants.map(p => ({
+          PublicInfo: p.address,
+          PrivateInfo: '',
+          Weight: p.tickets
+        }))
+      );
+
+      // Draw winner
+      await randomPicker.drawWinner(projectId);
+
+      // Update raffle with project key for verification
       await handleUpdateRaffle(raffleId, { 
-        winner: winner.address,
+        project_key: projectId,
         status: 'completed'
       });
 
-      toast.success(`Winner: ${winner.address}`);
+      toast.success('Winner drawn successfully!');
     } catch (error) {
       console.error('Failed to draw winner:', error);
       toast.error('Failed to draw winner');
     }
   };
+
+  if (isLoading) {
+    return (
+      <PageLayout>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-red-500"></div>
+        </div>
+      </PageLayout>
+    );
+  }
 
   return (
     <PageLayout>
@@ -239,6 +284,27 @@ const RafflesAdmin: React.FC = () => {
                         </div>
                       </div>
                     </div>
+
+                    {/* Participants Section */}
+                    {raffle.participants.length > 0 && (
+                      <div className="mb-6">
+                        <h4 className="text-white/80 mb-2">Participants</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {raffle.participants.map((participant, index) => (
+                            <div key={index} className="flex items-center gap-2">
+                              <AddressAvatar 
+                                address={participant.address} 
+                                size={40} 
+                                className="flex-shrink-0"
+                              />
+                              <span>
+                                {participant.address.slice(0,6)}...{participant.address.slice(-4)}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
                     <div className="flex gap-4">
                       <Button onClick={() => setSelectedRaffle(raffle)}>
