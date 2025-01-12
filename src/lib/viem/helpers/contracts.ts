@@ -2,7 +2,7 @@ import contracts, { isValidChainId, CONTRACT_NAMES, CHAIN_IDS } from '../contrac
 type ChainId = typeof CHAIN_IDS[keyof typeof CHAIN_IDS];
 import { stakingABI } from '@src/lib/config/abi/staking.json';
 import { tribeABI } from '@src/lib/config/abi/tribe.json';
-import { multiCallABI } from '@src/lib/config/abi/multiCall.json';
+import { multiCallABI } from '@src/lib/config/abi/MultiCall.json';
 
 // Define contract config type
 type ContractConfig = {

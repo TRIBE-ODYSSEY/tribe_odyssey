@@ -15,6 +15,7 @@ const StakeApes: React.FC = () => {
   const [waiting, setWaiting] = useState(false);
   
   const { writeContractAsync } = useWriteContract();
+  const { data: receipt, isLoading } = useWaitForTransactionReceipt();
 
   const handleStake = async (selectedNFTs: string[]) => {
     if (!isConnected || !address) {
@@ -30,10 +31,17 @@ const StakeApes: React.FC = () => {
     setWaiting(true);
     try {
       const stakingFunctions = getStakingFunctions(CHAIN_IDS.MAINNET);
-      const config = stakingFunctions.stake(selectedNFTs.map(Number));
+      const config = {
+        ...stakingFunctions.stake(selectedNFTs.map(Number)),
+        address: stakingFunctions.stake(selectedNFTs.map(Number)).address as `0x${string}`
+      };
       
       const hash = await writeContractAsync(config);
-      await useWaitForTransactionReceipt({ hash });
+      
+      // Wait for transaction receipt
+      while (!receipt && isLoading) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
       
       toast.success(`Successfully staked ${selectedNFTs.length} NFT(s)`);
       setRefreshTrigger(prev => prev + 1);
@@ -59,10 +67,17 @@ const StakeApes: React.FC = () => {
     setWaiting(true);
     try {
       const stakingFunctions = getStakingFunctions(CHAIN_IDS.MAINNET);
-      const config = stakingFunctions.unstake(selectedNFTs.map(Number));
+      const config = {
+        ...stakingFunctions.unstake(selectedNFTs.map(Number)),
+        address: stakingFunctions.unstake(selectedNFTs.map(Number)).address as `0x${string}`
+      };
       
       const hash = await writeContractAsync(config);
-      await useWaitForTransactionReceipt({ hash });
+      
+      // Wait for transaction receipt
+      while (!receipt && isLoading) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
       
       toast.success(`Successfully unstaked ${selectedNFTs.length} NFT(s)`);
       setRefreshTrigger(prev => prev + 1);

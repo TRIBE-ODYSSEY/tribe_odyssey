@@ -27,7 +27,7 @@ const StakingStats: React.FC = () => {
   });
 
   // Get pool information
-  const { data: poolInfo } = useReadContract({
+  const { data: poolInfo = { totalStaked: BigInt(0) } } = useReadContract({
     ...stakingContract,
     functionName: 'getPoolInfo',
     args: [BigInt(0)],
@@ -35,7 +35,7 @@ const StakingStats: React.FC = () => {
 
   // Calculate stats
   const dailyRewardsPerNFT = 10;
-  const totalStaked = poolInfo ? Number(poolInfo[0]) : 0;
+  const totalStaked = Number(poolInfo.totalStaked);
   const userStakedCount = Array.isArray(userStakedNFTs) ? userStakedNFTs.length : 0;
   const userDailyRewards = userStakedCount * dailyRewardsPerNFT;
   const userTotalNFTs = Number(totalNFTBalance);
