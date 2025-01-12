@@ -62,8 +62,6 @@ const AppRoutes: React.FC = () => {
 
   const ADMIN_ADDRESSES = [
     '0xc570F1B8D14971c6cd73eA8db4F7C44E4AAdC6f2',
-
-    // Add other admin addresses here
   ];
 
   return (
@@ -81,11 +79,8 @@ const AppRoutes: React.FC = () => {
       <Route path="/wallpapers" element={<WallpapersPage />} />
       <Route path="/winners" element={<WinnersPage />} />
       <Route path="/ens" element={<ENSPage />} />
-      <Route path="/raffles" element={<RafflesPage />} />
-      <Route path="/raffles/:id" element={<RaffleDetails />} />
-      <Route path="/staking" element={<StakingApesPage />} />
       
-      {/* Protected Routes */}
+      {/* Admin Routes - Place before dynamic routes */}
       <Route 
         path="/raffles/admin" 
         element={
@@ -94,8 +89,16 @@ const AppRoutes: React.FC = () => {
             adminOnly 
             allowedAddresses={ADMIN_ADDRESSES} 
           />
-        }
+        } 
       />
+      
+      {/* Dynamic Routes */}
+      <Route path="/raffles/:id" element={<RaffleDetails />} />
+      
+      {/* Other Routes */}
+      <Route path="/raffles" element={<RafflesPage />} />
+      <Route path="/staking" element={<StakingApesPage />} />
+      
       {/* User Routes - Protected */}
       <Route path="/account" element={<ProtectedRoute element={<ProfilePage />} />} />
       

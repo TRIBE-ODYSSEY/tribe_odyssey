@@ -1,0 +1,9 @@
+/* /index.html 200
+/health 200
+/raffles 200
+/raffles/admin 200
+/staking 200
+/account 200
+/raffles/:id 200
+/staking/:id 200
+/account 200
