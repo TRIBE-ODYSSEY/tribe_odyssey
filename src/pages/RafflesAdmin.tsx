@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import { useAccount, useSignMessage } from 'wagmi';
 import { toast } from 'react-toastify';
 import moment from 'moment';
@@ -9,13 +9,34 @@ import Button from '@src/components/common/Button';
 import { randomPicker } from '@src/lib/services/randomPicker';
 import { motion } from 'framer-motion';
 
+interface RaffleCondition {
+  entry: number;
+  points: number;
+}
+
+interface RaffleFormData {
+  title: string;
+  description: string;
+  prizeValue: string;
+  endDate: string;
+  conditions: RaffleCondition[];
+  onlyAllowOnce: boolean;
+}
+
+interface Raffle {
+  id: string;
+  title: string;
+  description: string;
+  endDate: string;
+}
+
 const RafflesAdmin: React.FC = () => {
   const { address } = useAccount();
   const { signMessageAsync } = useSignMessage();
   const navigate = useNavigate();
-  const [raffles, setRaffles] = useState<any[]>([]);
+  const [raffles, setRaffles] = useState<Raffle[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<RaffleFormData>({
     title: '',
     description: '',
     prizeValue: '',
@@ -26,9 +47,16 @@ const RafflesAdmin: React.FC = () => {
   const [image, setImage] = useState<File>();
   const [imagePreview, setImagePreview] = useState<string>();
 
-  useEffect(() => {
-    fetchRaffles();
-  }, []);
+  const ADMIN_ADDRESSES = [
+    '0xc570F1B8D14971c6cd73eA8db4F7C44E4AAdC6f2',
+  ];
+
+  const isAdmin = address && ADMIN_ADDRESSES.map(addr => addr.toLowerCase())
+    .includes(address.toLowerCase());
+
+  if (!isAdmin) {
+    return <Navigate to="/404" replace />;
+  }
 
   const fetchRaffles = async () => {
     try {
@@ -43,10 +71,15 @@ const RafflesAdmin: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    fetchRaffles();
+  }, []);
+
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      setImage(event.target.files[0]);
-      setImagePreview(URL.createObjectURL(event.target.files[0]));
+    const file = event.target.files?.[0];
+    if (file) {
+      setImage(file);
+      setImagePreview(URL.createObjectURL(file));
     }
   };
 
@@ -57,7 +90,7 @@ const RafflesAdmin: React.FC = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleConditionChange = (index: number, field: 'entry' | 'points', value: number) => {
+  const handleConditionChange = (index: number, field: keyof RaffleCondition, value: number) => {
     setFormData(prev => ({
       ...prev,
       conditions: prev.conditions.map((condition, i) => 
@@ -106,9 +139,10 @@ const RafflesAdmin: React.FC = () => {
 
       toast.success('Raffle created successfully!');
       navigate('/raffles');
-    } catch (error: any) {
+    } catch (error) {
       console.error('Submit error:', error);
-      toast.error(error.message || 'Failed to create raffle');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to create raffle';
+      toast.error(errorMessage);
     }
   };
 
@@ -293,7 +327,7 @@ const RafflesAdmin: React.FC = () => {
                           Edit
                         </Button>
                         <Button
-                          onClick={() => {/* handle finish */}}
+                          onClick={() => {/* TODO: Implement finish raffle */}}
                         >
                           Finish
                         </Button>
