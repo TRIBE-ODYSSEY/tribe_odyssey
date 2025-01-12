@@ -22,7 +22,7 @@ const WinnersPage = lazy(() => import('@src/pages/Staking/Winners'));
 const ProfilePage = lazy(() => import('@src/pages/Profile'));
 const RafflesAdminPage = lazy(() => import('@src/pages/RafflesAdmin'));
 const RaffleDetails = lazy(() => import('@src/pages/Staking/RaffleDetails'));
-const NotFoundPage = lazy(() => import('@src/components/common/errors/network/networkErrors'));
+const NetworkErrors = lazy(() => import('@src/components/common/errors/network/networkErrors').then(module => ({ default: module.NetworkErrors })));
 
 const AppRoutes: React.FC = () => {
   useLazyLoading();
@@ -63,7 +63,7 @@ const AppRoutes: React.FC = () => {
       <Route path="/account" element={<ProfilePage />} />
       
       {/* 404 Route */}
-      <Route path="*" element={<NotFoundPage />} />
+      <Route path="*" element={<NetworkErrors />} />
     </Routes>
   );
 };
