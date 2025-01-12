@@ -28,6 +28,7 @@ export default defineConfig({
       '@config': path.resolve(__dirname, 'src/lib/config'),
       '@hooks': path.resolve(__dirname, 'src/lib/hooks'),
       '@services': path.resolve(__dirname, 'src/lib/services'),
+      '@pages': path.resolve(__dirname, 'src/pages'),
     },
   },
   assetsInclude: ['**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.svg', '**/*.gif'],
