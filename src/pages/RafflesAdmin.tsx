@@ -27,7 +27,7 @@ interface Raffle {
   id: string;
   title: string;
   description: string;
-  endDate: string;
+  endDate: Date;
 }
 
 const RafflesAdmin: React.FC = () => {
@@ -62,7 +62,7 @@ const RafflesAdmin: React.FC = () => {
     try {
       setIsLoading(true);
       const response = await randomPicker.getActiveRaffles();
-      setRaffles(response);
+      setRaffles(response as Raffle[]);
     } catch (error) {
       console.error('Failed to fetch raffles:', error);
       toast.error('Failed to load raffles');
