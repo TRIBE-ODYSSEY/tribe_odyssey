@@ -36,7 +36,7 @@ const StakeApes: React.FC = () => {
         address: stakingFunctions.stake(selectedNFTs.map(Number)).address as `0x${string}`
       };
       
-      const hash = await writeContractAsync(config);
+      await writeContractAsync(config);
       
       // Wait for transaction receipt
       while (!receipt && isLoading) {
@@ -72,7 +72,7 @@ const StakeApes: React.FC = () => {
         address: stakingFunctions.unstake(selectedNFTs.map(Number)).address as `0x${string}`
       };
       
-      const hash = await writeContractAsync(config);
+      await writeContractAsync(config);
       
       // Wait for transaction receipt
       while (!receipt && isLoading) {

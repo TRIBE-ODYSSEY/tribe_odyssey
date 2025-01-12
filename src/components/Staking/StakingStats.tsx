@@ -5,6 +5,10 @@ import { useReadContract } from 'wagmi';
 import { getStakingContract, getTribeContract } from '@src/lib/viem/helpers/contracts';
 import { CHAIN_IDS } from '@src/lib/viem/contracts';
 
+interface PoolInfo {
+  totalStaked: bigint;
+}
+
 const StakingStats: React.FC = () => {
   const { address } = useAccount();
   const stakingContract = getStakingContract(CHAIN_IDS.MAINNET);
@@ -12,23 +16,24 @@ const StakingStats: React.FC = () => {
 
   // Get user's staked NFTs
   const { data: userStakedNFTs = [] } = useReadContract({
-    ...stakingContract,
-    functionName: 'getUserStakedNFTs',
+    address: stakingContract.address as `0x${string}`,
+    abi: stakingContract.abi,
+    functionName: 'getUserStakedTribe',
     args: address ? [address] : undefined,
-    enabled: Boolean(address),
   });
 
   // Get total NFT balance of user
   const { data: totalNFTBalance = BigInt(0) } = useReadContract({
-    ...tribeContract,
+    address: tribeContract.address as `0x${string}`,
+    abi: tribeContract.abi,
     functionName: 'balanceOf',
     args: address ? [address] : undefined,
-    enabled: Boolean(address),
   });
 
   // Get pool information
-  const { data: poolInfo = { totalStaked: BigInt(0) } } = useReadContract({
-    ...stakingContract,
+  const { data: poolInfo = { totalStaked: BigInt(0) } } = useReadContract<unknown, unknown, PoolInfo>({
+    address: stakingContract.address as `0x${string}`,
+    abi: stakingContract.abi,
     functionName: 'getPoolInfo',
     args: [BigInt(0)],
   });
