@@ -32,12 +32,19 @@ const ProtectedRoute: React.FC<{
 }> = ({ element, adminOnly, allowedAddresses }) => {
   const { address, isConnected } = useAccount();
 
+  // Redirect to home if not connected
   if (!isConnected) {
     return <Navigate to="/" replace />;
   }
 
-  if (adminOnly && allowedAddresses && !allowedAddresses.includes(address!)) {
-    return <Navigate to="/raffles" replace />;
+  // For admin routes, check if address is in allowed list
+  if (adminOnly && allowedAddresses) {
+    const isAdmin = address && allowedAddresses.map(addr => addr.toLowerCase())
+      .includes(address.toLowerCase());
+    
+    if (!isAdmin) {
+      return <Navigate to="/raffles" replace />;
+    }
   }
 
   return element;
@@ -65,25 +72,26 @@ const AppRoutes: React.FC = () => {
       <Route path="/collection" element={<CollectionPage />} />
       <Route path="/wallpapers" element={<WallpapersPage />} />
       <Route path="/winners" element={<WinnersPage />} />
+      <Route path="/ens" element={<ENSPage />} />
+      <Route path="/raffles" element={<RafflesPage />} />
+      <Route path="/raffles/:id" element={<RaffleDetails />} />
+      <Route path="/staking" element={<StakingApesPage />} />
       
       {/* Protected Routes */}
-      <Route path="/ens" element={<ProtectedRoute element={<ENSPage />} />} />
-      
-      {/* Raffle Routes - Protected */}
-      <Route path="/raffles" element={<ProtectedRoute element={<RafflesPage />} />} />
-      <Route path="/raffles/:id" element={<ProtectedRoute element={<RaffleDetails />} />} />
       <Route 
-        path="/raffles/admin" 
-        element={
-          <ProtectedRoute 
-            element={<RafflesAdminPage />} 
-            adminOnly 
-            allowedAddresses={ADMIN_ADDRESSES} 
-          />
-        } 
+      path="/raffles/admin" 
+      element={
+        <ProtectedRoute 
+        element={<RafflesAdminPage />} 
+        adminOnly 
+        allowedAddresses={ADMIN_ADDRESSES} 
+        />
+      } 
       />
+      <Route path="/account" element={<ProtectedRoute element={<ProfilePage />} />} />
       
-      {/* Staking Routes - Protected */}
+      {/* 404 Route */}
+      <Route path="*" element={<NotFoundPage />} />
       <Route path="/staking" element={<ProtectedRoute element={<StakingApesPage />} />} />
       
       {/* User Routes - Protected */}
