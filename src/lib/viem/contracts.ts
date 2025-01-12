@@ -1,4 +1,12 @@
-const contracts = {
+type ChainId = 1 | 4 | 5;
+
+interface ContractAddresses {
+  [key: string]: {
+    [chainId in ChainId]?: string;
+  };
+}
+
+const contracts: ContractAddresses = {
     multiCall: {
       1: "0xeefba1e63905ef1d7acba5a8513c70307c1ce441",
       4: "0x42Ad527de7d4e9d9d011aC45B31D8551f8Fe9821",
@@ -20,6 +28,36 @@ const contracts = {
       1: "0x220224422F2C2A9781F3EB5A0aA36F661DA9aA8F",
     },
   };
+
+export const CHAIN_IDS = {
+  MAINNET: 1,
+  RINKEBY: 4,
+  GOERLI: 5
+} as const;
+
+export const CONTRACT_NAMES = {
+  MULTI_CALL: 'multiCall',
+  TRIBE: 'tribe',
+  APE: 'ape',
+  ENS_REGISTRAR: 'ensRegistrar',
+  STAKING: 'staking'
+} as const;
+
+export const isValidChainId = (chainId: number): chainId is ChainId => {
+  return [CHAIN_IDS.MAINNET, CHAIN_IDS.RINKEBY, CHAIN_IDS.GOERLI].includes(chainId as ChainId);
+};
+
+export const getContractAddress = (name: keyof typeof contracts, chainId: ChainId): string => {
+  if (!isValidChainId(chainId)) {
+    throw new Error(`Invalid chain ID: ${chainId}`);
+  }
   
-  export default contracts;
+  const address = contracts[name][chainId];
+  if (!address) {
+    throw new Error(`Contract ${name} not deployed on chain ${chainId}`);
+  }
   
+  return address;
+};
+
+export default contracts;

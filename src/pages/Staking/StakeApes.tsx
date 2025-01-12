@@ -3,87 +3,72 @@ import PageTitle from '@src/components/common/PageTitle';
 import StakingStats from '@src/components/Staking/StakingStats';
 import StakingTabs from '@src/components/Staking/StakingTabs';
 import PageLayout from '@src/components/common/layout/PageLayout';
-import { useAccount, useSignMessage } from 'wagmi';
-import axios from 'axios';
+import { useAccount } from 'wagmi';
+import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { getStakingFunctions } from '@src/lib/viem/helpers/contracts';
+import { CHAIN_IDS } from '@src/lib/viem/contracts';
 import { toast } from 'react-toastify';
 
 const StakeApes: React.FC = () => {
-  const { address } = useAccount();
-  const { signMessageAsync } = useSignMessage();
+  const { address, isConnected } = useAccount();
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [waiting, setWaiting] = useState(false);
+  
+  const { writeContractAsync } = useWriteContract();
 
   const handleStake = async (selectedNFTs: string[]) => {
+    if (!isConnected || !address) {
+      toast.error("Please connect your wallet");
+      return;
+    }
+
     if (selectedNFTs.length === 0) {
-      toast.error("Please select Apes to stake!");
+      toast.error("Please select NFTs to stake");
       return;
     }
-
-    if (!address) {
-      toast.error("Please connect wallet to stake!");
-      return;
-    }
-
-    const msg = JSON.stringify({
-      ids: selectedNFTs,
-      address: address.toLowerCase(),
-    });
 
     setWaiting(true);
     try {
-      const signature = await signMessageAsync({
-        message: msg,
-      });
+      const stakingFunctions = getStakingFunctions(CHAIN_IDS.MAINNET);
+      const config = stakingFunctions.stake(selectedNFTs.map(Number));
       
-      const response = await axios.post("/staking/stake", {
-        address,
-        signature,
-        ids: selectedNFTs,
-      });
+      const hash = await writeContractAsync(config);
+      await useWaitForTransactionReceipt({ hash });
       
-      toast.success(`${response.data.staked.length} nft(s) have been staked successfully!`);
+      toast.success(`Successfully staked ${selectedNFTs.length} NFT(s)`);
       setRefreshTrigger(prev => prev + 1);
     } catch (error) {
-      console.error(error);
-      toast.error("Failed to stake NFTs");
+      console.error('Staking error:', error);
+      toast.error(error instanceof Error ? error.message : "Failed to stake NFTs");
     } finally {
       setWaiting(false);
     }
   };
 
   const handleUnstake = async (selectedNFTs: string[]) => {
+    if (!isConnected || !address) {
+      toast.error("Please connect your wallet");
+      return;
+    }
+
     if (selectedNFTs.length === 0) {
-      toast.error("Please select Apes to unstake!");
+      toast.error("Please select NFTs to unstake");
       return;
     }
-
-    if (!address) {
-      toast.error("Please connect wallet to unstake!");
-      return;
-    }
-
-    const msg = JSON.stringify({
-      ids: selectedNFTs,
-      address: address.toLowerCase(),
-    });
 
     setWaiting(true);
     try {
-      const signature = await signMessageAsync({
-        message: msg,
-      });
+      const stakingFunctions = getStakingFunctions(CHAIN_IDS.MAINNET);
+      const config = stakingFunctions.unstake(selectedNFTs.map(Number));
       
-      const response = await axios.post("/staking/unstake", {
-        address,
-        signature,
-        ids: selectedNFTs,
-      });
+      const hash = await writeContractAsync(config);
+      await useWaitForTransactionReceipt({ hash });
       
-      toast.success(`${response.data.unstaked.length} nft(s) have been unstaked successfully!`);
+      toast.success(`Successfully unstaked ${selectedNFTs.length} NFT(s)`);
       setRefreshTrigger(prev => prev + 1);
     } catch (error) {
-      console.error(error);
-      toast.error("Failed to unstake NFTs");
+      console.error('Unstaking error:', error);
+      toast.error(error instanceof Error ? error.message : "Failed to unstake NFTs");
     } finally {
       setWaiting(false);
     }

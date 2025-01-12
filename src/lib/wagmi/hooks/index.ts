@@ -20,6 +20,7 @@ export {
   useWaitForTransactionReceipt,
   useReadContract,
   useContractRead,
+  useWriteContract,
 } from 'wagmi'
 
 // Export our custom hooks
