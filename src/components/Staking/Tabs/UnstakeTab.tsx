@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import NFTCard from '../NFTCard';
 import Button from '@src/components/common/Button';
 import { useAccount } from 'wagmi';
-import { useContractWrite } from '@src/lib/wagmi/hooks';
+import { useReadContract, useWriteContract } from 'wagmi';
+import { getStakingContract } from '@src/lib/viem/helpers/contracts';
+import { CHAIN_IDS } from '@src/lib/viem/contracts';
 import { toast } from 'react-toastify';
 
 interface UnstakeTabProps {
@@ -13,52 +15,35 @@ interface UnstakeTabProps {
 
 const UnstakeTab: React.FC<UnstakeTabProps> = ({
   onUnstake,
-  isWaiting,
-  refreshTrigger
+  isWaiting
 }) => {
   const { address } = useAccount();
   const [selectedNFTs, setSelectedNFTs] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [stakedNFTs, setStakedNFTs] = useState<any[]>([]);
-  
-  const { write: unstakeNFTs, isLoading: isPending } = useContractWrite({
-    address: '0x77f649385ca963859693c3d3299d36dfc7324eb9',  // Your staking contract address
-    functionName: 'leaveMany'
+  const stakingContract = getStakingContract(CHAIN_IDS.MAINNET);
+
+  // Get user's staked NFTs
+  const { data: stakedNFTs = [] } = useReadContract({
+    ...stakingContract,
+    functionName: 'userStakedNFTs',
+    args: [BigInt(0), address],
+    enabled: Boolean(address),
   });
 
-  useEffect(() => {
-    if (address) {
-      fetchStakedNFTs();
-    }
-  }, [address, refreshTrigger]);
-
-  const fetchStakedNFTs = async () => {
-    setIsLoading(true);
-    try {
-      // Replace with your actual API call
-      const response = await fetch(`/api/nfts/staked/${address}`);
-      const data = await response.json();
-      setStakedNFTs(data);
-    } catch (error) {
-      console.error('Failed to fetch staked NFTs:', error);
-      toast.error('Failed to load staked NFTs');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { writeContractAsync: unstake } = useWriteContract();
 
   const handleUnstake = async () => {
     if (!address || selectedNFTs.length === 0) return;
-
     try {
-      await unstakeNFTs({
-        args: [BigInt(0), selectedNFTs.map(id => BigInt(id))],
+      await unstake({
+        ...stakingContract,
+        functionName: 'leaveMany',
+        args: [BigInt(0), selectedNFTs.map(id => BigInt(id))] as const,
+        address: stakingContract.address as `0x${string}`,
       });
       
       await onUnstake(selectedNFTs);
       toast.success('NFTs unstaked successfully!');
       setSelectedNFTs([]);
-      fetchStakedNFTs();
     } catch (error) {
       console.error('Unstaking error:', error);
       toast.error('Failed to unstake NFTs');
@@ -81,11 +66,7 @@ const UnstakeTab: React.FC<UnstakeTabProps> = ({
         </h3>
       </div>
 
-      {isLoading ? (
-        <div className="grid place-items-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
-        </div>
-      ) : stakedNFTs.length === 0 ? (
+      {stakedNFTs.length === 0 ? (
         <div className="text-center py-12 text-white/60">
           No staked NFTs found
         </div>
@@ -106,10 +87,10 @@ const UnstakeTab: React.FC<UnstakeTabProps> = ({
 
       <Button
         onClick={handleUnstake}
-        disabled={selectedNFTs.length === 0 || !address || isPending || isWaiting}
+        disabled={selectedNFTs.length === 0 || !address || isWaiting}
         className="w-full"
       >
-        {isPending || isWaiting ? 'Unstaking...' : `Unstake Selected (${selectedNFTs.length})`}
+        {isWaiting ? 'Unstaking...' : `Unstake Selected (${selectedNFTs.length})`}
       </Button>
     </div>
   );

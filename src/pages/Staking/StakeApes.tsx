@@ -5,7 +5,7 @@ import StakingTabs from '@src/components/Staking/StakingTabs';
 import PageLayout from '@src/components/common/layout/PageLayout';
 import { useAccount } from 'wagmi';
 import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-import { getStakingFunctions } from '@src/lib/viem/helpers/contracts';
+import { getStakingContract } from '@src/lib/viem/helpers/contracts';
 import { CHAIN_IDS } from '@src/lib/viem/contracts';
 import { toast } from 'react-toastify';
 
@@ -15,7 +15,7 @@ const StakeApes: React.FC = () => {
   const [waiting, setWaiting] = useState(false);
   
   const { writeContractAsync } = useWriteContract();
-  const { data: receipt, isLoading } = useWaitForTransactionReceipt();
+  const stakingContract = getStakingContract(CHAIN_IDS.MAINNET);
 
   const handleStake = async (selectedNFTs: string[]) => {
     if (!isConnected || !address) {
@@ -30,21 +30,23 @@ const StakeApes: React.FC = () => {
 
     setWaiting(true);
     try {
-      const stakingFunctions = getStakingFunctions(CHAIN_IDS.MAINNET);
-      const config = {
-        ...stakingFunctions.stake(selectedNFTs.map(Number)),
-        address: stakingFunctions.stake(selectedNFTs.map(Number)).address as `0x${string}`
-      };
-      
-      await writeContractAsync(config);
-      
-      // Wait for transaction receipt
-      while (!receipt && isLoading) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+      const hash = await writeContractAsync({
+        ...stakingContract,
+        functionName: 'joinMany',
+        args: [BigInt(0), selectedNFTs.map(id => BigInt(id))],
+      });
+
+      // Wait for transaction confirmation
+      const { isSuccess } = await useWaitForTransactionReceipt({
+        hash,
+      });
+
+      if (isSuccess) {
+        toast.success(`Successfully staked ${selectedNFTs.length} NFT(s)`);
+        setRefreshTrigger(prev => prev + 1);
+      } else {
+        throw new Error("Transaction failed");
       }
-      
-      toast.success(`Successfully staked ${selectedNFTs.length} NFT(s)`);
-      setRefreshTrigger(prev => prev + 1);
     } catch (error) {
       console.error('Staking error:', error);
       toast.error(error instanceof Error ? error.message : "Failed to stake NFTs");
@@ -66,21 +68,23 @@ const StakeApes: React.FC = () => {
 
     setWaiting(true);
     try {
-      const stakingFunctions = getStakingFunctions(CHAIN_IDS.MAINNET);
-      const config = {
-        ...stakingFunctions.unstake(selectedNFTs.map(Number)),
-        address: stakingFunctions.unstake(selectedNFTs.map(Number)).address as `0x${string}`
-      };
-      
-      await writeContractAsync(config);
-      
-      // Wait for transaction receipt
-      while (!receipt && isLoading) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+      const hash = await writeContractAsync({
+        ...stakingContract,
+        functionName: 'leaveMany',
+        args: [BigInt(0), selectedNFTs.map(id => BigInt(id))],
+      });
+
+      // Wait for transaction confirmation
+      const { isSuccess } = await useWaitForTransactionReceipt({
+        hash,
+      });
+
+      if (isSuccess) {
+        toast.success(`Successfully unstaked ${selectedNFTs.length} NFT(s)`);
+        setRefreshTrigger(prev => prev + 1);
+      } else {
+        throw new Error("Transaction failed");
       }
-      
-      toast.success(`Successfully unstaked ${selectedNFTs.length} NFT(s)`);
-      setRefreshTrigger(prev => prev + 1);
     } catch (error) {
       console.error('Unstaking error:', error);
       toast.error(error instanceof Error ? error.message : "Failed to unstake NFTs");

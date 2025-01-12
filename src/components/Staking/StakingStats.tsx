@@ -5,10 +5,6 @@ import { useReadContract } from 'wagmi';
 import { getStakingContract, getTribeContract } from '@src/lib/viem/helpers/contracts';
 import { CHAIN_IDS } from '@src/lib/viem/contracts';
 
-interface PoolInfo {
-  totalStaked: bigint;
-}
-
 const StakingStats: React.FC = () => {
   const { address } = useAccount();
   const stakingContract = getStakingContract(CHAIN_IDS.MAINNET);
@@ -16,32 +12,32 @@ const StakingStats: React.FC = () => {
 
   // Get user's staked NFTs
   const { data: userStakedNFTs = [] } = useReadContract({
-    address: stakingContract.address as `0x${string}`,
-    abi: stakingContract.abi,
-    functionName: 'getUserStakedTribe',
-    args: address ? [address] : undefined,
+    ...stakingContract,
+    functionName: 'userStakedNFTs',
+    args: [BigInt(0), address], // pool 0
+    enabled: Boolean(address),
   });
 
   // Get total NFT balance of user
   const { data: totalNFTBalance = BigInt(0) } = useReadContract({
-    address: tribeContract.address as `0x${string}`,
-    abi: tribeContract.abi,
+    ...tribeContract,
     functionName: 'balanceOf',
-    args: address ? [address] : undefined,
+    args: [address],
+    enabled: Boolean(address),
   });
 
   // Get pool information
-  const { data: poolInfo = { totalStaked: BigInt(0) } } = useReadContract<unknown, unknown, PoolInfo>({
-    address: stakingContract.address as `0x${string}`,
-    abi: stakingContract.abi,
-    functionName: 'getPoolInfo',
-    args: [BigInt(0)],
+  const { data: poolInfo } = useReadContract({
+    ...stakingContract,
+    functionName: 'poolInfo',
+    args: [BigInt(0)], // pool 0
+    enabled: Boolean(address),
   });
 
   // Calculate stats
   const dailyRewardsPerNFT = 10;
-  const totalStaked = Number(poolInfo.totalStaked);
-  const userStakedCount = Array.isArray(userStakedNFTs) ? userStakedNFTs.length : 0;
+  const totalStaked = poolInfo ? Number(poolInfo[3]) : 0; // stakedTokens length
+  const userStakedCount = userStakedNFTs?.length || 0;
   const userDailyRewards = userStakedCount * dailyRewardsPerNFT;
   const userTotalNFTs = Number(totalNFTBalance);
 

@@ -1,66 +1,79 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import NFTCard from '../NFTCard';
 import Button from '@src/components/common/Button';
 import { useAccount } from 'wagmi';
-import { useContractWrite } from '@src/lib/wagmi/hooks';
+import { useReadContract, useWriteContract } from 'wagmi';
+import { getStakingContract, getTribeContract } from '@src/lib/viem/helpers/contracts';
+import { CHAIN_IDS } from '@src/lib/viem/contracts';
 import { toast } from 'react-toastify';
 
 interface StakeTabProps {
   onStake: (selectedNFTs: string[]) => Promise<void>;
   isWaiting: boolean;
-  refreshTrigger: number;
 }
 
 const StakeTab: React.FC<StakeTabProps> = ({
   onStake,
   isWaiting,
-  refreshTrigger
 }) => {
   const { address } = useAccount();
-  const [nfts, setNfts] = useState<any[]>([]);
   const [selectedNFTs, setSelectedNFTs] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
+  const tribeContract = getTribeContract(CHAIN_IDS.MAINNET);
+  const stakingContract = getStakingContract(CHAIN_IDS.MAINNET);
 
-  const { write: stakeNFTs, isLoading: isPending } = useContractWrite({
-    address: '0x77f649385ca963859693c3d3299d36dfc7324eb9',  // Your staking contract address
-    functionName: 'joinMany'
+  // Get approval status
+  const { data: isApproved } = useReadContract({
+    ...tribeContract,
+    functionName: 'isApprovedForAll',
+    args: [address, stakingContract.address],
+    enabled: Boolean(address),
   });
 
-  useEffect(() => {
-    if (address) {
-      fetchUnstakedNFTs();
+  // Get user's NFT balance
+  const { data: nfts = [] } = useReadContract({
+    ...tribeContract,
+    functionName: 'tokensOfOwner',
+    args: [address],
+    enabled: Boolean(address),
+  });
+
+  const { writeContractAsync: approve } = useWriteContract();
+  const { writeContractAsync: stake } = useWriteContract();
+
+  const handleApprove = async () => {
+    if (!address) return;
+
+    try {
+      await approve({
+        ...tribeContract,
+        functionName: 'setApprovalForAll',
+        args: [stakingContract.address, true],
+        address: tribeContract.address as `0x${string}`,
+      });
+      toast.success('Approval granted successfully!');
+    } catch (error) {
+      console.error('Approval error:', error);
+      toast.error('Failed to approve staking contract');
     }
-  }, [address, refreshTrigger]);
+  };
 
   const handleStake = async () => {
     if (!address || selectedNFTs.length === 0) return;
 
     try {
-      await stakeNFTs({
+      await stake({
+        ...stakingContract,
+        functionName: 'joinMany',
         args: [BigInt(0), selectedNFTs.map(id => BigInt(id))],
+        address: stakingContract.address as `0x${string}`,
       });
       
       await onStake(selectedNFTs);
       toast.success('NFTs staked successfully!');
       setSelectedNFTs([]);
-      fetchUnstakedNFTs();
     } catch (error) {
       console.error('Staking error:', error);
       toast.error('Failed to stake NFTs');
-    }
-  };
-
-  const fetchUnstakedNFTs = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(`/api/nfts/unstaked/${address}`);
-      const data = await response.json();
-      setNfts(data);
-    } catch (error) {
-      console.error('Failed to fetch NFTs:', error);
-      toast.error('Failed to load NFTs');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -80,28 +93,28 @@ const StakeTab: React.FC<StakeTabProps> = ({
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-medium text-white">
-          Available NFTs ({nfts.length})
-        </h3>
-        <button
-          onClick={selectAll}
-          className="text-red-400 hover:text-red-300 transition-colors"
+      {!isApproved ? (
+        <Button
+          onClick={handleApprove}
+          disabled={!address || isWaiting}
+          className="w-full"
         >
-          {selectedNFTs.length === nfts.length ? 'Deselect All' : 'Select All'}
-        </button>
-      </div>
-
-      {loading ? (
-        <div className="grid place-items-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
-        </div>
-      ) : nfts.length === 0 ? (
-        <div className="text-center py-12 text-white/60">
-          No NFTs available to stake
-        </div>
+          Approve Staking Contract
+        </Button>
       ) : (
         <>
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-medium text-white">
+              Available NFTs ({nfts.length})
+            </h3>
+            <button
+              onClick={selectAll}
+              className="text-red-400 hover:text-red-300 transition-colors"
+            >
+              {selectedNFTs.length === nfts.length ? 'Deselect All' : 'Select All'}
+            </button>
+          </div>
+
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {nfts.map((nft) => (
               <NFTCard
@@ -117,10 +130,10 @@ const StakeTab: React.FC<StakeTabProps> = ({
 
           <Button
             onClick={handleStake}
-            disabled={selectedNFTs.length === 0 || !address || isPending || isWaiting}
+            disabled={selectedNFTs.length === 0 || !address || isWaiting}
             className="w-full"
           >
-            {isPending || isWaiting ? 'Staking...' : `Stake Selected (${selectedNFTs.length})`}
+            {isWaiting ? 'Staking...' : `Stake Selected (${selectedNFTs.length})`}
           </Button>
         </>
       )}
