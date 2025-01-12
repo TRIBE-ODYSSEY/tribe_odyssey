@@ -20,7 +20,7 @@ const CollectionPage = lazy(() => import('@src/pages/Element19/Collection'));
 const WallpapersPage = lazy(() => import('@src/pages/Assets/Wallpapers'));
 const WinnersPage = lazy(() => import('@src/pages/Staking/Winners'));
 const ProfilePage = lazy(() => import('@src/pages/Profile'));
-const RafflesAdminPage = lazy(() => import('@src/pages/RafflesAdmin'));
+const RafflesAdminPage = lazy(() => import('@src/pages/Staking/RafflesAdmin'));
 const RaffleDetails = lazy(() => import('@src/pages/Staking/RaffleDetails'));
 const NetworkErrors = lazy(() => import('@src/components/common/errors/network/NetworkErrors'));
 
@@ -52,7 +52,7 @@ const AppRoutes: React.FC = () => {
       <Route path="/ens" element={<ENSPage />} />
       
       {/* Admin Routes - Only shown if admin address is connected */}
-      {isAdmin && <Route path="/raffles/admin" element={<RafflesAdminPage />} />}
+      {isAdmin && <Route path="/admin" element={<RafflesAdminPage />} />}
       
       {/* Dynamic Routes */}
       <Route path="/raffles/:id" element={<RaffleDetails />} />
