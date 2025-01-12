@@ -67,7 +67,7 @@
   "private": true,
   "scripts": {
     "start": "vite preview --port $PORT --host",
-    "build": "tsc -b && vite build",
+    "build": "tsc && vite build",
     "dev": "vite",
     "lint": "eslint .",
     "preview": "vite preview"

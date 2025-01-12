@@ -52,7 +52,12 @@ const AppRoutes: React.FC = () => {
       <Route path="/ens" element={<ENSPage />} />
       
       {/* Admin Routes - Only shown if admin address is connected */}
-      {isAdmin && <Route path="/admin" element={<RafflesAdminPage />} />}
+      {isAdmin && (
+        <Route 
+          path="/admin/*" 
+          element={<RafflesAdminPage />} 
+        />
+      )}
       
       {/* Dynamic Routes */}
       <Route path="/raffles/:id" element={<RaffleDetails />} />

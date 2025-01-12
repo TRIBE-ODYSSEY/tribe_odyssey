@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: tribe-odyssey
+    buildCommand: yarn install && yarn build
+    staticPublishPath: ./dist
+    envVars:
+      - key: NODE_VERSION
+        value: 18.17.0
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html 
