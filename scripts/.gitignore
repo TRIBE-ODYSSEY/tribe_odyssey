@@ -2,3 +2,7 @@
 genaiscript.d.ts
 tsconfig.json
 jsconfig.json
+node_modules/
+dist/
+.env
+*.log
