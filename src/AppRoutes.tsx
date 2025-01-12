@@ -22,7 +22,7 @@ const WinnersPage = lazy(() => import('@src/pages/Staking/Winners'));
 const ProfilePage = lazy(() => import('@src/pages/Profile'));
 const RafflesAdminPage = lazy(() => import('@src/pages/RafflesAdmin'));
 const RaffleDetails = lazy(() => import('@src/pages/Staking/RaffleDetails'));
-const NetworkErrors = lazy(() => import('@src/components/common/errors/network/networkErrors').then(module => ({ default: module.NetworkErrors })));
+const NetworkErrors = lazy(() => import('@src/components/common/errors/network/NetworkErrors'));
 
 const AppRoutes: React.FC = () => {
   useLazyLoading();
