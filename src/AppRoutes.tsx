@@ -1,7 +1,7 @@
 // src/AppRoutes.tsx
 import useLazyLoading from '@hooks/useLazyLoading';
 import React, { lazy } from 'react';
-import { Route, Routes, Navigate } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
 // Lazy loaded pages
@@ -24,45 +24,16 @@ const RafflesAdminPage = lazy(() => import('@src/pages/RafflesAdmin'));
 const RaffleDetails = lazy(() => import('@src/pages/Staking/RaffleDetails'));
 const NotFoundPage = lazy(() => import('@src/components/common/errors/network/NetworkErrors'));
 
-// Protected Route Component
-const ProtectedRoute: React.FC<{ 
-  element: React.ReactElement, 
-  adminOnly?: boolean,
-  allowedAddresses?: string[] 
-}> = ({ element, adminOnly, allowedAddresses }) => {
-  const { address, isConnected } = useAccount();
-  
-  console.log('Protected Route Debug:', {
-    isConnected,
-    address,
-    adminOnly,
-    allowedAddresses,
-    isAdmin: address && allowedAddresses?.map(addr => addr.toLowerCase())
-      .includes(address.toLowerCase())
-  });
-
-  if (!isConnected) {
-    return <Navigate to="/" replace />;
-  }
-
-  if (adminOnly && allowedAddresses) {
-    const isAdmin = address && allowedAddresses.map(addr => addr.toLowerCase())
-      .includes(address.toLowerCase());
-    
-    if (!isAdmin) {
-      return <Navigate to="/raffles" replace />;
-    }
-  }
-
-  return element;
-};
-
 const AppRoutes: React.FC = () => {
   useLazyLoading();
+  const { address } = useAccount();
 
   const ADMIN_ADDRESSES = [
     '0xc570F1B8D14971c6cd73eA8db4F7C44E4AAdC6f2',
   ];
+
+  const isAdmin = address && ADMIN_ADDRESSES.map(addr => addr.toLowerCase())
+    .includes(address.toLowerCase());
 
   return (
     <Routes>
@@ -80,17 +51,8 @@ const AppRoutes: React.FC = () => {
       <Route path="/winners" element={<WinnersPage />} />
       <Route path="/ens" element={<ENSPage />} />
       
-      {/* Admin Routes - Place before dynamic routes */}
-      <Route 
-        path="/raffles/admin" 
-        element={
-          <ProtectedRoute 
-            element={<RafflesAdminPage />} 
-            adminOnly 
-            allowedAddresses={ADMIN_ADDRESSES} 
-          />
-        } 
-      />
+      {/* Admin Routes - Only shown if admin address is connected */}
+      {isAdmin && <Route path="/raffles/admin" element={<RafflesAdminPage />} />}
       
       {/* Dynamic Routes */}
       <Route path="/raffles/:id" element={<RaffleDetails />} />
@@ -98,9 +60,7 @@ const AppRoutes: React.FC = () => {
       {/* Other Routes */}
       <Route path="/raffles" element={<RafflesPage />} />
       <Route path="/staking" element={<StakingApesPage />} />
-      
-      {/* User Routes - Protected */}
-      <Route path="/account" element={<ProtectedRoute element={<ProfilePage />} />} />
+      <Route path="/account" element={<ProfilePage />} />
       
       {/* 404 Route */}
       <Route path="*" element={<NotFoundPage />} />
