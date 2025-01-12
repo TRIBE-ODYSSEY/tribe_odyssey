@@ -31,13 +31,20 @@ const ProtectedRoute: React.FC<{
   allowedAddresses?: string[] 
 }> = ({ element, adminOnly, allowedAddresses }) => {
   const { address, isConnected } = useAccount();
+  
+  console.log('Protected Route Debug:', {
+    isConnected,
+    address,
+    adminOnly,
+    allowedAddresses,
+    isAdmin: address && allowedAddresses?.map(addr => addr.toLowerCase())
+      .includes(address.toLowerCase())
+  });
 
-  // Redirect to home if not connected
   if (!isConnected) {
     return <Navigate to="/" replace />;
   }
 
-  // For admin routes, check if address is in allowed list
   if (adminOnly && allowedAddresses) {
     const isAdmin = address && allowedAddresses.map(addr => addr.toLowerCase())
       .includes(address.toLowerCase());
@@ -55,6 +62,7 @@ const AppRoutes: React.FC = () => {
 
   const ADMIN_ADDRESSES = [
     '0xc570F1B8D14971c6cd73eA8db4F7C44E4AAdC6f2',
+
     // Add other admin addresses here
   ];
 
@@ -79,21 +87,15 @@ const AppRoutes: React.FC = () => {
       
       {/* Protected Routes */}
       <Route 
-      path="/raffles/admin" 
-      element={
-        <ProtectedRoute 
-        element={<RafflesAdminPage />} 
-        adminOnly 
-        allowedAddresses={ADMIN_ADDRESSES} 
-        />
-      } 
+        path="/raffles/admin" 
+        element={
+          <ProtectedRoute 
+            element={<RafflesAdminPage />} 
+            adminOnly 
+            allowedAddresses={ADMIN_ADDRESSES} 
+          />
+        }
       />
-      <Route path="/account" element={<ProtectedRoute element={<ProfilePage />} />} />
-      
-      {/* 404 Route */}
-      <Route path="*" element={<NotFoundPage />} />
-      <Route path="/staking" element={<ProtectedRoute element={<StakingApesPage />} />} />
-      
       {/* User Routes - Protected */}
       <Route path="/account" element={<ProtectedRoute element={<ProfilePage />} />} />
       
