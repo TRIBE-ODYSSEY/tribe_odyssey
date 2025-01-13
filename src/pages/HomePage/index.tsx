@@ -22,12 +22,6 @@ const sections: SectionComponent[] = [
     () => import('@src/components/HomePage/WhispersOfLoresSection')
   ),
   lazyLoadSection(() => import('@src/components/HomePage/GoldApesSection')),
-  lazyLoadSection(
-    () => import('@src/components/HomePage/TribeAllianceSection')
-  ),
-  lazyLoadSection(
-    () => import('@src/components/HomePage/TribeFightersSection')
-  ),
   lazyLoadSection(() => import('@src/components/HomePage/StatsSection')),
   lazyLoadSection(() => import('@src/components/HomePage/AccomplishmentsSection')),
   lazyLoadSection(() => import('@src/components/HomePage/LastNewsSection')),

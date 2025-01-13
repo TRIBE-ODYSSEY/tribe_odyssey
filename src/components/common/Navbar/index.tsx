@@ -1,6 +1,6 @@
 import useLazyLoading from '@src/lib/hooks/useLazyLoading';
 import React, { useEffect, useState } from 'react';
-import { FaBars, FaInstagram, FaTimes, FaTwitter, FaDiscord } from 'react-icons/fa';
+import { FaBars, FaInstagram, FaDiscord, FaXTwitter } from 'react-icons/fa6';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { menuConfig } from '@src/lib/config/menuConfig';
 import { Menu } from '@headlessui/react';
@@ -59,7 +59,7 @@ const MenuDropdown: React.FC<{ title: string; items: Array<{ name: string; path:
 
 const SocialIcons: React.FC<{ className?: string }> = ({ className }) => {
   const socials = [
-    { icon: <FaTwitter />, href: 'https://twitter.com/tribeodyssey' },
+    { icon: <FaXTwitter />, href: 'https://twitter.com/tribeodyssey' },
     //{ icon: <FaTelegram />, href: '#' },
     { icon: <FaInstagram />, href: 'https://www.instagram.com/tribe.odyssey/' },
   ];
