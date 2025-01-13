@@ -1,4 +1,5 @@
 import Card from '../common/card/Card';
+import { motion } from 'framer-motion';
 
 const stats = [
   { id: 'community', value: '30K+', label: 'Community Members' },
@@ -7,31 +8,71 @@ const stats = [
   { id: 'volume', value: '1.25K', label: 'Trading Volume (ETH)' },
 ] as const;
 
-const StatsSection = () => (
-  <section className="container mx-auto px-4 py-8 sm:py-12">
-    <div className="max-w-7xl mx-auto">
-      <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6 sm:mb-8 text-white/90">
-        Statistics
-      </h2>
-      
-      <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-        {stats.map(({ id, value, label }) => (
-          <Card
-            key={id}
-            height="auto"
-            className="flex-1 flex flex-col items-center justify-center p-6 sm:p-8 backdrop-blur-sm bg-white/5 hover:bg-white/10 transition-all duration-300"
-          >
-            <h3 className="text-2xl sm:text-3xl font-semibold mb-2 bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent">
-              {value}
-            </h3>
-            <p className="text-sm sm:text-base text-white/70 text-center">
-              {label}
-            </p>
-          </Card>
-        ))}
-      </div>
-    </div>
-  </section>
-);
+const StatsSection: React.FC = () => {
+  const containerVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5 }
+    }
+  };
+
+  return (
+    <section className="container mx-auto px-4 py-12 sm:py-16 md:py-20">
+      <motion.div 
+        className="max-w-7xl mx-auto"
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+      >
+        <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12 text-white/90">
+          Statistics
+        </h2>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          {stats.map(({ id, value, label }) => (
+            <motion.div
+              key={id}
+              variants={itemVariants}
+              className="w-full"
+            >
+              <Card
+                className="h-full flex flex-col items-center justify-center p-6 sm:p-8 
+                          backdrop-blur-sm bg-white/5 hover:bg-white/10 
+                          transition-all duration-300 rounded-xl
+                          border border-white/10 hover:border-white/20"
+              >
+                <div className="flex flex-col items-center justify-center text-center space-y-2">
+                  <h3 className="text-3xl sm:text-4xl font-bold 
+                               bg-gradient-to-r from-red-500 to-pink-500 
+                               bg-clip-text text-transparent">
+                    {value}
+                  </h3>
+                  <p className="text-sm sm:text-base text-white/70 font-medium">
+                    {label}
+                  </p>
+                </div>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+    </section>
+  );
+};
 
 export default StatsSection;
