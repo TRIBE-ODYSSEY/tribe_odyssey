@@ -114,7 +114,7 @@ const WallpaperPage: React.FC = () => {
               Tribe NFT Wallpapers
             </h1>
 
-            <div className="bg-dark-800 rounded-lg p-6 border border-white/10">
+            <div className="bg-dark-800/80 backdrop-blur-sm rounded-lg p-6 border border-white/10">
               {/* Ape ID Input */}
               <div className="space-y-4">
                 <label className="block text-white font-medium">
@@ -124,8 +124,10 @@ const WallpaperPage: React.FC = () => {
                   type="text"
                   value={apeId}
                   onChange={(e) => setApeId(e.target.value)}
-                  className="w-full px-4 py-3 bg-transparent border border-white/20 
-                           rounded-lg text-white focus:border-white/40 outline-none"
+                  className="w-full px-4 py-3 bg-dark-900/80 border border-white/20 
+                           rounded-lg text-white placeholder-white/50 
+                           focus:border-white/40 focus:ring-1 focus:ring-white/40 
+                           outline-none transition-all duration-200"
                   placeholder="Tribe Ape ID"
                 />
               </div>
@@ -134,16 +136,21 @@ const WallpaperPage: React.FC = () => {
                 <>
                   {/* Logo Selection */}
                   <div className="mt-6">
+                    <label className="block text-white font-medium mb-2">
+                      Select Logo Style:
+                    </label>
                     <select
                       value={logoType}
                       onChange={(e) => setLogoType(e.target.value)}
-                      className="w-full px-4 py-3 bg-transparent border border-white/20 
-                               rounded-lg text-white focus:border-white/40 outline-none"
+                      className="w-full px-4 py-3 bg-dark-900/80 border border-white/20 
+                               rounded-lg text-white focus:border-white/40 
+                               focus:ring-1 focus:ring-white/40 outline-none 
+                               transition-all duration-200"
                     >
-                      <option value="none">No Logo</option>
-                      <option value="white">White Logo</option>
-                      <option value="black">Black Logo</option>
-                      <option value="red">Red Logo</option>
+                      <option value="none" className="bg-dark-900">No Logo</option>
+                      <option value="white" className="bg-dark-900">White Logo</option>
+                      <option value="black" className="bg-dark-900">Black Logo</option>
+                      <option value="red" className="bg-dark-900">Red Logo</option>
                     </select>
                   </div>
 
@@ -157,7 +164,7 @@ const WallpaperPage: React.FC = () => {
                         max="200"
                         value={imageScale}
                         onChange={(e) => setImageScale(Number(e.target.value))}
-                        className="w-full"
+                        className="w-full accent-red-600"
                       />
                       <span className="text-white/70">{imageScale}%</span>
                     </div>
@@ -172,7 +179,7 @@ const WallpaperPage: React.FC = () => {
                             max="200"
                             value={logoScale}
                             onChange={(e) => setLogoScale(Number(e.target.value))}
-                            className="w-full"
+                            className="w-full accent-red-600"
                           />
                           <span className="text-white/70">{logoScale}%</span>
                         </div>
@@ -185,7 +192,7 @@ const WallpaperPage: React.FC = () => {
                             max="200"
                             value={logoPosition}
                             onChange={(e) => setLogoPosition(Number(e.target.value))}
-                            className="w-full"
+                            className="w-full accent-red-600"
                           />
                           <span className="text-white/70">{logoPosition}%</span>
                         </div>
@@ -246,12 +253,12 @@ const WallpaperPage: React.FC = () => {
               <canvas
                 ref={canvasRef}
                 className={`mx-auto ${isDesktop ? 'w-[543px] h-[351px]' : 'w-[282px] h-[611px]'}
-                          bg-black rounded-lg`}
+                          bg-dark-900 rounded-lg border border-white/10`}
                 width={isDesktop ? 543 : 282}
                 height={isDesktop ? 351 : 611}
               />
               {isLoading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-lg">
                   <div className="w-8 h-8 border-2 border-white/20 border-t-white 
                                 rounded-full animate-spin" />
                 </div>

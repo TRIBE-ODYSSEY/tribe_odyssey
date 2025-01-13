@@ -9,8 +9,8 @@ const ChapterSection: React.FC = () => {
       <div className="absolute inset-0 bg-black opacity-50"></div>
       <section className="flex items-center justify-center h-full w-full flex-col relative">
         <h1
-          className="text-8xl text-center
-          bg-gradient-to-tr from-transparent to-white
+          className="text-8xl text-center font-bold
+          bg-gradient-to-t from-[rgba(255,255,255,0.4)] to-white 
           bg-clip-text
           text-transparent
           inline-block
