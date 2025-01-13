@@ -1,9 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import TRIBE_CONTRACT_ADDRESS from '@src/lib/viem/contracts';
 
 interface NFTCardProps {
   tokenId: string;
-  contract: string;
+  contract: `0x${string}`;
   isStaked: boolean;
   isSelected: boolean;
   onClick: () => void;
@@ -16,9 +17,10 @@ const NFTCard: React.FC<NFTCardProps> = ({
   isSelected,
   onClick,
 }) => {
-  const imageUrl = contract === "0x77f649385ca963859693c3d3299d36dfc7324eb9"
-    ? `https://cdn.0xworld.io/tribe-images/${tokenId || 0}.png`
-    : `https://cdn.0xworld.io/0xworld-ape-images/${tokenId || 0}.png`;
+  // Determine image URL based on contract address
+  const imageUrl = contract === TRIBE_CONTRACT_ADDRESS[1]
+    ? `https://cdn.0xworld.io/tribe-images/${tokenId}.png`
+    : `https://cdn.0xworld.io/0xworld-ape-images/${tokenId}.png`;
 
   return (
     <motion.div
@@ -28,25 +30,33 @@ const NFTCard: React.FC<NFTCardProps> = ({
       className={`
         relative rounded-xl overflow-hidden cursor-pointer
         ${isSelected ? 'ring-2 ring-red-500' : 'ring-1 ring-white/10'}
-        transition-all duration-200
+        transition-all duration-200 hover:ring-white/20
       `}
     >
-      <img
-        src={imageUrl}
-        alt={`NFT #${tokenId}`}
-        className="w-full h-full object-cover aspect-square"
-        loading="lazy"
-      />
-      
-      {isStaked && (
-        <div className="absolute top-2 right-2 bg-red-500/90 text-white text-xs px-2 py-1 rounded-full">
-          Staked
+      <div className="aspect-square relative">
+        <img
+          src={imageUrl}
+          alt={`NFT #${tokenId}`}
+          className="w-full h-full object-cover"
+          loading="lazy"
+          onError={(e) => {
+            const img = e.target as HTMLImageElement;
+            img.src = '/images/placeholder-nft.png';
+          }}
+        />
+        
+        {isStaked && (
+          <div className="absolute top-2 right-2 bg-red-500/90 text-white text-xs px-2 py-1 rounded-full">
+            Staked
+          </div>
+        )}
+
+        <div className="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-sm px-2 py-1">
+          <p className="text-white text-sm text-center font-medium">#{tokenId}</p>
         </div>
-      )}
-      
-      {isSelected && (
-        <div className="absolute inset-0 bg-red-500/20 backdrop-blur-sm">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+        
+        {isSelected && (
+          <div className="absolute inset-0 bg-red-500/20 backdrop-blur-sm flex items-center justify-center">
             <svg
               className="w-8 h-8 text-white"
               fill="none"
@@ -61,8 +71,8 @@ const NFTCard: React.FC<NFTCardProps> = ({
               />
             </svg>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </motion.div>
   );
 };

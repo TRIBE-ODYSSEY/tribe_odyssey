@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import NFTCard from '../NFTCard';
 import Button from '@src/components/common/Button';
 import { useAccount } from 'wagmi';
@@ -6,15 +6,27 @@ import { useReadContract, useWriteContract } from 'wagmi';
 import { getStakingContract, getTribeContract } from '@src/lib/viem/helpers/contracts';
 import { CHAIN_IDS } from '@src/lib/viem/contracts';
 import { toast } from 'react-toastify';
+import type { Address } from 'viem';
 
 interface StakeTabProps {
   onStake: (selectedNFTs: string[]) => Promise<void>;
   isWaiting: boolean;
+  refreshTrigger: number;
+}
+
+interface OwnedToken {
+  tokenId: bigint;
+}
+
+interface StakedToken {
+  tokenId: bigint;
+  stakedAt: bigint;
 }
 
 const StakeTab: React.FC<StakeTabProps> = ({
   onStake,
   isWaiting,
+  refreshTrigger
 }) => {
   const { address } = useAccount();
   const [selectedNFTs, setSelectedNFTs] = useState<string[]>([]);
@@ -22,33 +34,49 @@ const StakeTab: React.FC<StakeTabProps> = ({
   const stakingContract = getStakingContract(CHAIN_IDS.MAINNET);
 
   // Get approval status
-  const { data: isApproved } = useReadContract({
-    ...tribeContract,
+  const { data: isApproved = false } = useReadContract({
+    address: tribeContract.address as Address,
+    abi: tribeContract.abi,
     functionName: 'isApprovedForAll',
-    args: [address, stakingContract.address],
-    enabled: Boolean(address),
+    args: address ? [address as Address, stakingContract.address as Address] : undefined,
+    query: {
+      enabled: Boolean(address),
+    }
   });
 
-  // Get user's NFT balance
-  const { data: nfts = [] } = useReadContract({
-    ...tribeContract,
+  // Get user's NFT balance and token IDs
+  const { data: ownedTokens = [] } = useReadContract({
+    address: tribeContract.address as Address,
+    abi: tribeContract.abi,
     functionName: 'tokensOfOwner',
-    args: [address],
-    enabled: Boolean(address),
-  });
+    args: address ? [address as Address] : undefined,
+    query: {
+      enabled: Boolean(address),
+    }
+  }) as { data: OwnedToken[] | undefined };
 
-  const { writeContractAsync: approve } = useWriteContract();
-  const { writeContractAsync: stake } = useWriteContract();
+  // Get user's staked NFTs for status check
+  const { data: stakedTokens = [] } = useReadContract({
+    address: stakingContract.address as Address,
+    abi: stakingContract.abi,
+    functionName: 'userStakedNFTs',
+    args: address ? [BigInt(0), address as Address] : undefined,
+    query: {
+      enabled: Boolean(address),
+    }
+  }) as { data: StakedToken[] | undefined };
+
+  const { writeContract } = useWriteContract();
 
   const handleApprove = async () => {
     if (!address) return;
 
     try {
-      await approve({
-        ...tribeContract,
+      await writeContract({
+        address: tribeContract.address as Address,
+        abi: tribeContract.abi,
         functionName: 'setApprovalForAll',
-        args: [stakingContract.address, true],
-        address: tribeContract.address as `0x${string}`,
+        args: [stakingContract.address as Address, true] as const,
       });
       toast.success('Approval granted successfully!');
     } catch (error) {
@@ -59,17 +87,9 @@ const StakeTab: React.FC<StakeTabProps> = ({
 
   const handleStake = async () => {
     if (!address || selectedNFTs.length === 0) return;
-
+    
     try {
-      await stake({
-        ...stakingContract,
-        functionName: 'joinMany',
-        args: [BigInt(0), selectedNFTs.map(id => BigInt(id))],
-        address: stakingContract.address as `0x${string}`,
-      });
-      
       await onStake(selectedNFTs);
-      toast.success('NFTs staked successfully!');
       setSelectedNFTs([]);
     } catch (error) {
       console.error('Staking error:', error);
@@ -85,11 +105,26 @@ const StakeTab: React.FC<StakeTabProps> = ({
     );
   };
 
+  // Create a map of staked NFTs for quick lookup
+  const stakedTokenMap = new Set(
+    (stakedTokens || []).map((token: StakedToken) => token.tokenId.toString())
+  );
+
+  const unstaked = (ownedTokens || []).filter((token: OwnedToken) => 
+    !stakedTokenMap.has(token.tokenId.toString())
+  );
+
   const selectAll = () => {
+    const unstakeIds = unstaked.map((token: OwnedToken) => token.tokenId.toString());
     setSelectedNFTs(prev => 
-      prev.length === nfts.length ? [] : nfts.map(nft => nft.id)
+      prev.length === unstakeIds.length ? [] : unstakeIds
     );
   };
+
+  // Reset selections when refreshTrigger changes
+  useEffect(() => {
+    setSelectedNFTs([]);
+  }, [refreshTrigger]);
 
   return (
     <div className="space-y-6">
@@ -105,28 +140,34 @@ const StakeTab: React.FC<StakeTabProps> = ({
         <>
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-medium text-white">
-              Available NFTs ({nfts.length})
+              Available NFTs ({unstaked.length})
             </h3>
             <button
               onClick={selectAll}
               className="text-red-400 hover:text-red-300 transition-colors"
             >
-              {selectedNFTs.length === nfts.length ? 'Deselect All' : 'Select All'}
+              {selectedNFTs.length === unstaked.length ? 'Deselect All' : 'Select All'}
             </button>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {nfts.map((nft) => (
-              <NFTCard
-                key={nft.id}
-                tokenId={nft.tokenId}
-                contract={nft.contract}
-                isStaked={nft.is_staked}
-                isSelected={selectedNFTs.includes(nft.id)}
-                onClick={() => toggleNFT(nft.id)}
-              />
-            ))}
-          </div>
+          {unstaked.length === 0 ? (
+            <div className="text-center py-12 text-white/60">
+              No unstaked NFTs found
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {unstaked.map((token: OwnedToken) => (
+                <NFTCard
+                  key={token.tokenId.toString()}
+                  tokenId={token.tokenId.toString()}
+                  contract={tribeContract.address as Address}
+                  isStaked={false}
+                  isSelected={selectedNFTs.includes(token.tokenId.toString())}
+                  onClick={() => toggleNFT(token.tokenId.toString())}
+                />
+              ))}
+            </div>
+          )}
 
           <Button
             onClick={handleStake}

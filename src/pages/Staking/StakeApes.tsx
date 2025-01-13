@@ -4,7 +4,7 @@ import StakingStats from '@src/components/Staking/StakingStats';
 import StakingTabs from '@src/components/Staking/StakingTabs';
 import PageLayout from '@src/components/common/layout/PageLayout';
 import { useAccount } from 'wagmi';
-import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { useWriteContract } from 'wagmi';
 import { getStakingContract } from '@src/lib/viem/helpers/contracts';
 import { CHAIN_IDS } from '@src/lib/viem/contracts';
 import { toast } from 'react-toastify';
@@ -14,7 +14,7 @@ const StakeApes: React.FC = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [waiting, setWaiting] = useState(false);
   
-  const { writeContractAsync } = useWriteContract();
+  const { writeContract } = useWriteContract();
   const stakingContract = getStakingContract(CHAIN_IDS.MAINNET);
 
   const handleStake = async (selectedNFTs: string[]) => {
@@ -30,26 +30,18 @@ const StakeApes: React.FC = () => {
 
     setWaiting(true);
     try {
-      const hash = await writeContractAsync({
-        ...stakingContract,
+      await writeContract({
+        address: stakingContract.address as `0x${string}`,
+        abi: stakingContract.abi,
         functionName: 'joinMany',
-        args: [BigInt(0), selectedNFTs.map(id => BigInt(id))],
+        args: [BigInt(0), selectedNFTs.map(id => BigInt(id))] as const,
       });
-
-      // Wait for transaction confirmation
-      const { isSuccess } = await useWaitForTransactionReceipt({
-        hash,
-      });
-
-      if (isSuccess) {
-        toast.success(`Successfully staked ${selectedNFTs.length} NFT(s)`);
-        setRefreshTrigger(prev => prev + 1);
-      } else {
-        throw new Error("Transaction failed");
-      }
+      
+      toast.success(`Successfully staked ${selectedNFTs.length} NFT(s)`);
+      setRefreshTrigger(prev => prev + 1);
     } catch (error) {
       console.error('Staking error:', error);
-      toast.error(error instanceof Error ? error.message : "Failed to stake NFTs");
+      toast.error('Failed to stake NFTs');
     } finally {
       setWaiting(false);
     }
@@ -68,26 +60,18 @@ const StakeApes: React.FC = () => {
 
     setWaiting(true);
     try {
-      const hash = await writeContractAsync({
-        ...stakingContract,
+      await writeContract({
+        address: stakingContract.address as `0x${string}`,
+        abi: stakingContract.abi,
         functionName: 'leaveMany',
-        args: [BigInt(0), selectedNFTs.map(id => BigInt(id))],
+        args: [BigInt(0), selectedNFTs.map(id => BigInt(id))] as const,
       });
-
-      // Wait for transaction confirmation
-      const { isSuccess } = await useWaitForTransactionReceipt({
-        hash,
-      });
-
-      if (isSuccess) {
-        toast.success(`Successfully unstaked ${selectedNFTs.length} NFT(s)`);
-        setRefreshTrigger(prev => prev + 1);
-      } else {
-        throw new Error("Transaction failed");
-      }
+      
+      toast.success(`Successfully unstaked ${selectedNFTs.length} NFT(s)`);
+      setRefreshTrigger(prev => prev + 1);
     } catch (error) {
       console.error('Unstaking error:', error);
-      toast.error(error instanceof Error ? error.message : "Failed to unstake NFTs");
+      toast.error('Failed to unstake NFTs');
     } finally {
       setWaiting(false);
     }
@@ -101,7 +85,7 @@ const StakeApes: React.FC = () => {
           
           <div className="mb-8 p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
             <p className="text-center text-white/80">
-              Earn 10 NANA Points per day for each staked Tribe NFT
+              Earn 10 NANA Points per day for each staked Tribe Ape
             </p>
           </div>
           

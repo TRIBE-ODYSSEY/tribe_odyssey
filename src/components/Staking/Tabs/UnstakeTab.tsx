@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import NFTCard from '../NFTCard';
 import Button from '@src/components/common/Button';
 import { useAccount } from 'wagmi';
-import { useReadContract, useWriteContract } from 'wagmi';
+import { useReadContract } from 'wagmi';
 import { getStakingContract } from '@src/lib/viem/helpers/contracts';
 import { CHAIN_IDS } from '@src/lib/viem/contracts';
 import { toast } from 'react-toastify';
+import type { Address } from 'viem';
 
 interface UnstakeTabProps {
   onUnstake: (selectedNFTs: string[]) => Promise<void>;
@@ -13,9 +14,15 @@ interface UnstakeTabProps {
   refreshTrigger: number;
 }
 
+interface StakedNFT {
+  tokenId: bigint;
+  stakedAt: bigint;
+}
+
 const UnstakeTab: React.FC<UnstakeTabProps> = ({
   onUnstake,
-  isWaiting
+  isWaiting,
+  refreshTrigger
 }) => {
   const { address } = useAccount();
   const [selectedNFTs, setSelectedNFTs] = useState<string[]>([]);
@@ -23,27 +30,22 @@ const UnstakeTab: React.FC<UnstakeTabProps> = ({
 
   // Get user's staked NFTs
   const { data: stakedNFTs = [] } = useReadContract({
-    ...stakingContract,
+    address: stakingContract.address as Address,
+    abi: stakingContract.abi,
     functionName: 'userStakedNFTs',
-    args: [BigInt(0), address],
-    enabled: Boolean(address),
-  });
-
-  const { writeContractAsync: unstake } = useWriteContract();
+    args: address ? [BigInt(0), address as Address] : undefined,
+    query: {
+      enabled: Boolean(address),
+    }
+  }) as { data: StakedNFT[] | undefined };
 
   const handleUnstake = async () => {
     if (!address || selectedNFTs.length === 0) return;
+    
     try {
-      await unstake({
-        ...stakingContract,
-        functionName: 'leaveMany',
-        args: [BigInt(0), selectedNFTs.map(id => BigInt(id))] as const,
-        address: stakingContract.address as `0x${string}`,
-      });
-      
       await onUnstake(selectedNFTs);
-      toast.success('NFTs unstaked successfully!');
       setSelectedNFTs([]);
+      toast.success(`Successfully unstaked ${selectedNFTs.length} NFT(s)`);
     } catch (error) {
       console.error('Unstaking error:', error);
       toast.error('Failed to unstake NFTs');
@@ -58,15 +60,33 @@ const UnstakeTab: React.FC<UnstakeTabProps> = ({
     );
   };
 
+  const selectAll = () => {
+    const stakedIds = (stakedNFTs || []).map(nft => nft.tokenId.toString());
+    setSelectedNFTs(prev => 
+      prev.length === stakedIds.length ? [] : stakedIds
+    );
+  };
+
+  // Reset selections when refreshTrigger changes
+  useEffect(() => {
+    setSelectedNFTs([]);
+  }, [refreshTrigger]);
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-medium text-white">
-          Staked NFTs ({stakedNFTs.length})
+          Staked NFTs ({(stakedNFTs || []).length})
         </h3>
+        <button
+          onClick={selectAll}
+          className="text-red-400 hover:text-red-300 transition-colors"
+        >
+          {selectedNFTs.length === (stakedNFTs || []).length ? 'Deselect All' : 'Select All'}
+        </button>
       </div>
 
-      {stakedNFTs.length === 0 ? (
+      {!stakedNFTs || stakedNFTs.length === 0 ? (
         <div className="text-center py-12 text-white/60">
           No staked NFTs found
         </div>
@@ -74,12 +94,12 @@ const UnstakeTab: React.FC<UnstakeTabProps> = ({
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {stakedNFTs.map((nft) => (
             <NFTCard
-              key={nft.id}
-              tokenId={nft.tokenId}
-              contract={nft.contract}
-              isStaked={nft.is_staked}
-              isSelected={selectedNFTs.includes(nft.id)}
-              onClick={() => toggleNFT(nft.id)}
+              key={nft.tokenId.toString()}
+              tokenId={nft.tokenId.toString()}
+              contract={stakingContract.address as Address}
+              isStaked={true}
+              isSelected={selectedNFTs.includes(nft.tokenId.toString())}
+              onClick={() => toggleNFT(nft.tokenId.toString())}
             />
           ))}
         </div>
