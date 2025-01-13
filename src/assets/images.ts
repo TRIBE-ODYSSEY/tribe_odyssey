@@ -8,7 +8,13 @@ export const IMAGES = {
     '/images/gold-ape-2.png',
     '/images/gold-ape-3.png',
     '/images/gold-ape-4.png',
-    '/images/gold-ape-5.png'
+    '/images/gold-ape-5.png',
+    '/images/gold-ape-6.png',
+    '/images/gold-ape-7.png',
+    '/images/gold-ape-8.png',
+    '/images/gold-ape-9.png',
+    '/images/gold-ape-10.png',
+    '/images/gold-ape-11.png',
   ],
 
   // Threads section

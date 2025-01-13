@@ -15,6 +15,12 @@ const IMAGE_PATHS = {
   GOLD_APE_3: 'images/gold-ape-3.png',
   GOLD_APE_4: 'images/gold-ape-4.png',
   GOLD_APE_5: 'images/gold-ape-5.png',
+  GOLD_APE_6: 'images/gold-ape-6.png',
+  GOLD_APE_7: 'images/gold-ape-7.png',
+  GOLD_APE_8: 'images/gold-ape-8.png',
+  GOLD_APE_9: 'images/gold-ape-9.png',
+  GOLD_APE_10: 'images/gold-ape-10.png',
+  GOLD_APE_11: 'images/gold-ape-11.png',
   // Threads
   THREADS_LOGO: 'images/THREADS-logo.png',
   THREADS_HOODIE_FRONT: 'images/THREADS-hoodie-front.png',
@@ -57,7 +63,13 @@ export const IMAGES: Images = {
     IMAGE_PATHS.GOLD_APE_2,
     IMAGE_PATHS.GOLD_APE_3,
     IMAGE_PATHS.GOLD_APE_4,
-    IMAGE_PATHS.GOLD_APE_5
+    IMAGE_PATHS.GOLD_APE_5,
+    IMAGE_PATHS.GOLD_APE_6,
+    IMAGE_PATHS.GOLD_APE_7,
+    IMAGE_PATHS.GOLD_APE_8,
+    IMAGE_PATHS.GOLD_APE_9,
+    IMAGE_PATHS.GOLD_APE_10,
+    IMAGE_PATHS.GOLD_APE_11
   ],
   [ImageCategories.THREADS]: THREADS,
   [ImageCategories.ALLIANCE]: ALLIANCE,

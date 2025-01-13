@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 
 const GoldApesSection = () => {
   const goldApes = useMemo(
-    () => Array.from({ length: 5 }, (_, i) => ({
+    () => Array.from({ length: 8 }, (_, i) => ({
       id: i + 1,
       image: IMAGES.goldApes[i],
       alt: `Gold Ape ${i + 1}`
