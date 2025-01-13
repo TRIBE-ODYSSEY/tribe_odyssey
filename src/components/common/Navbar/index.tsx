@@ -7,6 +7,7 @@ import { Menu } from '@headlessui/react';
 import { Link, useLocation } from 'react-router-dom';
 import { RiArrowDropDownLine, RiArrowDropUpLine } from 'react-icons/ri';
 import CustomButton from './button';
+import { IoClose } from 'react-icons/io5';
 
 const MenuDropdown: React.FC<{ title: string; items: Array<{ name: string; path: string }> }> = ({ 
   title, 
@@ -174,7 +175,7 @@ const MobileNav: React.FC<{
           className="absolute top-4 right-4 text-white/80 hover:text-white"
           aria-label="Close menu"
         >
-          <FaTimes size={24} />
+          <IoClose className="w-6 h-6" />
         </button>
 
         <div className="flex-1 flex flex-col items-center gap-6 max-w-sm mx-auto w-full">
