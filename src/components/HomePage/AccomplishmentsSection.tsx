@@ -59,9 +59,7 @@ const AccomplishmentsSection: React.FC = () => {
               Accomplishments
             </h2>
             <p className="text-lg md:text-xl text-white/70 max-w-4xl mx-auto">
-              Tribe has never been bullish on laying out a "Road Map" in the traditional sense. We've always, however, been in the mindset 
-              of striving towards consistency and completing and celebrating significant milestones and accomplishments. We build, we 
-              create, and we accomplish.
+              We build, We create, and We accomplish.
             </p>
           </div>
 
