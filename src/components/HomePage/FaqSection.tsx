@@ -12,11 +12,11 @@ const faqs: FaqItem[] = [
     question: 'What is an NFT?',
     answer: 'NFTs (Non-Fungible Tokens) are unique digital assets that cannot be replicated. They are stored on a blockchain and can represent ownership of digital items like art, music, videos, and more. Each NFT has a unique identifier that proves its authenticity and ownership.'
   },
-  {
-    id: 'check-rarity',
-    question: 'How do I check rarity of the TRIBE?',
-    answer: 'You can check the rarity of your TRIBE NFT through our official rarity tool available on our website. Simply connect your wallet or enter your NFTs ID to view its rarity score and trait rankings.'
-  },
+  //{
+    //id: 'check-rarity',
+    //question: 'How do I check rarity of the TRIBE?',
+    //answer: 'You can check the rarity of your TRIBE NFT through our official rarity tool available on our website. Simply connect your wallet or enter your NFTs ID to view its rarity score and trait rankings.'
+  //},
   {
     id: 'tribe-benefits',
     question: 'What are the benefits of holding TRIBE NFT?',
@@ -24,8 +24,8 @@ const faqs: FaqItem[] = [
   },
   {
     id: 'twitter-connect',
-    question: 'How do I get connected with my TRIBE on Twitter?',
-    answer: 'You can connect with your TRIBE on Twitter by following our official account and joining our community discussions. We regularly share updates, announcements, and engage with our holders through Twitter.'
+    question: 'How do I get connected with my TRIBE on X?',
+    answer: 'You can connect with your TRIBE on X by following our official account and joining our community discussions. We regularly share updates, announcements, and engage with our holders through X.'
   },
   {
     id: 'tribe-difference',
