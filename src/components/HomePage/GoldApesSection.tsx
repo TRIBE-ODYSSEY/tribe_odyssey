@@ -43,11 +43,10 @@ const GoldApesSection = () => {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-8 sm:mb-16">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white/80 mb-4 sm:mb-6">
-            24 Carats Apes
+            TRIBE19 CLUB
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-white/70 max-w-3xl mx-auto">
-            They sit now perched upon decaying thrones, their exquisite 24 Carat fur shines vibrantly still like royal armour piercing the
-            shadows of the world that once was. Unwavering in their belief they are Gods amongst apes. Their thirst to rule is relentless.
+          Unlock the prestige of joining the exclusive club for holders of all 19 existing species. Enjoy unparalleled fame and lavish rewards!
           </p>
         </div>
 

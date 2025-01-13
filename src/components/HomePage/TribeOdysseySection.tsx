@@ -89,8 +89,7 @@ const TribeOdysseySection: React.FC = () => {
                 </h2>
                 <div className="space-y-4 sm:space-y-6">
                   <p className="text-lg sm:text-xl text-white/80">
-                    A collection of 9400 badass and entirely original ape NFT characters that
-                    live on the Ethereum Blockchain.
+                    A collection of 9400 unique and badass ape NFT characters on the Ethereum Blockchain and 450 Ordinals within inscriptions range from 399473 to 1036891.
                   </p>
                   <p className="text-base sm:text-lg text-white/70">
                     The collection's lore is based in an alternate dimension. Within this

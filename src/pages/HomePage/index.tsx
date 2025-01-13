@@ -17,7 +17,6 @@ const lazyLoadSection = (
 
 const sections: SectionComponent[] = [
   lazyLoadSection(() => import('@src/components/HomePage/ChapterSection')),
-  lazyLoadSection(() => import('@src/components/HomePage/WelcomeSection')),
   lazyLoadSection(() => import('@src/components/HomePage/TribeOdysseySection')),
   lazyLoadSection(
     () => import('@src/components/HomePage/WhispersOfLoresSection')
