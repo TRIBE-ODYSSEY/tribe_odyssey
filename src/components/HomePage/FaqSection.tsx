@@ -12,11 +12,11 @@ const faqs: FaqItem[] = [
     question: 'What is an NFT?',
     answer: 'NFTs (Non-Fungible Tokens) are unique digital assets that cannot be replicated. They are stored on a blockchain and can represent ownership of digital items like art, music, videos, and more. Each NFT has a unique identifier that proves its authenticity and ownership.'
   },
-  //{
-    //id: 'check-rarity',
-    //question: 'How do I check rarity of the TRIBE?',
-    //answer: 'You can check the rarity of your TRIBE NFT through our official rarity tool available on our website. Simply connect your wallet or enter your NFTs ID to view its rarity score and trait rankings.'
-  //},
+  {
+    id: 'check-rarity',
+    question: 'What are Bitcoin Ordinals?',
+    answer: 'Bitcoin Ordinals are digital collectibles that have had data inscribed (written to) on individual satoshis on the Bitcoin blockchain. Each inscribed sat is one-of-a-kind and can be owned, collected, and traded like a non-fungible token (NFT).'
+  },
   {
     id: 'tribe-benefits',
     question: 'What are the benefits of holding TRIBE NFT?',
