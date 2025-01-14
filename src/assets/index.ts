@@ -20,7 +20,6 @@ const IMAGE_PATHS = {
   GOLD_APE_9: 'images/gold-ape-9.png',
   GOLD_APE_10: 'images/gold-ape-10.png',
   GOLD_APE_11: 'images/gold-ape-11.png',
-  GOLD_APE_12: 'images/gold-ape-12.png',
   // Threads
   THREADS_LOGO: 'images/THREADS-logo.png',
   THREADS_HOODIE_FRONT: 'images/THREADS-hoodie-front.png',
@@ -66,8 +65,8 @@ export const GOLD_APES: GoldApe[] = [
   { 
     id: 1, 
     image: IMAGE_PATHS.GOLD_APE_1, 
-    name: 'Tribe Member 1', 
-    twitter: 'https://x.com/tribemember1',
+    name: 'Odyssey Mascot', 
+    twitter: 'https://x.com/tribeodyssey',
     alt: 'Gold Ape 1' 
   },
   { 
@@ -94,58 +93,51 @@ export const GOLD_APES: GoldApe[] = [
   {
     id: 5,
     image: IMAGE_PATHS.GOLD_APE_5,
-    name: 'Tribe Member 5',
-    twitter: 'https://x.com/tribemember5',
+    name: 'Gobln',
+    twitter: 'https://x.com/goblnnft',
     alt: 'Gold Ape 5'
   },
   {
     id: 6,
     image: IMAGE_PATHS.GOLD_APE_6,
-    name: 'Tribe Member 6',
-    twitter: 'https://x.com/tribemember6',
+    name: 'Spiffy Ritzy',
+    twitter: 'https://x.com/spiffyritzy',
     alt: 'Gold Ape 6'
   },
   {
     id: 7,
     image: IMAGE_PATHS.GOLD_APE_7,
-    name: 'Tribe Member 7',
-    twitter: 'https://x.com/tribemember7',
+    name: 'OxPhr33dom',
+    twitter: 'https://x.com/phr33dom',
     alt: 'Gold Ape 7'
   },
   {
     id: 8,
     image: IMAGE_PATHS.GOLD_APE_8,
-    name: 'Tribe Member 8',
-    twitter: 'https://x.com/tribemember8',
+    name: 'WarWizard',
+    twitter: 'https://x.com/WarWizardNFT',
     alt: 'Gold Ape 8'
   },
   {
     id: 9,
     image: IMAGE_PATHS.GOLD_APE_9,
-    name: 'Tribe Member 9',
-    twitter: 'https://x.com/tribemember9',
+    name: 'HetzDoge',
+    twitter: 'https://x.com/HetzDoge',
     alt: 'Gold Ape 9'
   },
   {
     id: 10,
     image: IMAGE_PATHS.GOLD_APE_10,
-    name: 'Tribe Member 10',
-    twitter: 'https://x.com/tribemember10',
+    name: 'ApeSafari',
+    twitter: 'https://x.com/ApeSafari',
     alt: 'Gold Ape 10'
   },
   {
     id: 11,
     image: IMAGE_PATHS.GOLD_APE_11,
-    name: 'Tribe Member 11',
-    twitter: 'https://x.com/tribemember11',
+    name: 'Deso',
+    twitter: 'https://x.com/brokaw_24',
     alt: 'Gold Ape 11'
-  },
-  {
-    id: 12,
-    image: IMAGE_PATHS.GOLD_APE_12,
-    name: 'Tribe Member 12',
-    twitter: 'https://x.com/tribemember12',
-    alt: 'Gold Ape 12'
   }
 ];
 
