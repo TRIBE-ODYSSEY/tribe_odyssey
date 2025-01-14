@@ -13,7 +13,7 @@ const MoltenPage = lazy(() => import('@src/pages/Assets/Molten'));
 const TribalBeatsPage = lazy(() => import('@src/pages/Assets/TribalBeats'));
 const Tribal19CheckerPage = lazy(() => import('@src/pages/Assets/Tribal19Checker'));
 const CouncilPage = lazy(() => import('@src/pages/Council'));
-const RafflesPage = lazy(() => import('@src/pages/Raffles/Raffles'));
+const RafflesPage = lazy(() => import('@src/pages/Raffles'));
 const StakingApesPage = lazy(() => import('@src/pages/Staking/StakeApes'));
 const DropsPage = lazy(() => import('@src/pages/Element19/Drops'));
 const CollectionPage = lazy(() => import('@src/pages/Element19/Collection'));
@@ -59,11 +59,11 @@ const AppRoutes: React.FC = () => {
       )}
       
       {/* Dynamic Routes */}
+      <Route path="/raffles/*" element={<RafflesPage />} />
       <Route path="/raffles/:id" element={<RaffleDetails />} />
       <Route path="/winners" element={<Winners />} />
 
       {/* Other Routes */}
-      <Route path="/raffles" element={<RafflesPage />} />
       <Route path="/staking" element={<StakingApesPage />} />
       <Route path="/account" element={<ProfilePage />} />
       
