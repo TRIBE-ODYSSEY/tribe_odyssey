@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://app.randompicker.com/Webservice';
+const API_BASE_URL = import.meta.env.VITE_RANDOM_PICKER_BASE_URL || 'https://app.randompicker.com/Webservice';
 const USERNAME = import.meta.env.VITE_RANDOM_PICKER_USERNAME;
 const PASSWORD = import.meta.env.VITE_RANDOM_PICKER_PASSWORD;
 
@@ -40,17 +40,34 @@ class RandomPickerService {
     }
 
     try {
-      const response = await axios.post(`${this.userEndpoint}/LoginInsert`, {
-        UserName: USERNAME,
-        Password: PASSWORD
-      }, {
+      // Create SOAP envelope
+      const soapEnvelope = `<?xml version="1.0" encoding="utf-8"?>
+        <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+                      xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+          <soap:Body>
+            <LoginInsert xmlns="http://randompicker.com/">
+              <UserName>${USERNAME}</UserName>
+              <Password>${PASSWORD}</Password>
+            </LoginInsert>
+          </soap:Body>
+        </soap:Envelope>`;
+
+      const response = await axios.post(`${this.userEndpoint}`, soapEnvelope, {
         headers: {
-          'Content-Type': 'text/xml',
-          'SOAPAction': 'http://randompicker.com/LoginInsert'
+          'Content-Type': 'text/xml;charset=UTF-8',
+          'SOAPAction': 'http://randompicker.com/LoginInsert',
+          'Accept': '*/*'
+        },
+        // Add proxy configuration if needed
+        proxy: {
+          protocol: 'https',
+          host: import.meta.env.VITE_PROXY_HOST || 'api.tribeodyssey.net',
+          port: 443
         }
       });
 
-      // Parse SOAP response to get token
+      // Parse SOAP response
       const tokenMatch = response.data.match(/<ID>(.+?)<\/ID>/);
       if (tokenMatch && tokenMatch[1]) {
         this.token = tokenMatch[1];
@@ -77,22 +94,77 @@ class RandomPickerService {
   ): Promise<RandomPickerResponse<T>> {
     try {
       const token = await this.getAuthToken();
+      
+      // Create SOAP envelope for requests
+      const soapEnvelope = method === 'POST' ? this.createSoapEnvelope(endpoint, data) : null;
+
       const response = await axios({
         method,
         url: endpoint,
-        data,
+        data: soapEnvelope,
         headers: {
+          'Content-Type': 'text/xml;charset=UTF-8',
+          'SOAPAction': `http://randompicker.com/${endpoint.split('/').pop()}`,
           'Authorization': `Bearer ${token}`,
-          'Content-Type': data instanceof FormData ? 'multipart/form-data' : 'application/json'
+          'Accept': '*/*'
+        },
+        // Add proxy configuration
+        proxy: {
+          protocol: 'https',
+          host: import.meta.env.VITE_PROXY_HOST || 'api.tribeodyssey.net',
+          port: 443
         }
       });
-      return response.data;
+
+      // Parse SOAP response
+      return this.parseSoapResponse(response.data);
     } catch (error: any) {
       if (error.response?.status === 401) {
-        this.token = null; // Reset token
+        this.token = null;
         return this.makeAuthenticatedRequest(endpoint, method, data);
       }
       throw error;
+    }
+  }
+
+  private createSoapEnvelope(endpoint: string, data: any): string {
+    const operation = endpoint.split('/').pop();
+    return `<?xml version="1.0" encoding="utf-8"?>
+      <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+                    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+        <soap:Body>
+          <${operation} xmlns="http://randompicker.com/">
+            ${this.objectToXml(data)}
+          </${operation}>
+        </soap:Body>
+      </soap:Envelope>`;
+  }
+
+  private objectToXml(obj: any): string {
+    return Object.entries(obj)
+      .map(([key, value]) => `<${key}>${value}</${key}>`)
+      .join('');
+  }
+
+  private parseSoapResponse(soapResponse: string): RandomPickerResponse<any> {
+    // Add proper SOAP response parsing
+    // This will need to be customized based on the actual response format
+    try {
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(soapResponse, "text/xml");
+      // Extract relevant data from XML response
+      // This is a simplified example
+      return {
+        success: true,
+        data: xmlDoc
+      };
+    } catch (error) {
+      return {
+        success: false,
+        data: null,
+        message: 'Failed to parse SOAP response'
+      };
     }
   }
 
