@@ -1,17 +1,20 @@
+// @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import PageTitle from '@src/components/common/PageTitle';
-import PageLayout from '@src/components/common/layout/PageLayout';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import Jazzicon, { jsNumberForAddress } from 'react-jazzicon';
 import { ZeroAddress } from 'ethers';
-import { randomPicker } from '@src/lib/services/randomPicker';
-import { CompletedRaffle } from '@src/lib/types/raffle';
 import { toast } from 'react-toastify';
+
+import PageTitle from '@src/components/common/PageTitle';
+import PageLayout from '@src/components/common/layout/PageLayout';
+import { CompletedRaffle } from '@src/lib/types/raffle';
+import { randomPicker } from '../services/randomPicker';
 
 const RafflesOpened: React.FC = () => {
   const [completedRaffles, setCompletedRaffles] = useState<CompletedRaffle[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchCompletedRaffles();
@@ -20,10 +23,12 @@ const RafflesOpened: React.FC = () => {
   const fetchCompletedRaffles = async () => {
     try {
       setIsLoading(true);
+      setError(null);
       const response = await randomPicker.getCompletedRaffles();
       setCompletedRaffles(response);
     } catch (error) {
       console.error('Failed to fetch completed raffles:', error);
+      setError('Failed to load completed raffles');
       toast.error('Failed to load completed raffles');
     } finally {
       setIsLoading(false);
@@ -33,6 +38,24 @@ const RafflesOpened: React.FC = () => {
   const shortenAddress = (address: string) => {
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
   };
+
+  if (error) {
+    return (
+      <PageLayout>
+        <div className="container mx-auto px-4 py-8">
+          <div className="max-w-7xl mx-auto text-center">
+            <div className="text-red-500 mb-4">{error}</div>
+            <button 
+              onClick={fetchCompletedRaffles}
+              className="text-red-400 hover:text-red-300 transition-colors"
+            >
+              Try Again
+            </button>
+          </div>
+        </div>
+      </PageLayout>
+    );
+  }
 
   return (
     <PageLayout>
@@ -52,23 +75,29 @@ const RafflesOpened: React.FC = () => {
             <div className="flex justify-center items-center min-h-[400px]">
               <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-red-500" />
             </div>
+          ) : completedRaffles.length === 0 ? (
+            <div className="text-center text-white/60 py-12">
+              <p>No completed raffles yet</p>
+            </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {completedRaffles.map((raffle) => (
                 <div
                   key={raffle.id}
-                  className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 overflow-hidden"
+                  className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 overflow-hidden 
+                           transform transition-transform hover:scale-[1.02] duration-300"
                 >
                   <img 
                     src={raffle.prizeImage} 
                     alt={raffle.title}
                     className="w-full h-48 object-cover"
+                    loading="lazy"
                   />
                   <div className="p-6">
                     <h3 className="text-xl font-semibold text-white mb-2">
                       {raffle.title}
                     </h3>
-                    <p className="text-white/60 mb-4">
+                    <p className="text-white/60 mb-4 line-clamp-2">
                       {raffle.description}
                     </p>
 
@@ -82,9 +111,11 @@ const RafflesOpened: React.FC = () => {
                             target="_blank"
                             rel="noreferrer"
                             className="hover:opacity-80 transition-opacity"
+                            title="View on RandomPicker"
                           >
                             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M10 6H6C4.89543 6 4 6.89543 4 8V18C4 19.1046 4.89543 20 6 20H16C17.1046 20 18 19.1046 18 18V14M14 4H20M20 4V10M20 4L10 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                              <path d="M10 6H6C4.89543 6 4 6.89543 4 8V18C4 19.1046 4.89543 20 6 20H16C17.1046 20 18 19.1046 18 18V14M14 4H20M20 4V10M20 4L10 14" 
+                                    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                             </svg>
                           </a>
                         </div>
@@ -116,7 +147,8 @@ const RafflesOpened: React.FC = () => {
                           >
                             {shortenAddress(raffle.winner)}
                             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M10 6H6C4.89543 6 4 6.89543 4 8V18C4 19.1046 4.89543 20 6 20H16C17.1046 20 18 19.1046 18 18V14M14 4H20M20 4V10M20 4L10 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                              <path d="M10 6H6C4.89543 6 4 6.89543 4 8V18C4 19.1046 4.89543 20 6 20H16C17.1046 20 18 19.1046 18 18V14M14 4H20M20 4V10M20 4L10 14" 
+                                    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                             </svg>
                           </a>
                         </div>

@@ -13,15 +13,15 @@ const MoltenPage = lazy(() => import('@src/pages/Assets/Molten'));
 const TribalBeatsPage = lazy(() => import('@src/pages/Assets/TribalBeats'));
 const Tribal19CheckerPage = lazy(() => import('@src/pages/Assets/Tribal19Checker'));
 const CouncilPage = lazy(() => import('@src/pages/Council'));
-const RafflesPage = lazy(() => import('@src/pages/Staking/Raffles'));
+const RafflesPage = lazy(() => import('@src/pages/Raffles/Raffles'));
 const StakingApesPage = lazy(() => import('@src/pages/Staking/StakeApes'));
 const DropsPage = lazy(() => import('@src/pages/Element19/Drops'));
 const CollectionPage = lazy(() => import('@src/pages/Element19/Collection'));
 const WallpapersPage = lazy(() => import('@src/pages/Assets/Wallpapers'));
-const WinnersPage = lazy(() => import('@src/pages/Staking/Winners'));
 const ProfilePage = lazy(() => import('@src/pages/Profile'));
-const RafflesAdminPage = lazy(() => import('@src/pages/Staking/RafflesAdmin'));
-const RaffleDetails = lazy(() => import('@src/pages/Staking/RaffleDetails'));
+const RafflesAdminPage = lazy(() => import('@src/pages/Raffles/components/RafflesAdmin'));
+const RaffleDetails = lazy(() => import('@src/pages/Raffles/components/RaffleDetails'));
+const Winners = lazy(() => import('@src/pages/Raffles/components/Winners'));
 const NetworkErrors = lazy(() => import('@src/components/common/errors/network/NetworkErrors'));
 
 const AppRoutes: React.FC = () => {
@@ -48,7 +48,6 @@ const AppRoutes: React.FC = () => {
       <Route path="/drops" element={<DropsPage />} />
       <Route path="/collection" element={<CollectionPage />} />
       <Route path="/wallpapers" element={<WallpapersPage />} />
-      <Route path="/winners" element={<WinnersPage />} />
       <Route path="/ens" element={<ENSPage />} />
       
       {/* Admin Routes - Only shown if admin address is connected */}
@@ -61,7 +60,8 @@ const AppRoutes: React.FC = () => {
       
       {/* Dynamic Routes */}
       <Route path="/raffles/:id" element={<RaffleDetails />} />
-      
+      <Route path="/winners" element={<Winners />} />
+
       {/* Other Routes */}
       <Route path="/raffles" element={<RafflesPage />} />
       <Route path="/staking" element={<StakingApesPage />} />
