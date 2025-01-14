@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_RANDOM_PICKER_BASE_URL || 'https://app.randompicker.com/Webservice';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://app.randompicker.com/Webservice/User.asmx?wsdl';
 const USERNAME = import.meta.env.VITE_RANDOM_PICKER_USERNAME;
 const PASSWORD = import.meta.env.VITE_RANDOM_PICKER_PASSWORD;
 
@@ -40,34 +40,26 @@ class RandomPickerService {
     }
 
     try {
-      // Create SOAP envelope
       const soapEnvelope = `<?xml version="1.0" encoding="utf-8"?>
         <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
                       xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
                       xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
           <soap:Body>
-            <LoginInsert xmlns="http://randompicker.com/">
+            <LoginInsert xmlns="http://app.randompicker.com/">
               <UserName>${USERNAME}</UserName>
               <Password>${PASSWORD}</Password>
             </LoginInsert>
           </soap:Body>
         </soap:Envelope>`;
 
-      const response = await axios.post(`${this.userEndpoint}`, soapEnvelope, {
+      const response = await axios.post(this.userEndpoint, soapEnvelope, {
         headers: {
           'Content-Type': 'text/xml;charset=UTF-8',
-          'SOAPAction': 'http://randompicker.com/LoginInsert',
-          'Accept': '*/*'
+          'SOAPAction': 'http://app.randompicker.com/LoginInsert'
         },
-        // Add proxy configuration if needed
-        proxy: {
-          protocol: 'https',
-          host: import.meta.env.VITE_PROXY_HOST || 'api.tribeodyssey.net',
-          port: 443
-        }
+        withCredentials: true // Include cookies if needed
       });
 
-      // Parse SOAP response
       const tokenMatch = response.data.match(/<ID>(.+?)<\/ID>/);
       if (tokenMatch && tokenMatch[1]) {
         this.token = tokenMatch[1];
@@ -76,7 +68,7 @@ class RandomPickerService {
       throw new Error('Failed to extract authentication token');
     } catch (error) {
       console.error('Authentication failed:', error);
-      throw new Error('Failed to authenticate with RandomPicker');
+      throw error;
     }
   }
 
@@ -95,7 +87,6 @@ class RandomPickerService {
     try {
       const token = await this.getAuthToken();
       
-      // Create SOAP envelope for requests
       const soapEnvelope = method === 'POST' ? this.createSoapEnvelope(endpoint, data) : null;
 
       const response = await axios({
@@ -104,19 +95,12 @@ class RandomPickerService {
         data: soapEnvelope,
         headers: {
           'Content-Type': 'text/xml;charset=UTF-8',
-          'SOAPAction': `http://randompicker.com/${endpoint.split('/').pop()}`,
-          'Authorization': `Bearer ${token}`,
-          'Accept': '*/*'
+          'SOAPAction': `http://app.randompicker.com/${endpoint.split('/').pop()}`,
+          'Authorization': `Bearer ${token}`
         },
-        // Add proxy configuration
-        proxy: {
-          protocol: 'https',
-          host: import.meta.env.VITE_PROXY_HOST || 'api.tribeodyssey.net',
-          port: 443
-        }
+        withCredentials: true
       });
 
-      // Parse SOAP response
       return this.parseSoapResponse(response.data);
     } catch (error: any) {
       if (error.response?.status === 401) {
@@ -134,7 +118,7 @@ class RandomPickerService {
                     xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
                     xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
         <soap:Body>
-          <${operation} xmlns="http://randompicker.com/">
+          <${operation} xmlns="http://app.randompicker.com/">
             ${this.objectToXml(data)}
           </${operation}>
         </soap:Body>
