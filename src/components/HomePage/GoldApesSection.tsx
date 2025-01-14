@@ -1,31 +1,44 @@
-import { IMAGES } from '@assets/index';
+import { IMAGES, ImageCategories } from '@assets/index';
 import Card from '@src/components/common/card/Card';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { IoChevronBackOutline, IoChevronForwardOutline } from 'react-icons/io5';
+import { FaXTwitter } from 'react-icons/fa6';
+import type { GoldApe } from '@assets/types';
 
 const GoldApesSection = () => {
-  const goldApes = useMemo(
-    () => Array.from({ length: 12 }, (_, i) => ({
-      id: i + 1,
-      image: IMAGES.goldApes[i],
-      alt: `Gold Ape ${i + 1}`
-    })),
+  const [displayCount, setDisplayCount] = useState(getInitialDisplayCount());
+  const goldApes = useMemo<GoldApe[]>(
+    () => IMAGES[ImageCategories.GOLD_APES],
     []
   );
+
+  function getInitialDisplayCount() {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth >= 1024 ? 5 : 6;
+    }
+    return 5; // Default for SSR
+  }
+
+  useEffect(() => {
+    const handleResize = () => {
+      setDisplayCount(window.innerWidth >= 1024 ? 5 : 6);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const displayIndices = useMemo(() => {
     const indices = [];
-    const displayCount = window.innerWidth >= 1024 ? 5 : 6;
-    
     for (let i = 0; i < displayCount; i++) {
       let index = (currentIndex + i) % goldApes.length;
       if (index < 0) index = goldApes.length + index;
       indices.push(index);
     }
     return indices;
-  }, [currentIndex, goldApes.length]);
+  }, [currentIndex, goldApes.length, displayCount]);
 
   const handlePrevious = () => {
     setCurrentIndex((prev) => (prev === 0 ? goldApes.length - 1 : prev - 1));
@@ -66,19 +79,38 @@ const GoldApesSection = () => {
           <div className="flex justify-center items-center gap-4 md:gap-6">
             {displayIndices.map((index, i) => {
               const styles = getImageStyles(i);
+              const ape = goldApes[index];
               return (
                 <div
-                  key={goldApes[index].id}
+                  key={ape.id}
                   className={styles.container}
                   onClick={() => setCurrentIndex(index)}
                 >
-                  <Card
-                    image={{
-                      'data-src': goldApes[index].image,
-                      alt: goldApes[index].alt,
-                    }}
-                    className={styles.card}
-                  />
+                  <div className="flex flex-col items-center">
+                    <Card
+                      image={{
+                        'data-src': ape.image,
+                        alt: ape.alt
+                      }}
+                      className={styles.card}
+                    />
+                    <div className={`mt-4 text-center transition-all duration-300 ${
+                      i === Math.floor(displayIndices.length / 2) ? 'opacity-100' : 'opacity-0'
+                    }`}>
+                      <h3 className="text-lg font-semibold text-white/90 mb-2">
+                        {ape.name}
+                      </h3>
+                      <a
+                        href={ape.twitter}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-white/70 hover:text-white 
+                                 transition-colors duration-200"
+                      >
+                        <FaXTwitter className="w-5 h-5" />
+                      </a>
+                    </div>
+                  </div>
                 </div>
               );
             })}
@@ -112,6 +144,20 @@ const GoldApesSection = () => {
             }}
             className="w-full rounded-3xl shadow-2xl ring-2 ring-yellow-400/50 mb-4"
           />
+          <div className="text-center mb-4">
+            <h3 className="text-lg font-semibold text-white/90 mb-2">
+              {goldApes[currentIndex].name}
+            </h3>
+            <a
+              href={goldApes[currentIndex].twitter}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-white/70 hover:text-white 
+                       transition-colors duration-200"
+            >
+              <FaXTwitter className="w-5 h-5" />
+            </a>
+          </div>
           <div className="flex justify-center gap-3 w-full overflow-x-auto pb-4">
             {goldApes.map((ape, index) => (
               <div

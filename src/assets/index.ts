@@ -1,16 +1,15 @@
-
 import { ALLIANCE } from './alliances';
 import { FIGHTERS } from './fighters';
 import { ICONS } from './icons';
 import { LORE } from './lore';
 import { ODYSSEY } from './odyssey';
 import { THREADS } from './threads';
-import { ImageCategories, Images } from './types';
+import { ImageCategories, Images, GoldApe } from './types';
 
 const IMAGE_PATHS = {
   HERO_BACKGROUND: '/images/hero-bg.webp',
   // Gold Apes
-  GOLD_APE_1: 'images/gold-ape-1.png',
+  GOLD_APE_1: 'images/gold-ape-1.png',  
   GOLD_APE_2: 'images/gold-ape-2.png',
   GOLD_APE_3: 'images/gold-ape-3.png',
   GOLD_APE_4: 'images/gold-ape-4.png',
@@ -21,6 +20,7 @@ const IMAGE_PATHS = {
   GOLD_APE_9: 'images/gold-ape-9.png',
   GOLD_APE_10: 'images/gold-ape-10.png',
   GOLD_APE_11: 'images/gold-ape-11.png',
+  GOLD_APE_12: 'images/gold-ape-12.png',
   // Threads
   THREADS_LOGO: 'images/THREADS-logo.png',
   THREADS_HOODIE_FRONT: 'images/THREADS-hoodie-front.png',
@@ -62,21 +62,96 @@ const IMAGE_PATHS = {
   T19_PROFILE_5: 'images/gold-ape-5.png'
 } as const;
 
+export const GOLD_APES: GoldApe[] = [
+  { 
+    id: 1, 
+    image: IMAGE_PATHS.GOLD_APE_1, 
+    name: 'Tribe Member 1', 
+    twitter: 'https://x.com/tribemember1',
+    alt: 'Gold Ape 1' 
+  },
+  { 
+    id: 2, 
+    image: IMAGE_PATHS.GOLD_APE_2, 
+    name: 'Tribe Member 2', 
+    twitter: 'https://x.com/tribemember2',
+    alt: 'Gold Ape 2' 
+  },
+  {
+    id: 3,
+    image: IMAGE_PATHS.GOLD_APE_3,
+    name: 'Tribe Member 3',
+    twitter: 'https://x.com/tribemember3',
+    alt: 'Gold Ape 3'
+  },
+  {
+    id: 4,
+    image: IMAGE_PATHS.GOLD_APE_4,
+    name: 'Tribe Member 4',
+    twitter: 'https://x.com/tribemember4',
+    alt: 'Gold Ape 4'
+  },
+  {
+    id: 5,
+    image: IMAGE_PATHS.GOLD_APE_5,
+    name: 'Tribe Member 5',
+    twitter: 'https://x.com/tribemember5',
+    alt: 'Gold Ape 5'
+  },
+  {
+    id: 6,
+    image: IMAGE_PATHS.GOLD_APE_6,
+    name: 'Tribe Member 6',
+    twitter: 'https://x.com/tribemember6',
+    alt: 'Gold Ape 6'
+  },
+  {
+    id: 7,
+    image: IMAGE_PATHS.GOLD_APE_7,
+    name: 'Tribe Member 7',
+    twitter: 'https://x.com/tribemember7',
+    alt: 'Gold Ape 7'
+  },
+  {
+    id: 8,
+    image: IMAGE_PATHS.GOLD_APE_8,
+    name: 'Tribe Member 8',
+    twitter: 'https://x.com/tribemember8',
+    alt: 'Gold Ape 8'
+  },
+  {
+    id: 9,
+    image: IMAGE_PATHS.GOLD_APE_9,
+    name: 'Tribe Member 9',
+    twitter: 'https://x.com/tribemember9',
+    alt: 'Gold Ape 9'
+  },
+  {
+    id: 10,
+    image: IMAGE_PATHS.GOLD_APE_10,
+    name: 'Tribe Member 10',
+    twitter: 'https://x.com/tribemember10',
+    alt: 'Gold Ape 10'
+  },
+  {
+    id: 11,
+    image: IMAGE_PATHS.GOLD_APE_11,
+    name: 'Tribe Member 11',
+    twitter: 'https://x.com/tribemember11',
+    alt: 'Gold Ape 11'
+  },
+  {
+    id: 12,
+    image: IMAGE_PATHS.GOLD_APE_12,
+    name: 'Tribe Member 12',
+    twitter: 'https://x.com/tribemember12',
+    alt: 'Gold Ape 12'
+  }
+];
+
 export const IMAGES: Images = {
   [ImageCategories.HERO]: IMAGE_PATHS.HERO_BACKGROUND,
-  [ImageCategories.GOLD_APES]: [
-    IMAGE_PATHS.GOLD_APE_1,
-    IMAGE_PATHS.GOLD_APE_2,
-    IMAGE_PATHS.GOLD_APE_3,
-    IMAGE_PATHS.GOLD_APE_4,
-    IMAGE_PATHS.GOLD_APE_5,
-    IMAGE_PATHS.GOLD_APE_6,
-    IMAGE_PATHS.GOLD_APE_7,
-    IMAGE_PATHS.GOLD_APE_8,
-    IMAGE_PATHS.GOLD_APE_9,
-    IMAGE_PATHS.GOLD_APE_10,
-    IMAGE_PATHS.GOLD_APE_11
-  ],
+  [ImageCategories.GOLD_APES]: GOLD_APES,
   [ImageCategories.THREADS]: THREADS,
   [ImageCategories.ALLIANCE]: ALLIANCE,
   [ImageCategories.FIGHTERS]: FIGHTERS,
@@ -100,4 +175,5 @@ export const IMAGES: Images = {
     { name: 'Spiffy Ritzy', social: 'https://twitter.com/t19profile5', id: '5' }
   ]
 } as const;
+
 export { ImageCategories };

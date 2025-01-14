@@ -74,9 +74,17 @@ export interface T19Profile {
   id: string;
 }
 
+export interface GoldApe {
+  id: number;
+  image: string;
+  alt: string;
+  name: string;
+  twitter: string;
+}
+
 export interface Images {
   [ImageCategories.HERO]: string;
-  [ImageCategories.GOLD_APES]: string[];
+  [ImageCategories.GOLD_APES]: GoldApe[];
   [ImageCategories.THREADS]: ThreadsImages;
   [ImageCategories.ALLIANCE]: AllianceSection;
   [ImageCategories.FIGHTERS]: FightersSection;
