@@ -5,7 +5,7 @@ import { IoChevronBackOutline, IoChevronForwardOutline } from 'react-icons/io5';
 
 const GoldApesSection = () => {
   const goldApes = useMemo(
-    () => Array.from({ length: 8 }, (_, i) => ({
+    () => Array.from({ length: 12 }, (_, i) => ({
       id: i + 1,
       image: IMAGES.goldApes[i],
       alt: `Gold Ape ${i + 1}`

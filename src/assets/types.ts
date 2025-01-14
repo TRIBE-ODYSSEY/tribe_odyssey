@@ -13,7 +13,8 @@ export enum ImageCategories {
   MOLTEN_THRONE = 'moltenThrone',
   TRIBUNUS = 'tribunus',
   SHAMAN = 'shaman',
-  PLACEHOLDER = 'placeholder'
+  PLACEHOLDER = 'placeholder',
+  T19_PROFILES = 't19Profiles'
 }
 
 export interface AllianceImage {
@@ -67,6 +68,12 @@ export interface Icons {
   hexGrid: string;
 }
 
+export interface T19Profile {
+  name: string;
+  social: string;
+  id: string;
+}
+
 export interface Images {
   [ImageCategories.HERO]: string;
   [ImageCategories.GOLD_APES]: string[];
@@ -81,4 +88,5 @@ export interface Images {
   [ImageCategories.TRIBUNUS]: string;
   [ImageCategories.SHAMAN]: string;
   [ImageCategories.PLACEHOLDER]: string;
+  [ImageCategories.T19_PROFILES]: T19Profile[];
 }

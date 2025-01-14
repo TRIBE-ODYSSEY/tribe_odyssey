@@ -53,7 +53,13 @@ const IMAGE_PATHS = {
   MOLTEN_THRONE: "images/molten-throne.png",
   TRIBUNUS: 'images/tribunus.png',
   SHAMAN: 'images/shaman1.jpeg',
-  PLACEHOLDER: 'images/placeholder.png'
+  PLACEHOLDER: 'images/placeholder.png',
+  // T19 Profiles
+  T19_PROFILE_1: 'images/gold-ape-1.png',
+  T19_PROFILE_2: 'images/gold-ape-2.png',
+  T19_PROFILE_3: 'images/gold-ape-3.png',
+  T19_PROFILE_4: 'images/gold-ape-4.png',
+  T19_PROFILE_5: 'images/gold-ape-5.png'
 } as const;
 
 export const IMAGES: Images = {
@@ -85,7 +91,13 @@ export const IMAGES: Images = {
   [ImageCategories.MOLTEN_THRONE]: IMAGE_PATHS.MOLTEN_THRONE,
   [ImageCategories.TRIBUNUS]: IMAGE_PATHS.TRIBUNUS,
   [ImageCategories.SHAMAN]: IMAGE_PATHS.SHAMAN,
-  [ImageCategories.PLACEHOLDER]: IMAGE_PATHS.PLACEHOLDER
+  [ImageCategories.PLACEHOLDER]: IMAGE_PATHS.PLACEHOLDER,
+  [ImageCategories.T19_PROFILES]: [
+    { name: 'WarWizard', social: 'https://twitter.com/t19profile1', id: '1' },
+    { name: 'Gobln', social: 'https://twitter.com/t19profile2', id: '2' },
+    { name: 'Matt No Tap', social: 'https://twitter.com/t19profile3', id: '3' },
+    { name: 'Jay Vasity', social: 'https://twitter.com/t19profile4', id: '4' },
+    { name: 'Spiffy Ritzy', social: 'https://twitter.com/t19profile5', id: '5' }
+  ]
 } as const;
 export { ImageCategories };
-
