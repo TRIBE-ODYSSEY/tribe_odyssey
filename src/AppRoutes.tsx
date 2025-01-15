@@ -2,7 +2,6 @@
 import useLazyLoading from '@hooks/useLazyLoading';
 import React, { lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { useAccount } from 'wagmi';
 
 // Lazy loaded pages
 const HomePage = lazy(() => import('@src/pages/HomePage'));
@@ -23,14 +22,6 @@ const NetworkErrors = lazy(() => import('@src/components/common/errors/network/N
 
 const AppRoutes: React.FC = () => {
   useLazyLoading();
-  const { address } = useAccount();
-
-  const ADMIN_ADDRESSES = [
-    '0xc570F1B8D14971c6cd73eA8db4F7C44E4AAdC6f2',
-    '0xf7D579d80C6e01382D7BAa122B78310361122B5b'
-  ].map(addr => addr.toLowerCase());
-
-  const isAdmin = address && ADMIN_ADDRESSES.includes(address.toLowerCase());
 
   return (
     <Routes>

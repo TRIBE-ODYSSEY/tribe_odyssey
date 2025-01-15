@@ -19,6 +19,13 @@ export interface IRaffleDetails {
   website: string;
   winner?: {
     address: string;
+    entry: number;
+    winning_entry: number;
+    won_at: string;
+    user?: {
+      name: string;
+      profile_image: string;
+    };
   };
 }
 
@@ -99,18 +106,39 @@ export interface CardProps {
 export interface CompletedRaffle extends IRaffleDetails {
   winner: {
     address: string;
+    entry: number;
+    winning_entry: number;
+    won_at: string;
+    user?: {
+      name: string;
+      profile_image: string;
+    };
   };
 }
 
 export interface Raffle extends IRaffleDetails {
   winner: {
     address: string;
+    entry: number;
+    winning_entry: number;
+    won_at: string;
+    user?: {
+      name: string;
+      profile_image: string;
+    };
   };
 }
 
 export interface RaffleWithWinner extends IRaffleDetails {
   winner: {
     address: string;
+    entry: number;
+    winning_entry: number;
+    won_at: string;
+    user?: {
+      name: string;
+      profile_image: string;
+    };
   };
 }
 
@@ -120,18 +148,4 @@ export interface RaffleWithParticipants extends IRaffleDetails {
 
 export interface RaffleWithActivities extends IRaffleDetails {
   activities: Activity[];
-}
-
-export interface RaffleWithWinner extends IRaffleDetails {
-  winner: {
-    address: string;
-  };
-}
-
-export interface RaffleWithActivities extends IRaffleDetails {
-  activities: Activity[];
-}
-
-export interface RaffleWithParticipants extends IRaffleDetails {
-  participants: Participant[];
 }

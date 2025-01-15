@@ -12,12 +12,11 @@ import { shortenAddress } from '@src/utils/address';
 import AddressAvatar from '@src/components/common/AddressAvatar';
 
 interface ParticipantsProps {
-  raffle: any;
   participants: any[];
   activities: any[];
 }
 
-const Participants: React.FC<ParticipantsProps> = ({ raffle, participants, activities }) => {
+const Participants: React.FC<ParticipantsProps> = ({ participants, activities }) => {
   return (
     <div className="bg-gray-800 rounded-lg p-6">
       <div className="space-y-6">
@@ -233,7 +232,6 @@ const RafflesOpened: React.FC = () => {
 
       {raffle && (
         <Participants 
-          raffle={raffle}
           participants={participants ?? []}
           activities={activities ?? []}
         />
