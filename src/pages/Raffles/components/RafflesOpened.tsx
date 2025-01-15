@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
@@ -8,7 +7,7 @@ import { toast } from 'react-toastify';
 
 import PageTitle from '@src/components/common/PageTitle';
 import PageLayout from '@src/components/common/layout/PageLayout';
-import { CompletedRaffle } from '@src/lib/types/raffle';
+import { CompletedRaffle, RaffleResponse } from '../types';
 import { randomPicker } from '../services/randomPicker';
 
 const RafflesOpened: React.FC = () => {
@@ -25,7 +24,24 @@ const RafflesOpened: React.FC = () => {
       setIsLoading(true);
       setError(null);
       const response = await randomPicker.getCompletedRaffles();
-      setCompletedRaffles(response);
+      
+      // Ensure response matches our CompletedRaffle type
+      const validRaffles = response.filter((raffle): raffle is CompletedRaffle => {
+        return (
+          raffle.id !== undefined &&
+          raffle.winner !== undefined &&
+          raffle.ended_at !== undefined &&
+          raffle.project_key !== undefined &&
+          raffle.projectKey !== undefined
+        );
+      });
+
+      // Sort by end date
+      const sortedRaffles = validRaffles.sort((a, b) => 
+        moment(b.ended_at).valueOf() - moment(a.ended_at).valueOf()
+      );
+      
+      setCompletedRaffles(sortedRaffles);
     } catch (error) {
       console.error('Failed to fetch completed raffles:', error);
       setError('Failed to load completed raffles');
@@ -36,6 +52,7 @@ const RafflesOpened: React.FC = () => {
   };
 
   const shortenAddress = (address: string) => {
+    if (!address) return 'N/A';
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
   };
 
@@ -88,7 +105,7 @@ const RafflesOpened: React.FC = () => {
                            transform transition-transform hover:scale-[1.02] duration-300"
                 >
                   <img 
-                    src={raffle.prizeImage} 
+                    src={raffle.imageUrl}
                     alt={raffle.title}
                     className="w-full h-48 object-cover"
                     loading="lazy"
@@ -106,18 +123,20 @@ const RafflesOpened: React.FC = () => {
                         <span className="font-semibold text-[16px]">Competition Ended</span>
                         <div className="flex items-center gap-2 text-purple-400">
                           {moment.utc(raffle.ended_at).fromNow()}
-                          <a
-                            href={`https://app.randompicker.com/protocol/${raffle.project_key}`}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="hover:opacity-80 transition-opacity"
-                            title="View on RandomPicker"
-                          >
-                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M10 6H6C4.89543 6 4 6.89543 4 8V18C4 19.1046 4.89543 20 6 20H16C17.1046 20 18 19.1046 18 18V14M14 4H20M20 4V10M20 4L10 14" 
-                                    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
-                          </a>
+                          {raffle.project_key && (
+                            <a
+                              href={`https://app.randompicker.com/protocol/${raffle.project_key}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="hover:opacity-80 transition-opacity"
+                              title="View on RandomPicker"
+                            >
+                              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10 6H6C4.89543 6 4 6.89543 4 8V18C4 19.1046 4.89543 20 6 20H16C17.1046 20 18 19.1046 18 18V14M14 4H20M20 4V10M20 4L10 14" 
+                                      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                              </svg>
+                            </a>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -136,23 +155,25 @@ const RafflesOpened: React.FC = () => {
                         </div>
                       </div>
                       
-                      <div className="flex flex-col gap-2">
-                        <div className="flex items-center gap-2">
-                          <span className="text-white/60">ETH:</span>
-                          <a
-                            href={`https://etherscan.io/address/${raffle.winner}`}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-purple-400 hover:text-purple-300 transition-colors flex items-center gap-1"
-                          >
-                            {shortenAddress(raffle.winner)}
-                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M10 6H6C4.89543 6 4 6.89543 4 8V18C4 19.1046 4.89543 20 6 20H16C17.1046 20 18 19.1046 18 18V14M14 4H20M20 4V10M20 4L10 14" 
-                                    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
-                          </a>
+                      {raffle.winner && (
+                        <div className="flex flex-col gap-2">
+                          <div className="flex items-center gap-2">
+                            <span className="text-white/60">ETH:</span>
+                            <a
+                              href={`https://etherscan.io/address/${raffle.winner}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-purple-400 hover:text-purple-300 transition-colors flex items-center gap-1"
+                            >
+                              {shortenAddress(raffle.winner)}
+                              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10 6H6C4.89543 6 4 6.89543 4 8V18C4 19.1046 4.89543 20 6 20H16C17.1046 20 18 19.1046 18 18V14M14 4H20M20 4V10M20 4L10 14" 
+                                      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                              </svg>
+                            </a>
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
@@ -161,8 +182,8 @@ const RafflesOpened: React.FC = () => {
                         <span className="text-white">{raffle.prizeValue}</span>
                       </div>
                       <div>
-                        <span className="text-white/60 block">Participants:</span>
-                        <span className="text-white">{raffle.participantCount}</span>
+                        <span className="text-white/60 block">Total Entries:</span>
+                        <span className="text-white">{raffle.totalEntries.toLocaleString()}</span>
                       </div>
                     </div>
                   </div>
