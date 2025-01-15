@@ -18,6 +18,7 @@ const DropsPage = lazy(() => import('@src/pages/Element19/Drops'));
 const CollectionPage = lazy(() => import('@src/pages/Element19/Collection'));
 const WallpapersPage = lazy(() => import('@src/pages/Assets/Wallpapers'));
 const ProfilePage = lazy(() => import('@src/pages/Profile'));
+const WinnersPage = lazy(() => import('@src/pages/Winners'));
 const NetworkErrors = lazy(() => import('@src/components/common/errors/network/NetworkErrors'));
 
 const AppRoutes: React.FC = () => {
@@ -44,7 +45,7 @@ const AppRoutes: React.FC = () => {
       {/* Other Routes */}
       <Route path="/staking" element={<StakingApesPage />} />
       <Route path="/account" element={<ProfilePage />} />
-      
+      <Route path="/winners" element={<WinnersPage />} />
       {/* 404 Route */}
       <Route path="*" element={<NetworkErrors />} />
     </Routes>

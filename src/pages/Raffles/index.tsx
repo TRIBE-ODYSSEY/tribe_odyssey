@@ -5,7 +5,7 @@ import { useAccount } from 'wagmi';
 import PageLayout from '@src/components/common/layout/PageLayout';
 import RafflesOpened from './components/RafflesOpened';
 import RaffleDetails from './components/RaffleDetails';
-import Winners from '../Winners/Winners';
+import Winners from '../Winners';
 import RafflesAdmin from './components/RafflesAdmin';
 
 const ADMIN_ADDRESSES = [
