@@ -32,7 +32,7 @@ const WhispersOfLoresSection: React.FC = () => {
           Whispers of Lore
         </h2>
         <h1 className="text-2xl sm:text-4xl text-white/80 w-full sm:w-2/3 mx-auto px-4">
-          Discover the rich tapestry of stories that shape our digital realm
+          The Whispers of Lores
         </h1>
       </section>
 

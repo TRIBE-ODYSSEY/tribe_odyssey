@@ -2,7 +2,7 @@ import { LoreSection } from "./types";
 
 
 export const LORE: LoreSection = {
-    exodus: '/images/molten-throne.png',
-    golden: '/images/molten-throne.png',
-    digital: '/images/molten-throne.png'
+    exodus: '/images/golden-ape-eye.png',
+    golden: '/images/golden-ape-eye.png',
+    digital: '/images/golden-ape-eye.png'
 };

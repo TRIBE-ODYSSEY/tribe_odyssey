@@ -92,9 +92,7 @@ const TribeOdysseySection: React.FC = () => {
                     A collection of 9400 unique and badass ape NFT characters on the Ethereum Blockchain and 450 Ordinals within inscriptions range from 399473 to 1036891.
                   </p>
                   <p className="text-base sm:text-lg text-white/70">
-                    The collection's lore is based in an alternate dimension. Within this
-                    dimension exists a futuristic world, a harsh and barren wasteland ruled by a tech
-                    advanced ape civilisation.
+                    The collection's lore is based in an alternate dimension. Within this dimension exists a futuristic world, a harsh and barren wasteland ruled by a tech-advanced ape civilisation.
                   </p>
                   <a 
                     href="https://opensea.io/collection/tribe-odyssey"

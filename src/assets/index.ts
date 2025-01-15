@@ -38,9 +38,9 @@ const IMAGE_PATHS = {
   NFT2: 'images/tribunus.png',
   NFT3: 'images/shaman1.jpeg',
   // Lore
-  EXODUS: 'images/molten-throne.png',
-  GOLDEN: 'images/golden.png',
-  DIGITAL: 'images/digital.png',
+  EXODUS: 'images/golden-ape-eye.png',
+  GOLDEN: 'images/golden-ape-eye.png',
+  DIGITAL: 'images/digital-ape-eye.png',
   // Icons
   SPECIAL_BUTTON_CORE: 'images/special-button-core.svg',
   SPECIAL_BUTTON_CORE_2: 'images/special-button-core.svg',
