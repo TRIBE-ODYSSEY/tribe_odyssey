@@ -62,6 +62,7 @@ export interface RaffleCondition {
     image: File;
     conditions: RaffleCondition[];
     onlyAllowOnce: boolean;
+    signature?: string;
   }
   
   export interface UpdateRaffleInput {
@@ -78,8 +79,8 @@ export interface RaffleCondition {
   export interface RaffleResponse {
     success: boolean;
     message: string;
-    data?: Raffle | CompletedRaffle;
     error?: string;
+    data: Raffle[] | CompletedRaffle[] | undefined;
   }
   
   export interface RaffleStats {
@@ -118,6 +119,7 @@ export interface RaffleCondition {
     endDate: string;
     conditions: RaffleCondition[];
     onlyAllowOnce: boolean;
+    signature?: string;
   }
   
   export interface RaffleInput {
@@ -127,6 +129,7 @@ export interface RaffleCondition {
     website: string;
     prizeCount: number;
     prizeName: string;
+    signature?: string;
   }
   
   export interface ParticipantInput {
@@ -155,6 +158,19 @@ export interface RaffleCondition {
   
   export interface RaffleProjectList {
     projects: RaffleProject[];
+    total: number;
+  }
+
+  export interface RaffleAdmin {
+    projects: RaffleProject[];
+    participants: RaffleParticipant[];
+    results: RaffleResult[];
+    types: string[];
+    drawTypes: string[];
+    prizes: string[];
+    conditions: string[];
+    publicResults: boolean[];
+    website: string[];
     total: number;
   }
   
@@ -236,4 +252,19 @@ export interface RaffleCondition {
     error?: string;
   }
 
+  interface ButtonProps {
+    children: React.ReactNode;
+    type?: 'button' | 'submit' | 'reset';
+    disabled?: boolean;
+    className?: string;
+    onClick?: () => void;
+  }
+  
+  export const Button: React.FC<ButtonProps> = ({ children, type = 'button', ...props }) => {
+    return (
+      <button type={type} {...props}>
+        {children}
+      </button>
+    );
+  }; 
   export type ButtonType = 'button' | 'submit' | 'reset';

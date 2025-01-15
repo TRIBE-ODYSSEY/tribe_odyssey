@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
@@ -25,14 +26,24 @@ const RafflesOpened: React.FC = () => {
       setError(null);
       const response = await randomPicker.getCompletedRaffles();
       
+      // Transform the response to match RaffleResponse type
+      const raffleResponse: RaffleResponse = {
+        success: true,
+        message: 'Raffles fetched successfully',
+        data: response
+      };
+      
+      if (!raffleResponse.success) {
+        throw new Error(raffleResponse.error || 'Failed to fetch raffles');
+      }
+
       // Ensure response matches our CompletedRaffle type
       const validRaffles = response.filter((raffle): raffle is CompletedRaffle => {
         return (
           raffle.id !== undefined &&
           raffle.winner !== undefined &&
           raffle.ended_at !== undefined &&
-          raffle.project_key !== undefined &&
-          raffle.projectKey !== undefined
+          raffle.project_key !== undefined
         );
       });
 
@@ -125,7 +136,7 @@ const RafflesOpened: React.FC = () => {
                           {moment.utc(raffle.ended_at).fromNow()}
                           {raffle.project_key && (
                             <a
-                              href={`https://app.randompicker.com/protocol/${raffle.project_key}`}
+                              href={`https://app.randompicker.com/project/${raffle.project_key}`}
                               target="_blank"
                               rel="noreferrer"
                               className="hover:opacity-80 transition-opacity"

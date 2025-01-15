@@ -1,16 +1,14 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAccount, useSignMessage } from 'wagmi';
 import { toast } from 'react-toastify';
 import moment from 'moment';
 import Jazzicon, { jsNumberForAddress } from 'react-jazzicon';
-import { ZeroAddress } from 'ethers';
 
 import PageTitle from '@src/components/common/PageTitle';
 import PageLayout from '@src/components/common/layout/PageLayout';
 import Button from '@src/components/common/Button';
-import { IRaffleDetails } from '@src/lib/types/raffle';
+import { IRaffleDetails, RaffleResponse } from '../types';
 import { randomPicker } from '../services/randomPicker';
 
 const RaffleDetails: React.FC = () => {
@@ -29,15 +27,50 @@ const RaffleDetails: React.FC = () => {
     }
   }, [id]);
 
-  const fetchRaffleDetails = async (raffleId: string) => {
+  const fetchRaffleDetails = async (projectId: string) => {
     try {
       setIsLoading(true);
-      const response = await randomPicker.getRaffleDetails(raffleId);
-      if ('data' in response && response.data) {
-        setRaffle(response.data as IRaffleDetails);
-      } else {
-        throw new Error('Invalid raffle data received');
+      const response = await randomPicker.getProjectDetails(projectId);
+      
+      // Transform response to match RaffleResponse type
+      const raffle: IRaffleDetails = {
+        id: response.id,
+        title: response.name,
+        description: '',
+        prizeValue: response.prizes,
+        endDate: new Date().toISOString(),
+        participantCount: 0,
+        imageUrl: '',
+        conditions: [],
+        onlyAllowOnce: true,
+        status: 'active',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        projectId: response.id,
+        projectKey: '',
+        projectName: response.name,
+        projectStatus: response.status,
+        projectType: response.type,
+        projectDrawType: response.drawType,
+        projectPrizes: response.prizes,
+        projectConditions: response.conditions,
+        projectPublicResults: response.publicResults,
+        projectWebsite: response.website,
+        participants: [],
+        totalEntries: 0
+      };
+
+      const raffleResponse: RaffleResponse = {
+        success: true,
+        message: 'Raffle details fetched successfully',
+        data: [raffle]
+      };
+
+      if (!raffleResponse.success || !raffleResponse.data) {
+        throw new Error(raffleResponse.error || 'Failed to fetch raffle details');
       }
+
+      setRaffle(raffleResponse.data as unknown as IRaffleDetails);
     } catch (error) {
       console.error('Failed to fetch raffle details:', error);
       toast.error('Failed to load raffle details');
@@ -83,7 +116,7 @@ const RaffleDetails: React.FC = () => {
       });
 
       // Enter raffle with signature
-      const response = await randomPicker.enterRaffle(id!, {
+      const response = await randomPicker.enterRaffleProject(id!, {
         address,
         points,
         signature
@@ -95,9 +128,9 @@ const RaffleDetails: React.FC = () => {
       } else {
         throw new Error(response.error || 'Failed to enter raffle');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to enter raffle:', error);
-      toast.error(error.message || 'Failed to enter raffle');
+      toast.error(error instanceof Error ? error.message : 'Failed to enter raffle');
     } finally {
       setIsEntering(false);
     }
@@ -210,18 +243,20 @@ const RaffleDetails: React.FC = () => {
                       <h4 className="text-lg font-semibold text-white mb-4">Recent Participants</h4>
                       <div className="space-y-4">
                         {raffle.participants.slice(0, 5).map((participant) => (
-                          <div key={participant.address} className="flex items-center gap-3">
-                            <Jazzicon 
-                              diameter={32} 
-                              seed={jsNumberForAddress(participant.address || ZeroAddress)} 
-                            />
+                          <div key={participant.address} className="flex items-center gap-4">
+                            <Jazzicon diameter={40} seed={jsNumberForAddress(participant.address)} />
                             <div>
-                              <div className="text-white">
+                              <a
+                                href={`https://etherscan.io/address/${participant.address}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-purple-400 hover:text-purple-300 transition-colors"
+                              >
                                 {`${participant.address.slice(0, 6)}...${participant.address.slice(-4)}`}
-                              </div>
-                              <div className="text-sm text-white/60">
-                                {moment(participant.joinedAt).fromNow()} • {participant.entries} entries
-                              </div>
+                              </a>
+                              <p className="text-white/60 text-sm">
+                                {participant.entries} entries • {moment(participant.joinedAt).fromNow()}
+                              </p>
                             </div>
                           </div>
                         ))}

@@ -6,6 +6,7 @@ interface ButtonProps {
   className?: string;
   disabled?: boolean;
   onClick?: () => void;
+  type?: 'button' | 'submit' | 'reset';
 }
 
 const Button: FC<ButtonProps> = ({
@@ -13,9 +14,11 @@ const Button: FC<ButtonProps> = ({
   className,
   disabled,
   onClick,
+  type = 'button',
 }) => {
   return (
     <button
+      type={type}
       onClick={onClick}
       disabled={disabled}
       className={`transition-all rounded-md h-[50px] flex justify-center items-center px-[20px] ${
@@ -28,5 +31,7 @@ const Button: FC<ButtonProps> = ({
     </button>
   );
 };
+
+
 
 export default Button;

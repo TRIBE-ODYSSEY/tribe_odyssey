@@ -1,34 +1,19 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 import Button from '@src/components/common/Button';
 import { useAccount, useSignMessage } from 'wagmi';
 import { randomPicker } from '../services/randomPicker';
-
-interface RaffleCondition {
-  entry: number;
-  points: number;
-}
-
-interface RaffleData {
-  id?: string;
-  title: string;
-  description: string;
-  endDate: Date;
-  prizeImage: string;
-  totalTickets: number;
-  ticketsSold: number;
-  prizeValue: string;
-  ticketPrice: string;
-  status: 'active' | 'completed' | 'draft';
-  conditions: RaffleCondition[];
-}
+import { 
+  Raffle, 
+  RaffleCondition, 
+  RaffleFormData
+} from '../types';
 
 interface RaffleFormModalProps {
-  raffle?: RaffleData | null;
+  raffle?: Raffle | null;
   onClose: () => void;
-  onSubmit: (formData: RaffleData) => Promise<void>;
+  onSubmit: (formData: RaffleFormData) => Promise<void>;
 }
 
 const RaffleFormModal: React.FC<RaffleFormModalProps> = ({
@@ -39,9 +24,14 @@ const RaffleFormModal: React.FC<RaffleFormModalProps> = ({
   const { address } = useAccount();
   const { signMessageAsync } = useSignMessage();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [conditions, setConditions] = useState<RaffleCondition[]>(
-    raffle?.conditions || [{ entry: 1, points: 1 }]
-  );
+  const [formData, setFormData] = useState<RaffleFormData>({
+    title: raffle?.title || '',
+    description: raffle?.description || '',
+    prizeValue: raffle?.prizeValue || '',
+    endDate: raffle?.endDate || '',
+    conditions: raffle?.conditions || [{ entry: 1, points: 1 }],
+    onlyAllowOnce: raffle?.onlyAllowOnce || false
+  });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -52,8 +42,6 @@ const RaffleFormModal: React.FC<RaffleFormModalProps> = ({
 
     try {
       setIsSubmitting(true);
-      const form = e.currentTarget;
-      const formData = new FormData(form);
       
       // Get nonce for signature
       const { data: { nonce } } = await randomPicker.getNonce(address);
@@ -63,61 +51,53 @@ const RaffleFormModal: React.FC<RaffleFormModalProps> = ({
         message: `Creating raffle with nonce: ${nonce}`
       });
 
-      // Prepare raffle data
-      const raffleData: RaffleData = {
-        title: formData.get('title') as string,
-        description: formData.get('description') as string,
-        prizeValue: formData.get('prizeValue') as string,
-        ticketPrice: formData.get('ticketPrice') as string,
-        totalTickets: parseInt(formData.get('totalTickets') as string),
-        endDate: new Date(formData.get('endDate') as string),
-        prizeImage: formData.get('prizeImage') as string,
-        ticketsSold: 0,
-        status: 'active',
-        conditions: conditions
-      };
-
       // Validate required fields
-      if (!raffleData.title || !raffleData.description || !raffleData.prizeImage) {
+      if (!formData.title || !formData.description) {
         throw new Error('Please fill in all required fields');
       }
 
       // Validate end date
-      if (raffleData.endDate < new Date()) {
+      if (new Date(formData.endDate) < new Date()) {
         throw new Error('End date must be in the future');
       }
 
       // Submit with signature
       await onSubmit({
-        ...raffleData,
-        id: raffle?.id
+        ...formData,
+        signature
       });
 
       toast.success(raffle ? 'Raffle updated successfully' : 'Raffle created successfully');
       onClose();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to submit raffle:', error);
-      toast.error(error.message || 'Failed to submit raffle');
+      toast.error(error instanceof Error ? error.message : 'Failed to submit raffle');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const addCondition = () => {
-    setConditions([...conditions, { entry: 1, points: 1 }]);
+    setFormData(prev => ({
+      ...prev,
+      conditions: [...prev.conditions, { entry: 1, points: 1 }]
+    }));
   };
 
   const removeCondition = (index: number) => {
-    setConditions(conditions.filter((_, i) => i !== index));
+    setFormData(prev => ({
+      ...prev,
+      conditions: prev.conditions.filter((_, i) => i !== index)
+    }));
   };
 
   const updateCondition = (index: number, field: keyof RaffleCondition, value: number) => {
-    const newConditions = [...conditions];
-    newConditions[index] = {
-      ...newConditions[index],
-      [field]: value
-    };
-    setConditions(newConditions);
+    setFormData(prev => ({
+      ...prev,
+      conditions: prev.conditions.map((condition, i) => 
+        i === index ? { ...condition, [field]: value } : condition
+      )
+    }));
   };
 
   return (
@@ -138,16 +118,29 @@ const RaffleFormModal: React.FC<RaffleFormModalProps> = ({
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6">
             <div>
               <label className="block text-white/60 mb-2">Title *</label>
               <input
                 name="title"
                 type="text"
-                defaultValue={raffle?.title}
+                value={formData.title}
+                onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                 required
                 className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
                 placeholder="Enter raffle title"
+              />
+            </div>
+
+            <div>
+              <label className="block text-white/60 mb-2">Description *</label>
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                required
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white h-32"
+                placeholder="Enter raffle description"
               />
             </div>
 
@@ -156,34 +149,11 @@ const RaffleFormModal: React.FC<RaffleFormModalProps> = ({
               <input
                 name="prizeValue"
                 type="text"
-                defaultValue={raffle?.prizeValue}
+                value={formData.prizeValue}
+                onChange={(e) => setFormData(prev => ({ ...prev, prizeValue: e.target.value }))}
                 required
                 className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
                 placeholder="e.g. $1000"
-              />
-            </div>
-
-            <div>
-              <label className="block text-white/60 mb-2">Ticket Price *</label>
-              <input
-                name="ticketPrice"
-                type="text"
-                defaultValue={raffle?.ticketPrice}
-                required
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
-                placeholder="e.g. 100 POINTS"
-              />
-            </div>
-
-            <div>
-              <label className="block text-white/60 mb-2">Total Tickets *</label>
-              <input
-                name="totalTickets"
-                type="number"
-                defaultValue={raffle?.totalTickets}
-                required
-                min="1"
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
               />
             </div>
 
@@ -192,107 +162,89 @@ const RaffleFormModal: React.FC<RaffleFormModalProps> = ({
               <input
                 name="endDate"
                 type="datetime-local"
-                defaultValue={raffle?.endDate.toISOString().slice(0, 16)}
+                value={formData.endDate}
+                onChange={(e) => setFormData(prev => ({ ...prev, endDate: e.target.value }))}
                 required
-                min={new Date().toISOString().slice(0, 16)}
                 className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
               />
             </div>
 
             <div>
-              <label className="block text-white/60 mb-2">Prize Image URL *</label>
+              <div className="flex justify-between items-center mb-4">
+                <label className="block text-white/60">Entry Conditions</label>
+                <button
+                  type="button"
+                  onClick={addCondition}
+                  className="text-purple-400 hover:text-purple-300 transition-colors"
+                >
+                  Add Condition
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                {formData.conditions.map((condition, index) => (
+                  <div key={index} className="flex items-center gap-4">
+                    <div>
+                      <label className="block text-white/60 mb-2">Points Required</label>
+                      <input
+                        type="number"
+                        value={condition.points}
+                        onChange={(e) => updateCondition(index, 'points', parseInt(e.target.value))}
+                        className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
+                        min="1"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-white/60 mb-2">Entries Granted</label>
+                      <input
+                        type="number"
+                        value={condition.entry}
+                        onChange={(e) => updateCondition(index, 'entry', parseInt(e.target.value))}
+                        className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
+                        min="1"
+                      />
+                    </div>
+                    {index > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => removeCondition(index)}
+                        className="mt-8 text-red-400 hover:text-red-300 transition-colors"
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex items-center">
               <input
-                name="prizeImage"
-                type="url"
-                defaultValue={raffle?.prizeImage}
-                required
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
-                placeholder="https://..."
+                type="checkbox"
+                checked={formData.onlyAllowOnce}
+                onChange={(e) => setFormData(prev => ({ ...prev, onlyAllowOnce: e.target.checked }))}
+                className="mr-2"
               />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-white/60 mb-2">Description *</label>
-            <textarea
-              name="description"
-              defaultValue={raffle?.description}
-              required
-              rows={4}
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
-              placeholder="Enter raffle description"
-            />
-          </div>
-
-          {/* Entry Conditions */}
-          <div>
-            <div className="flex justify-between items-center mb-4">
-              <label className="text-white/60">Entry Conditions</label>
-              <Button
-                type="button"
-                onClick={addCondition}
-                className="text-sm px-3 py-1"
-              >
-                Add Condition
-              </Button>
-            </div>
-            <div className="space-y-4">
-              {conditions.map((condition, index) => (
-                <div key={index} className="flex gap-4 items-center">
-                  <div>
-                    <label className="block text-white/60 mb-2">Points</label>
-                    <input
-                      type="number"
-                      value={condition.points}
-                      onChange={(e) => updateCondition(index, 'points', parseInt(e.target.value))}
-                      min="1"
-                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-white/60 mb-2">Entries</label>
-                    <input
-                      type="number"
-                      value={condition.entry}
-                      onChange={(e) => updateCondition(index, 'entry', parseInt(e.target.value))}
-                      min="1"
-                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
-                    />
-                  </div>
-                  {conditions.length > 1 && (
-                    <Button
-                      type="button"
-                      onClick={() => removeCondition(index)}
-                      className="mt-8 text-sm px-3 py-1 bg-red-500 hover:bg-red-600"
-                    >
-                      Remove
-                    </Button>
-                  )}
-                </div>
-              ))}
+              <label className="text-white/60">
+                Only allow each user to enter once
+              </label>
             </div>
           </div>
 
           <div className="flex justify-end gap-4">
-            <Button 
+            <Button
               type="button"
               onClick={onClose}
-              className="bg-gray-500 hover:bg-gray-600"
-              disabled={isSubmitting}
+              className="bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded-lg transition-colors"
             >
               Cancel
             </Button>
-            <Button 
+            <Button
               type="submit"
-              className="bg-primary hover:bg-primary-dark"
               disabled={isSubmitting}
+              className="bg-purple-500 hover:bg-purple-600 text-white px-6 py-2 rounded-lg transition-colors"
             >
-              {isSubmitting 
-                ? 'Submitting...' 
-                : raffle 
-                  ? 'Save Changes' 
-                  : 'Create Raffle'
-              }
+              {isSubmitting ? 'Submitting...' : raffle ? 'Update Raffle' : 'Create Raffle'}
             </Button>
           </div>
         </form>

@@ -1,25 +1,22 @@
-// @ts-nocheck
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useAccount, useSignMessage } from 'wagmi';
 import { toast } from 'react-toastify';
+
 import PageLayout from '@src/components/common/layout/PageLayout';
 import PageTitle from '@src/components/common/PageTitle';
 import Button from '@src/components/common/Button';
 import { randomPicker } from '../services/randomPicker';
 import { 
-  Raffle, 
   CreateRaffleInput, 
   RaffleCondition, 
   RaffleResponse 
-} from '@src/lib/types/raffle';
+} from '../types';
 
 const RafflesAdmin: React.FC = () => {
   const { address } = useAccount();
   const { signMessageAsync } = useSignMessage();
   const navigate = useNavigate();
-  const [raffles, setRaffles] = useState<Raffle[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState<CreateRaffleInput>({
     title: '',
     description: '',
@@ -39,30 +36,9 @@ const RafflesAdmin: React.FC = () => {
   const isAdmin = address && ADMIN_ADDRESSES.map(addr => addr.toLowerCase())
     .includes(address.toLowerCase());
 
-  useEffect(() => {
-    if (isAdmin) {
-      fetchRaffles();
-    }
-  }, [isAdmin]);
-
   if (!isAdmin) {
     return <Navigate to="/404" replace />;
   }
-
-  const fetchRaffles = async () => {
-    try {
-      setIsLoading(true);
-      const response = await randomPicker.getActiveRaffles();
-      if ('data' in response) {
-        setRaffles(response.data as Raffle[]);
-      }
-    } catch (error) {
-      console.error('Failed to fetch raffles:', error);
-      toast.error('Failed to load raffles');
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -148,18 +124,24 @@ const RafflesAdmin: React.FC = () => {
 
       const response: RaffleResponse = await randomPicker.createRaffle({
         ...formData,
-        signature
+        signature,
+        displayName: formData.title,
+        publicResults: true,
+        website: '',
+        prizeCount: 1,
+        prizeName: formData.prizeValue,
+        conditions: JSON.stringify(formData.conditions)
       });
 
-      if (response.success) {
+      if ('success' in response && response.success) {
         toast.success('Raffle created successfully!');
         navigate('/raffles');
       } else {
         throw new Error(response.error || 'Failed to create raffle');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Submit error:', error);
-      toast.error(error.message || 'Failed to create raffle');
+      toast.error(error instanceof Error ? error.message : 'Failed to create raffle');
     } finally {
       setIsSubmitting(false);
     }
@@ -172,171 +154,178 @@ const RafflesAdmin: React.FC = () => {
           <PageTitle>Raffle Administration</PageTitle>
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-            {/* Image Upload */}
             <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-6">
               <h3 className="text-xl font-semibold text-white mb-4">Create New Raffle</h3>
               
               <div className="space-y-6">
+                {/* Image Upload */}
                 <div>
                   <label className="block text-sm font-medium text-white/60 mb-2">
                     Prize Image
                   </label>
-                  <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-white/10 border-dashed rounded-lg">
-                    <div className="space-y-1 text-center">
-                      {imagePreview ? (
-                        <img src={imagePreview} alt="Preview" className="mx-auto h-32 w-32 object-cover rounded-lg" />
-                      ) : (
-                        <div className="flex flex-col items-center">
-                          <svg className="mx-auto h-12 w-12 text-white/60" stroke="currentColor" fill="none" viewBox="0 0 48 48">
-                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                          </svg>
-                          <div className="text-sm text-white/60">Upload a file</div>
-                        </div>
-                      )}
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        className="sr-only"
-                        id="image-upload"
+                  <div className="flex items-center gap-4">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="hidden"
+                      id="image-upload"
+                    />
+                    <label
+                      htmlFor="image-upload"
+                      className="cursor-pointer bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg transition-colors"
+                    >
+                      Choose Image
+                    </label>
+                    {imagePreview && (
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="w-24 h-24 object-cover rounded-lg"
                       />
-                      <label
-                        htmlFor="image-upload"
-                        className="cursor-pointer text-red-400 hover:text-red-300"
-                      >
-                        Choose file
-                      </label>
-                    </div>
+                    )}
                   </div>
                 </div>
 
-                {/* Form Fields */}
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-white/60 mb-2">
-                      Title
-                    </label>
-                    <input
-                      type="text"
-                      name="title"
-                      value={formData.title}
-                      onChange={handleInputChange}
-                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
-                      required
-                    />
-                  </div>
+                {/* Title */}
+                <div>
+                  <label className="block text-sm font-medium text-white/60 mb-2">
+                    Title
+                  </label>
+                  <input
+                    type="text"
+                    name="title"
+                    value={formData.title}
+                    onChange={handleInputChange}
+                    className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
+                    placeholder="Enter raffle title"
+                  />
+                </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-white/60 mb-2">
-                      Description
-                    </label>
-                    <textarea
-                      name="description"
-                      value={formData.description}
-                      onChange={handleInputChange}
-                      rows={3}
-                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
-                      required
-                    />
-                  </div>
+                {/* Description */}
+                <div>
+                  <label className="block text-sm font-medium text-white/60 mb-2">
+                    Description
+                  </label>
+                  <textarea
+                    name="description"
+                    value={formData.description}
+                    onChange={handleInputChange}
+                    className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
+                    rows={4}
+                    placeholder="Enter raffle description"
+                  />
+                </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-white/60 mb-2">
-                      Prize Value
-                    </label>
-                    <input
-                      type="text"
-                      name="prizeValue"
-                      value={formData.prizeValue}
-                      onChange={handleInputChange}
-                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
-                      required
-                    />
-                  </div>
+                {/* Prize Value */}
+                <div>
+                  <label className="block text-sm font-medium text-white/60 mb-2">
+                    Prize Value
+                  </label>
+                  <input
+                    type="text"
+                    name="prizeValue"
+                    value={formData.prizeValue}
+                    onChange={handleInputChange}
+                    className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
+                    placeholder="Enter prize value"
+                  />
+                </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-white/60 mb-2">
-                      End Date
-                    </label>
-                    <input
-                      type="datetime-local"
-                      name="endDate"
-                      value={formData.endDate}
-                      onChange={handleInputChange}
-                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
-                      required
-                    />
-                  </div>
+                {/* End Date */}
+                <div>
+                  <label className="block text-sm font-medium text-white/60 mb-2">
+                    End Date
+                  </label>
+                  <input
+                    type="datetime-local"
+                    name="endDate"
+                    value={formData.endDate}
+                    onChange={handleInputChange}
+                    className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
+                  />
+                </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-white/60 mb-2">
+                {/* Conditions */}
+                <div>
+                  <div className="flex justify-between items-center mb-4">
+                    <label className="block text-sm font-medium text-white/60">
                       Entry Conditions
                     </label>
+                    <button
+                      type="button"
+                      onClick={addCondition}
+                      className="text-purple-400 hover:text-purple-300 transition-colors"
+                    >
+                      Add Condition
+                    </button>
+                  </div>
+                  
+                  <div className="space-y-4">
                     {formData.conditions.map((condition, index) => (
-                      <div key={index} className="flex gap-4 mb-4">
-                        <input
-                          type="number"
-                          placeholder="Points Required"
-                          value={condition.points}
-                          onChange={(e) => handleConditionChange(index, 'points', parseInt(e.target.value))}
-                          className="w-1/2 bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
-                          min="1"
-                          required
-                        />
-                        <input
-                          type="number"
-                          placeholder="Entries Granted"
-                          value={condition.entry}
-                          onChange={(e) => handleConditionChange(index, 'entry', parseInt(e.target.value))}
-                          className="w-1/2 bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
-                          min="1"
-                          required
-                        />
+                      <div key={index} className="flex items-center gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-white/60 mb-2">
+                            Points Required
+                          </label>
+                          <input
+                            type="number"
+                            value={condition.points}
+                            onChange={(e) => handleConditionChange(index, 'points', parseInt(e.target.value))}
+                            className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
+                            min="1"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-white/60 mb-2">
+                            Entries Granted
+                          </label>
+                          <input
+                            type="number"
+                            value={condition.entry}
+                            onChange={(e) => handleConditionChange(index, 'entry', parseInt(e.target.value))}
+                            className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
+                            min="1"
+                          />
+                        </div>
                         {index > 0 && (
-                          <Button
+                          <button
                             type="button"
                             onClick={() => removeCondition(index)}
-                            className="bg-red-500 hover:bg-red-600"
+                            className="mt-8 text-red-400 hover:text-red-300 transition-colors"
                           >
                             Remove
-                          </Button>
+                          </button>
                         )}
                       </div>
                     ))}
-                    <Button
-                      type="button"
-                      onClick={addCondition}
-                      className="mt-2 bg-purple-500 hover:bg-purple-600"
-                    >
-                      Add Condition
-                    </Button>
-                  </div>
-
-                  <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id="onlyAllowOnce"
-                      name="onlyAllowOnce"
-                      checked={formData.onlyAllowOnce}
-                      onChange={(e) => setFormData(prev => ({ ...prev, onlyAllowOnce: e.target.checked }))}
-                      className="h-4 w-4 text-red-500 focus:ring-red-400 border-white/10 rounded"
-                    />
-                    <label htmlFor="onlyAllowOnce" className="ml-2 text-sm text-white/60">
-                      Only allow one entry per wallet
-                    </label>
                   </div>
                 </div>
 
-                <div className="flex justify-end">
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="bg-red-500 hover:bg-red-600"
-                  >
-                    {isSubmitting ? 'Creating...' : 'Create Raffle'}
-                  </Button>
+                {/* Only Allow Once */}
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    name="onlyAllowOnce"
+                    checked={formData.onlyAllowOnce}
+                    onChange={(e) => setFormData(prev => ({ ...prev, onlyAllowOnce: e.target.checked }))}
+                    className="mr-2"
+                  />
+                  <label className="text-sm font-medium text-white/60">
+                    Only allow each user to enter once
+                  </label>
                 </div>
               </div>
+            </div>
+
+            <div className="flex justify-end">
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="bg-purple-500 hover:bg-purple-600 text-white px-6 py-2 rounded-lg transition-colors"
+              >
+                {isSubmitting ? 'Creating...' : 'Create Raffle'}
+              </Button>
             </div>
           </form>
         </div>
