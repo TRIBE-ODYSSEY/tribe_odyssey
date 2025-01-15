@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import { FC, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 import moment from 'moment';
@@ -17,12 +17,26 @@ const RafflesAdmin: FC = () => {
   const [loading, setLoading] = useState(true);
   const [raffles, setRaffles] = useState<IRaffleDetails[]>([]);
 
+  useEffect(() => {
+    if (address) {
+      fetchRaffles();
+    }
+  }, [address]);
+
   const fetchRaffles = async () => {
     try {
       setLoading(true);
+      const nonce = await randomPicker.getNonce(address!);
+      const signature = await signMessageAsync({
+        message: `I am signing my one-time nonce: ${nonce}`,
+      });
+      
       const response = await randomPicker.getProjects();
       if (response.success) {
-        setRaffles(response.data);
+        setRaffles(response.data.map(raffle => ({
+          ...raffle,
+          signature
+        })));
       }
     } catch (error) {
       toast.error('Failed to fetch raffles');

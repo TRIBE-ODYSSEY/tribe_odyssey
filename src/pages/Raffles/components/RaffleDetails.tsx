@@ -10,6 +10,7 @@ import { shortenAddress } from '@src/utils/address';
 const RaffleDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { raffle, participants, activities, winner, loading, error } = useRaffle(id, 0);
+  const [selectedParticipant, setSelectedParticipant] = useState<string | null>(null);
 
   if (loading) {
     return (
@@ -97,7 +98,11 @@ const RaffleDetails: React.FC = () => {
             <h2 className="text-xl font-semibold mb-4">Recent Activity</h2>
             <div className="space-y-3">
               {activities?.map((activity) => (
-                <div key={activity.id} className="flex justify-between items-center p-3 bg-gray-700 rounded-lg">
+                <div 
+                  key={activity.id} 
+                  className={`flex justify-between items-center p-3 bg-gray-700 rounded-lg cursor-pointer hover:bg-gray-600 transition-colors ${selectedParticipant === activity.address ? 'ring-2 ring-blue-500' : ''}`}
+                  onClick={() => setSelectedParticipant(activity.address)}
+                >
                   <div className="flex items-center gap-3">
                     <AddressAvatar address={activity.address} size={32} className="rounded-full" />
                     <div>
@@ -122,7 +127,11 @@ const RaffleDetails: React.FC = () => {
             <h2 className="text-xl font-semibold mb-4">Top Participants</h2>
             <div className="space-y-3">
               {participants?.slice(0, 5).map((participant) => (
-                <div key={participant.id} className="flex justify-between items-center p-3 bg-gray-700 rounded-lg">
+                <div 
+                  key={participant.id} 
+                  className={`flex justify-between items-center p-3 bg-gray-700 rounded-lg cursor-pointer hover:bg-gray-600 transition-colors ${selectedParticipant === participant.address ? 'ring-2 ring-blue-500' : ''}`}
+                  onClick={() => setSelectedParticipant(participant.address)}
+                >
                   <div className="flex items-center gap-3">
                     <AddressAvatar address={participant.address} size={32} className="rounded-full" />
                     <div>
