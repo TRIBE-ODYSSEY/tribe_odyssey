@@ -30,6 +30,7 @@ const AppRoutes: React.FC = () => {
 
   const ADMIN_ADDRESSES = [
     '0xc570F1B8D14971c6cd73eA8db4F7C44E4AAdC6f2',
+    '0xf7D579d80C6e01382D7BAa122B78310361122B5b'
   ];
 
   const isAdmin = address && ADMIN_ADDRESSES.map(addr => addr.toLowerCase())
