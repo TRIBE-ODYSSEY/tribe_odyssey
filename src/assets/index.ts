@@ -79,8 +79,8 @@ export const GOLD_APES: GoldApe[] = [
   {
     id: 3,
     image: IMAGE_PATHS.GOLD_APE_3,
-    name: 'Tribe Member 3',
-    twitter: 'https://x.com/tribemember3',
+    name: 'OxPhr33dom',
+    twitter: 'https://x.com/phr33dom',
     alt: 'Gold Ape 3'
   },
   {
@@ -107,8 +107,8 @@ export const GOLD_APES: GoldApe[] = [
   {
     id: 7,
     image: IMAGE_PATHS.GOLD_APE_7,
-    name: 'OxPhr33dom',
-    twitter: 'https://x.com/phr33dom',
+    name: 'Tribe Member 7',
+    twitter: 'https://x.com/tribemember7',
     alt: 'Gold Ape 7'
   },
   {
