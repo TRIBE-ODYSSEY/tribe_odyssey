@@ -90,7 +90,7 @@ class RandomPickerService {
         prizeName: input.prizeName
       };
 
-      const response = await this.createProject(project);
+      const response = await this.createProject(project, token);
       const raffle: Raffle = {
         id: response.id,
         title: response.name,
@@ -131,8 +131,7 @@ class RandomPickerService {
     }
   }
 
-  private async createProject(project: RaffleProjectCreate): Promise<RaffleProject> {
-    const token = await this.getToken();
+  private async createProject(project: RaffleProjectCreate, token: string): Promise<RaffleProject> {
     const soapEnvelope = `
       <?xml version="1.0" encoding="utf-8"?>
       <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
