@@ -27,6 +27,19 @@ export interface IRaffleDetails {
       profile_image: string;
     };
   };
+  project_description: string;
+  prize_name: string;
+  only_allow_once: boolean;
+  only_allow_once_count: number;
+  only_allow_once_count_type: string;
+  points: number;
+  entry: number;
+  error?: string;
+  nonce?: string;
+  signature?: string;
+  participants?: Participant[];
+  activities?: Activity[];
+  loading?: boolean;
 }
 
 export interface Participant {

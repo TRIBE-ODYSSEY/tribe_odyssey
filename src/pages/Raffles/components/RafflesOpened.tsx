@@ -4,86 +4,12 @@ import { useAccount, useSignMessage } from 'wagmi';
 import { motion } from 'framer-motion';
 import moment from 'moment';
 import { toast } from 'react-toastify';
-import { FaExternalLinkAlt } from 'react-icons/fa';
-import { ZeroAddress } from 'ethers';
 import { randomPicker } from '../services/randomPicker';
 import { useRaffle } from '../hooks/useRaffle';
-import { shortenAddress } from '@src/utils/address';
+import PageTitle from '@src/components/common/PageTitle';
+import Button from '@src/components/common/Button';
 import AddressAvatar from '@src/components/common/AddressAvatar';
-
-interface ParticipantsProps {
-  participants: any[];
-  activities: any[];
-}
-
-const Participants: React.FC<ParticipantsProps> = ({ participants, activities }) => {
-  return (
-    <div className="bg-gray-800 rounded-lg p-6">
-      <div className="space-y-6">
-        <h2 className="text-xl font-semibold">Recent Activity</h2>
-        {activities.length === 0 ? (
-          <div className="text-center text-gray-400 py-4">
-            No recent activity
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {activities.map((activity) => (
-              <div key={activity.id} className="flex justify-between items-center p-4 bg-gray-700 rounded-lg">
-                <div className="flex items-center gap-4">
-                  <AddressAvatar
-                    address={activity.address}
-                    size={48}
-                    className="rounded-full"
-                  />
-                  <div>
-                    <h3 className="font-semibold text-white">
-                      {activity?.user?.name ?? shortenAddress(activity.address || ZeroAddress)}
-                    </h3>
-                    <div className="text-blue-400">{activity.points} Points Used</div>
-                  </div>
-                </div>
-                <div className="text-gray-400">
-                  {moment.utc(activity.created_at).fromNow()}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        <h2 className="text-xl font-semibold pt-6">Participants</h2>
-        {participants.length === 0 ? (
-          <div className="text-center text-gray-400 py-4">
-            No participants yet
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {participants.map((participant) => (
-              <div key={participant.id} className="flex justify-between items-center p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors">
-                <div className="flex items-center gap-4">
-                  <AddressAvatar
-                    address={participant.address}
-                    size={48}
-                    className="rounded-full"
-                  />
-                  <div>
-                    <h3 className="font-semibold text-white">
-                      {participant?.user?.name ?? shortenAddress(participant.address || ZeroAddress)}
-                    </h3>
-                    <div className="text-blue-400">{participant.entry} Entries</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 text-gray-400">
-                  {moment.utc(participant.entered_at).fromNow()}
-                  <FaExternalLinkAlt className="w-4 h-4" />
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
+import { shortenAddress } from '@src/utils/address';
 
 const RafflesOpened: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -189,53 +115,136 @@ const RafflesOpened: React.FC = () => {
       exit={{ opacity: 0 }}
       className="container mx-auto px-4 py-8"
     >
+      <PageTitle>Open Raffles</PageTitle>
+
       {showFireworks && (
         <div className="fixed inset-0 pointer-events-none">
-          {/* Fireworks component */}
+          {/* Fireworks animation component would go here */}
         </div>
       )}
 
-      <div className="bg-gray-800 rounded-lg p-6 mb-8">
-        <h2 className="text-2xl font-bold mb-6">Open Raffles</h2>
-        
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="text-gray-300">Time Remaining: {countDown}</div>
-            {winner && (
-              <div className="text-red-500 font-medium">Raffle Ended</div>
+      <div className="grid md:grid-cols-2 gap-8 mt-8">
+        {/* Left Column - Raffle Info */}
+        <div className="space-y-6">
+          <div className="bg-gray-800 rounded-lg p-6">
+            <h2 className="text-xl font-semibold mb-4">Current Raffle</h2>
+            {raffle && (
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <h3 className="text-lg font-medium">{raffle.project_name}</h3>
+                  <p className="text-gray-400">{raffle.project_description}</p>
+                </div>
+
+                <div className="flex justify-between items-center p-4 bg-gray-700 rounded-lg">
+                  <div className="text-gray-300">Time Remaining:</div>
+                  <div className="font-medium">{countDown}</div>
+                </div>
+
+                {isConnected && !winner && (
+                  <div className="space-y-4 mt-6">
+                    <div className="grid grid-cols-2 gap-4">
+                      {raffle.conditions.map((condition, index) => (
+                        <Button
+                          key={index}
+                          onClick={() => onEnterRaffle(condition.points)}
+                          disabled={loadingIndex >= 0}
+                          className="w-full p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
+                        >
+                          <div className="text-sm font-medium">{condition.points} Points</div>
+                          <div className="text-xs text-gray-400">{condition.entry} Entries</div>
+                        </Button>
+                      ))}
+                    </div>
+
+                    <div className="flex gap-4">
+                      <input
+                        type="number"
+                        value={custom ?? ''}
+                        onChange={(e) => setCustom(parseInt(e.target.value))}
+                        placeholder="Custom points"
+                        className="flex-1 bg-gray-700 rounded-lg p-3"
+                        min="1"
+                      />
+                      <Button
+                        onClick={() => custom && onEnterRaffle(custom)}
+                        disabled={loadingIndex >= 0}
+                        className="px-6 py-3 bg-blue-600 rounded-lg hover:bg-blue-700 disabled:bg-blue-800"
+                      >
+                        {loadingIndex >= 0 ? 'Entering...' : 'Enter'}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {!isConnected && (
+                  <div className="text-center text-gray-400 py-4">
+                    Please connect your wallet to enter
+                  </div>
+                )}
+
+                {winner && (
+                  <div className="text-center text-red-500 font-medium py-4">
+                    Raffle has ended
+                  </div>
+                )}
+              </div>
             )}
           </div>
+        </div>
 
-          {isConnected && !winner && (
-            <div className="space-y-4">
-              <div className="flex items-center gap-4">
-                <input
-                  type="number"
-                  value={custom ?? ''}
-                  onChange={(e) => setCustom(parseInt(e.target.value))}
-                  placeholder="Enter points"
-                  className="flex-1 bg-gray-700 rounded-lg p-3"
-                  min="1"
-                />
-                <button
-                  onClick={() => custom && onEnterRaffle(custom)}
-                  disabled={loadingIndex >= 0}
-                  className="px-6 py-3 bg-blue-600 rounded-lg hover:bg-blue-700 disabled:bg-blue-800"
-                >
-                  {loadingIndex >= 0 ? 'Entering...' : 'Enter Raffle'}
-                </button>
-              </div>
+        {/* Right Column - Activity */}
+        <div className="space-y-6">
+          <div className="bg-gray-800 rounded-lg p-6">
+            <h2 className="text-xl font-semibold mb-4">Recent Activity</h2>
+            <div className="space-y-3">
+              {activities?.map((activity) => (
+                <div key={activity.id} className="flex justify-between items-center p-3 bg-gray-700 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <AddressAvatar address={activity.address} size={32} className="rounded-full" />
+                    <div>
+                      <div className="font-medium">{activity.user?.name ?? shortenAddress(activity.address)}</div>
+                      <div className="text-sm text-gray-400">{activity.entry} Entries</div>
+                    </div>
+                  </div>
+                  <div className="text-sm text-gray-400">
+                    {moment(activity.entered_at).fromNow()}
+                  </div>
+                </div>
+              ))}
+              {(!activities || activities.length === 0) && (
+                <div className="text-center text-gray-400 py-4">
+                  No recent activity
+                </div>
+              )}
             </div>
-          )}
+          </div>
+
+          <div className="bg-gray-800 rounded-lg p-6">
+            <h2 className="text-xl font-semibold mb-4">Top Participants</h2>
+            <div className="space-y-3">
+              {participants?.slice(0, 5).map((participant) => (
+                <div key={participant.id} className="flex justify-between items-center p-3 bg-gray-700 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <AddressAvatar address={participant.address} size={32} className="rounded-full" />
+                    <div>
+                      <div className="font-medium">{participant.user?.name ?? shortenAddress(participant.address)}</div>
+                      <div className="text-sm text-gray-400">{participant.entry} Entries</div>
+                    </div>
+                  </div>
+                  <div className="text-sm text-gray-400">
+                    {moment(participant.entered_at).fromNow()}
+                  </div>
+                </div>
+              ))}
+              {(!participants || participants.length === 0) && (
+                <div className="text-center text-gray-400 py-4">
+                  No participants yet
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
-
-      {raffle && (
-        <Participants 
-          participants={participants ?? []}
-          activities={activities ?? []}
-        />
-      )}
     </motion.div>
   );
 };

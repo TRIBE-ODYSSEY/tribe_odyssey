@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 import moment from 'moment';
+import { useAccount, useSignMessage } from 'wagmi';
 import { randomPicker } from '../services/randomPicker';
-import { IRaffleDetails } from '../types';
 import PageTitle from '@src/components/common/PageTitle';
-import RaffleFormModal from '../components/RaffleFormModal';
+import Button from '@src/components/common/Button';
+import RaffleFormModal from './RaffleFormModal';
+import { IRaffleDetails } from '../types';
 
-const RafflesAdmin: React.FC = () => {
-  const [raffles, setRaffles] = useState<IRaffleDetails[]>([]);
-  const [loading, setLoading] = useState(true);
+const RafflesAdmin: FC = () => {
+  const { address } = useAccount();
+  const { signMessageAsync } = useSignMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRaffle, setSelectedRaffle] = useState<IRaffleDetails | null>(null);
-
-  useEffect(() => {
-    fetchRaffles();
-  }, []);
+  const [loading, setLoading] = useState(true);
+  const [raffles, setRaffles] = useState<IRaffleDetails[]>([]);
 
   const fetchRaffles = async () => {
     try {
@@ -31,16 +31,6 @@ const RafflesAdmin: React.FC = () => {
     }
   };
 
-  const handleCreateRaffle = () => {
-    setSelectedRaffle(null);
-    setIsModalOpen(true);
-  };
-
-  const handleEditRaffle = (raffle: IRaffleDetails) => {
-    setSelectedRaffle(raffle);
-    setIsModalOpen(true);
-  };
-
   const handleDeleteRaffle = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this raffle?')) return;
 
@@ -52,22 +42,6 @@ const RafflesAdmin: React.FC = () => {
       }
     } catch (error) {
       toast.error('Failed to delete raffle');
-    }
-  };
-
-  const handleSubmitRaffle = async (data: any) => {
-    try {
-      if (selectedRaffle) {
-        await randomPicker.updateProject(selectedRaffle.id, data);
-        toast.success('Raffle updated successfully');
-      } else {
-        await randomPicker.createProject(data);
-        toast.success('Raffle created successfully');
-      }
-      setIsModalOpen(false);
-      fetchRaffles();
-    } catch (error) {
-      toast.error('Failed to save raffle');
     }
   };
 
@@ -89,12 +63,12 @@ const RafflesAdmin: React.FC = () => {
       <PageTitle>Raffle Admin</PageTitle>
 
       <div className="flex justify-end mb-8">
-        <button
-          onClick={handleCreateRaffle}
+        <Button
+          onClick={() => setIsModalOpen(true)}
           className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
           Create New Raffle
-        </button>
+        </Button>
       </div>
 
       <div className="grid gap-6">
@@ -116,39 +90,51 @@ const RafflesAdmin: React.FC = () => {
                 <p className="text-gray-400">
                   Created: {moment(raffle.raffle_at).format('MMM D, YYYY')}
                 </p>
-                <p className="text-gray-400">
-                  Entries: {raffle.entry_count.toLocaleString()}
-                </p>
               </div>
               <div className="flex gap-4">
-                <button
-                  onClick={() => handleEditRaffle(raffle)}
+                <Button
+                  onClick={() => {
+                    setSelectedRaffle(raffle);
+                    setIsModalOpen(true);
+                  }}
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   Edit
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => handleDeleteRaffle(raffle.id)}
                   className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
                 >
                   Delete
-                </button>
+                </Button>
               </div>
             </div>
           </motion.div>
         ))}
-
-        {raffles.length === 0 && (
-          <div className="text-center text-gray-400 py-8">
-            No raffles found
-          </div>
-        )}
       </div>
 
       <RaffleFormModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={handleSubmitRaffle}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedRaffle(null);
+        }}
+        onSubmit={async (data) => {
+          try {
+            if (selectedRaffle) {
+              await randomPicker.updateProject(selectedRaffle.id, data);
+              toast.success('Raffle updated successfully');
+            } else {
+              await randomPicker.createProject(data);
+              toast.success('Raffle created successfully');
+            }
+            setIsModalOpen(false);
+            setSelectedRaffle(null);
+            fetchRaffles();
+          } catch (error) {
+            toast.error('Failed to save raffle');
+          }
+        }}
         initialData={selectedRaffle}
         mode={selectedRaffle ? 'edit' : 'create'}
       />
