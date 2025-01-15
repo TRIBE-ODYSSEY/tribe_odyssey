@@ -35,14 +35,19 @@ class RandomPickerServiceImpl implements RandomPickerService {
   private async authenticate(): Promise<string> {
     const soapEnvelope = `
       <?xml version="1.0" encoding="utf-8"?>
-      <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-        <soap:Body>
-          <LoginInsert xmlns="https://app.randompicker.com/">
-            <UserName>${this.config.username}</UserName>
-            <Password>${this.config.password}</Password>
-          </LoginInsert>
-        </soap:Body>
-      </soap:Envelope>
+      <soap12:Envelope 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+        xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">
+        <soap12:Body>
+          <LoginDetail xmlns="http://www.randompicker.com/">
+            <loginInsertInput>
+              <UserName>${this.config.username}</UserName>
+              <Password>${this.config.password}</Password>
+            </loginInsertInput>
+          </LoginDetail>
+        </soap12:Body>
+      </soap12:Envelope>
     `;
 
     try {
@@ -51,15 +56,16 @@ class RandomPickerServiceImpl implements RandomPickerService {
         soapEnvelope,
         {
           headers: {
-            'Content-Type': 'text/xml;charset=UTF-8',
-            'SOAPAction': 'https://app.randompicker.com/LoginInsert'
+            'Content-Type': 'application/soap+xml; charset=utf-8',
+            'SOAPAction': 'http://www.randompicker.com/LoginDetail'
           }
         }
       );
 
       const parser = new DOMParser();
       const xmlDoc = parser.parseFromString(response.data, "text/xml");
-      this.token = xmlDoc.getElementsByTagName("ID")[0]?.textContent ?? null;
+      const loginDetailResult = xmlDoc.getElementsByTagName("LoginDetailResult")[0];
+      this.token = loginDetailResult?.getElementsByTagName("ID")[0]?.textContent ?? null;
       
       if (!this.token) {
         throw new Error('Authentication failed: No token received');
