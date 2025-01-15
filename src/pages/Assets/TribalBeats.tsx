@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import PageLayout from '@src/components/common/layout/PageLayout';
 import { MusicalNoteIcon } from '@heroicons/react/24/outline';
-import { FaTwitter } from 'react-icons/fa';
+import { FaXTwitter } from 'react-icons/fa6';
 
 const beats = [
   { title: "Tribe Evolution", url: "#" },
@@ -52,10 +52,10 @@ const TribalBeatsPage: React.FC = () => {
               <span className="text-white/80">Follow Leeroy</span>
               <button
                 onClick={handleTwitterClick}
-                className="text-[#1DA1F2] p-2 rounded-full 
+                className="text-[#fe3737] p-2 rounded-full 
                          hover:scale-110 transition-transform duration-300"
               >
-                <FaTwitter className="w-5 h-5" />
+                <FaXTwitter className="w-5 h-5" />
               </button>
             </div>
           </div>
