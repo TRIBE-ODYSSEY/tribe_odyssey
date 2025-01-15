@@ -1,337 +1,189 @@
-import React, { useState } from 'react';
-import { useNavigate, Navigate } from 'react-router-dom';
-import { useAccount, useSignMessage } from 'wagmi';
+import React, { useEffect, useState } from 'react';
+import { useAccount } from 'wagmi';
+import { motion } from 'framer-motion';
+import { randomPicker } from '../services/randomPicker';
+import { IRaffleDetails, ApiResponse } from '../types';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import PageLayout from '@src/components/common/layout/PageLayout';
-import PageTitle from '@src/components/common/PageTitle';
-import Button from '@src/components/common/Button';
-import { randomPicker } from '../services/randomPicker';
-import { 
-  CreateRaffleInput, 
-  RaffleCondition, 
-  RaffleResponse 
-} from '../types';
+const ADMIN_ADDRESSES = [
+  '0xc570F1B8D14971c6cd73eA8db4F7C44E4AAdC6f2',
+  '0xf7D579d80C6e01382D7BAa122B78310361122B5b'
+].map(addr => addr.toLowerCase());
+
+type RaffleStatus = 'active' | 'completed' | 'draft';
+
+interface RaffleFilters {
+  status: RaffleStatus;
+}
 
 const RafflesAdmin: React.FC = () => {
-  const { address } = useAccount();
-  const { signMessageAsync } = useSignMessage();
+  const { address, isConnected } = useAccount();
   const navigate = useNavigate();
-  const [formData, setFormData] = useState<CreateRaffleInput>({
-    title: '',
-    description: '',
-    prizeValue: '',
-    endDate: '',
-    image: null as unknown as File,
-    conditions: [{ entry: 1, points: 1 }],
-    onlyAllowOnce: false
+  const [raffles, setRaffles] = useState<IRaffleDetails[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [filters, setFilters] = useState<RaffleFilters>({
+    status: 'active'
   });
-  const [imagePreview, setImagePreview] = useState<string>();
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const ADMIN_ADDRESSES = [
-    '0xc570F1B8D14971c6cd73eA8db4F7C44E4AAdC6f2',
-    '0xf7D579d80C6e01382D7BAa122B78310361122B5b'
-  ];
+  // Check if user is admin
+  const isAdmin = address && ADMIN_ADDRESSES.includes(address.toLowerCase());
 
-  const isAdmin = address && ADMIN_ADDRESSES.map(addr => addr.toLowerCase())
-    .includes(address.toLowerCase());
+  useEffect(() => {
+    if (!isConnected || !isAdmin) {
+      navigate('/raffles');
+      return;
+    }
 
-  if (!isAdmin) {
-    return <Navigate to="/404" replace />;
-  }
+    fetchRaffles();
+  }, [isConnected, isAdmin, filters]);
 
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setFormData(prev => ({ ...prev, image: file }));
-      setImagePreview(URL.createObjectURL(file));
+  const fetchRaffles = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response: ApiResponse<IRaffleDetails[]> = await randomPicker.getProjectDetails(filters.status);
+      
+      if (response.success) {
+        setRaffles(response.data);
+      } else {
+        toast.error(response.error || 'Failed to fetch raffles');
+      }
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
+      setError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleInputChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = event.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+  const handleStatusChange = (status: RaffleStatus) => {
+    setFilters(prev => ({ ...prev, status }));
   };
 
-  const handleConditionChange = (index: number, field: keyof RaffleCondition, value: number) => {
-    setFormData(prev => ({
-      ...prev,
-      conditions: prev.conditions.map((condition, i) => 
-        i === index ? { ...condition, [field]: value } : condition
-      )
-    }));
-  };
-
-  const addCondition = () => {
-    setFormData(prev => ({
-      ...prev,
-      conditions: [...prev.conditions, { entry: 1, points: 1 }]
-    }));
-  };
-
-  const removeCondition = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      conditions: prev.conditions.filter((_, i) => i !== index)
-    }));
-  };
-
-  const validateForm = (): boolean => {
-    if (!formData.title.trim()) {
-      toast.error('Title is required');
-      return false;
-    }
-    if (!formData.description.trim()) {
-      toast.error('Description is required');
-      return false;
-    }
-    if (!formData.prizeValue.trim()) {
-      toast.error('Prize value is required');
-      return false;
-    }
-    if (!formData.endDate) {
-      toast.error('End date is required');
-      return false;
-    }
-    if (!formData.image) {
-      toast.error('Image is required');
-      return false;
-    }
-    if (formData.conditions.length === 0) {
-      toast.error('At least one condition is required');
-      return false;
-    }
-    return true;
-  };
-
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    
-    if (!validateForm()) return;
+  const handleDeleteRaffle = async (id: string) => {
+    if (!window.confirm('Are you sure you want to delete this raffle?')) return;
 
     try {
-      setIsSubmitting(true);
-
-      // Get nonce for signature
-      const { data: { nonce } } = await randomPicker.getNonce(address!);
-      
-      // Sign message
-      const signature = await signMessageAsync({
-        message: `Creating raffle with title: ${formData.title}. Nonce: ${nonce}`
-      });
-
-      const response: RaffleResponse = await randomPicker.createRaffle({
-        ...formData,
-        signature,
-        displayName: formData.title,
-        publicResults: true,
-        website: '',
-        prizeCount: 1,
-        prizeName: formData.prizeValue,
-        conditions: JSON.stringify(formData.conditions)
-      });
-
-      if ('success' in response && response.success) {
-        toast.success('Raffle created successfully!');
-        navigate('/raffles');
+      const response = await randomPicker.deleteProject(id);
+      if (response.success) {
+        setRaffles(prev => prev.filter(raffle => raffle.id !== id));
+        toast.success('Raffle deleted successfully');
       } else {
-        throw new Error(response.error || 'Failed to create raffle');
+        toast.error(response.error || 'Failed to delete raffle');
       }
-    } catch (error: unknown) {
-      console.error('Submit error:', error);
-      toast.error(error instanceof Error ? error.message : 'Failed to create raffle');
-    } finally {
-      setIsSubmitting(false);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to delete raffle';
+      toast.error(errorMessage);
     }
   };
 
+  const handleEditRaffle = (id: string) => {
+    navigate(`/raffles/edit/${id}`);
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900" />
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <h1 className="text-2xl font-bold text-red-500">Access Denied</h1>
+      </div>
+    );
+  }
+
   return (
-    <PageLayout>
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          <PageTitle>Raffle Administration</PageTitle>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="container mx-auto px-4 py-8"
+    >
+      {/* Header */}
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">Raffles Admin</h1>
+        <button
+          onClick={() => navigate('/raffles/create')}
+          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          Create New Raffle
+        </button>
+      </div>
 
-          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-            <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-6">
-              <h3 className="text-xl font-semibold text-white mb-4">Create New Raffle</h3>
-              
-              <div className="space-y-6">
-                {/* Image Upload */}
-                <div>
-                  <label className="block text-sm font-medium text-white/60 mb-2">
-                    Prize Image
-                  </label>
-                  <div className="flex items-center gap-4">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                      className="hidden"
-                      id="image-upload"
-                    />
-                    <label
-                      htmlFor="image-upload"
-                      className="cursor-pointer bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg transition-colors"
-                    >
-                      Choose Image
-                    </label>
-                    {imagePreview && (
-                      <img
-                        src={imagePreview}
-                        alt="Preview"
-                        className="w-24 h-24 object-cover rounded-lg"
-                      />
-                    )}
-                  </div>
-                </div>
-
-                {/* Title */}
-                <div>
-                  <label className="block text-sm font-medium text-white/60 mb-2">
-                    Title
-                  </label>
-                  <input
-                    type="text"
-                    name="title"
-                    value={formData.title}
-                    onChange={handleInputChange}
-                    className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
-                    placeholder="Enter raffle title"
-                  />
-                </div>
-
-                {/* Description */}
-                <div>
-                  <label className="block text-sm font-medium text-white/60 mb-2">
-                    Description
-                  </label>
-                  <textarea
-                    name="description"
-                    value={formData.description}
-                    onChange={handleInputChange}
-                    className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
-                    rows={4}
-                    placeholder="Enter raffle description"
-                  />
-                </div>
-
-                {/* Prize Value */}
-                <div>
-                  <label className="block text-sm font-medium text-white/60 mb-2">
-                    Prize Value
-                  </label>
-                  <input
-                    type="text"
-                    name="prizeValue"
-                    value={formData.prizeValue}
-                    onChange={handleInputChange}
-                    className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
-                    placeholder="Enter prize value"
-                  />
-                </div>
-
-                {/* End Date */}
-                <div>
-                  <label className="block text-sm font-medium text-white/60 mb-2">
-                    End Date
-                  </label>
-                  <input
-                    type="datetime-local"
-                    name="endDate"
-                    value={formData.endDate}
-                    onChange={handleInputChange}
-                    className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
-                  />
-                </div>
-
-                {/* Conditions */}
-                <div>
-                  <div className="flex justify-between items-center mb-4">
-                    <label className="block text-sm font-medium text-white/60">
-                      Entry Conditions
-                    </label>
-                    <button
-                      type="button"
-                      onClick={addCondition}
-                      className="text-purple-400 hover:text-purple-300 transition-colors"
-                    >
-                      Add Condition
-                    </button>
-                  </div>
-                  
-                  <div className="space-y-4">
-                    {formData.conditions.map((condition, index) => (
-                      <div key={index} className="flex items-center gap-4">
-                        <div>
-                          <label className="block text-sm font-medium text-white/60 mb-2">
-                            Points Required
-                          </label>
-                          <input
-                            type="number"
-                            value={condition.points}
-                            onChange={(e) => handleConditionChange(index, 'points', parseInt(e.target.value))}
-                            className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
-                            min="1"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-white/60 mb-2">
-                            Entries Granted
-                          </label>
-                          <input
-                            type="number"
-                            value={condition.entry}
-                            onChange={(e) => handleConditionChange(index, 'entry', parseInt(e.target.value))}
-                            className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
-                            min="1"
-                          />
-                        </div>
-                        {index > 0 && (
-                          <button
-                            type="button"
-                            onClick={() => removeCondition(index)}
-                            className="mt-8 text-red-400 hover:text-red-300 transition-colors"
-                          >
-                            Remove
-                          </button>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Only Allow Once */}
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    name="onlyAllowOnce"
-                    checked={formData.onlyAllowOnce}
-                    onChange={(e) => setFormData(prev => ({ ...prev, onlyAllowOnce: e.target.checked }))}
-                    className="mr-2"
-                  />
-                  <label className="text-sm font-medium text-white/60">
-                    Only allow each user to enter once
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex justify-end">
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="bg-purple-500 hover:bg-purple-600 text-white px-6 py-2 rounded-lg transition-colors"
-              >
-                {isSubmitting ? 'Creating...' : 'Create Raffle'}
-              </Button>
-            </div>
-          </form>
+      {/* Filters */}
+      <div className="bg-gray-800 rounded-lg p-4 mb-8">
+        <div className="flex gap-4">
+          {(['active', 'completed', 'draft'] as RaffleStatus[]).map(status => (
+            <button
+              key={status}
+              onClick={() => handleStatusChange(status)}
+              className={`px-4 py-2 rounded-lg transition-colors ${
+                filters.status === status
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+              }`}
+            >
+              {status.charAt(0).toUpperCase() + status.slice(1)}
+            </button>
+          ))}
         </div>
       </div>
-    </PageLayout>
+
+      {/* Raffles List */}
+      <div className="space-y-4">
+        {error && (
+          <div className="bg-red-500 text-white p-4 rounded-lg mb-4">
+            {error}
+          </div>
+        )}
+        
+        {raffles.map(raffle => (
+          <motion.div
+            key={raffle.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-gray-800 rounded-lg p-6 flex justify-between items-center"
+          >
+            <div>
+              <h2 className="text-xl font-semibold mb-2">{raffle.project_name}</h2>
+              <div className="flex gap-4 text-gray-300">
+                <span>Status: {raffle.project_status}</span>
+                <span>Entries: {raffle.entry_count}</span>
+                <span>Prize: #{raffle.nft_id}</span>
+              </div>
+            </div>
+            <div className="flex gap-4">
+              <button
+                onClick={() => handleEditRaffle(raffle.id)}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => handleDeleteRaffle(raffle.id)}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              >
+                Delete
+              </button>
+            </div>
+          </motion.div>
+        ))}
+
+        {raffles.length === 0 && (
+          <div className="text-center text-gray-400 py-8">
+            No raffles found
+          </div>
+        )}
+      </div>
+    </motion.div>
   );
 };
 

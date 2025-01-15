@@ -19,9 +19,6 @@ const DropsPage = lazy(() => import('@src/pages/Element19/Drops'));
 const CollectionPage = lazy(() => import('@src/pages/Element19/Collection'));
 const WallpapersPage = lazy(() => import('@src/pages/Assets/Wallpapers'));
 const ProfilePage = lazy(() => import('@src/pages/Profile'));
-const RafflesAdminPage = lazy(() => import('@src/pages/Raffles/components/RafflesAdmin'));
-const RaffleDetails = lazy(() => import('@src/pages/Raffles/components/RaffleDetails'));
-const Winners = lazy(() => import('@src/pages/Raffles/components/Winners'));
 const NetworkErrors = lazy(() => import('@src/components/common/errors/network/NetworkErrors'));
 
 const AppRoutes: React.FC = () => {
@@ -31,10 +28,9 @@ const AppRoutes: React.FC = () => {
   const ADMIN_ADDRESSES = [
     '0xc570F1B8D14971c6cd73eA8db4F7C44E4AAdC6f2',
     '0xf7D579d80C6e01382D7BAa122B78310361122B5b'
-  ];
+  ].map(addr => addr.toLowerCase());
 
-  const isAdmin = address && ADMIN_ADDRESSES.map(addr => addr.toLowerCase())
-    .includes(address.toLowerCase());
+  const isAdmin = address && ADMIN_ADDRESSES.includes(address.toLowerCase());
 
   return (
     <Routes>
@@ -51,19 +47,9 @@ const AppRoutes: React.FC = () => {
       <Route path="/wallpapers" element={<WallpapersPage />} />
       <Route path="/ens" element={<ENSPage />} />
       
-      {/* Admin Routes - Only shown if admin address is connected */}
-      {isAdmin && (
-        <Route 
-          path="/admin/*" 
-          element={<RafflesAdminPage />} 
-        />
-      )}
-      
-      {/* Dynamic Routes */}
+      {/* Raffle Routes */}
       <Route path="/raffles/*" element={<RafflesPage />} />
-      <Route path="/raffles/:id" element={<RaffleDetails />} />
-      <Route path="/winners" element={<Winners />} />
-
+      
       {/* Other Routes */}
       <Route path="/staking" element={<StakingApesPage />} />
       <Route path="/account" element={<ProfilePage />} />
