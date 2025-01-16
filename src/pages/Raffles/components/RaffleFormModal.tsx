@@ -1,13 +1,13 @@
 import React, { useState, FormEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { IRaffleDetails, RaffleInput, RaffleCondition } from '../types/Raffle.types';
+import { RaffleDetails, RaffleInput, RaffleCondition } from '../types/Raffle.types';
 import Button from '@src/components/common/Button';
 
 interface RaffleFormModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: RaffleInput) => Promise<void>;
-  initialData?: IRaffleDetails | null;
+  initialData?: RaffleDetails | null;
   mode: 'create' | 'edit';
 }
 

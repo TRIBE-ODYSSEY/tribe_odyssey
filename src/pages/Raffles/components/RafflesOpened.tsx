@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import { useRaffleActions } from '../hooks/useRaffleActions';
 import useRaffles from '../hooks/useRaffles';
 import { useRaffleContext } from '../context/RaffleContext';
-import { IRaffleDetails } from '../types/Raffle.types';
+import { RaffleDetails } from '../types/Raffle.types';
 
 // Components
 import PageTitle from '@src/components/common/PageTitle';
@@ -53,7 +53,7 @@ const RafflesOpened: React.FC = () => {
       <PageTitle>Active Raffles</PageTitle>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-        {Array.isArray(raffles) && raffles.map((raffle: IRaffleDetails, index: number) => (
+        {Array.isArray(raffles) && raffles.map((raffle: RaffleDetails, index: number) => (
           <RaffleCard
             key={raffle.id}
             raffle={raffle}

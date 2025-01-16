@@ -1,14 +1,14 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { IRaffleDetails } from '../types/Raffle.types';
+import { RaffleDetails } from '../types/Raffle.types';
 
 interface UseWinnersReturn {
-  raffles: IRaffleDetails[];
+  raffles: RaffleDetails[];
   error: string | null;
 }
 
 const useWinners = (trigger: number): UseWinnersReturn => {
-  const [raffles, setRaffles] = useState<IRaffleDetails[]>([]);
+  const [raffles, setRaffles] = useState<RaffleDetails[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {

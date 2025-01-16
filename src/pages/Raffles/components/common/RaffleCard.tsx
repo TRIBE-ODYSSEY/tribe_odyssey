@@ -1,11 +1,11 @@
 import { FC } from 'react';
 import moment from 'moment';
-import { IRaffleDetails } from '../../types/Raffle.types';
+import { RaffleDetails } from '../../types/Raffle.types';
 import Button from '@src/components/common/Button';
 import { motion } from 'framer-motion';
 
 interface Props {
-  raffle: IRaffleDetails;
+  raffle: RaffleDetails;
   isLoading: boolean;
   onEnter: (points: number) => void;
   onClick: () => void;

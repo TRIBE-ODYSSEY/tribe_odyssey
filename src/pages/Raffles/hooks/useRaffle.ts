@@ -1,10 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { IRaffleDetails, Participant, Activity, Winner } from '../types/Raffle.types';
+import { RaffleDetails, Participant, Activity, Winner } from '../types/Raffle.types';
 
 interface UseRaffleReturn {
-  raffle: IRaffleDetails | null;
+  raffle: RaffleDetails | null;
   participants: Participant[];
   activities: Activity[];
   winner: Winner | null;
@@ -13,7 +13,7 @@ interface UseRaffleReturn {
 }
 
 const useRaffle = (id: string, trigger: number): UseRaffleReturn => {
-  const [raffle, setRaffle] = useState<IRaffleDetails | null>(null);
+  const [raffle, setRaffle] = useState<RaffleDetails | null>(null);
   const [winner, setWinner] = useState<Winner | null>(null);
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);

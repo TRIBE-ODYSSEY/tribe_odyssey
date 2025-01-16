@@ -7,15 +7,15 @@ import { randomPicker } from '../services/randomPicker';
 import PageTitle from '@src/components/common/PageTitle';
 import Button from '@src/components/common/Button';
 import RaffleFormModal from './RaffleFormModal';
-import { IRaffleDetails } from '../types/Raffle.types';
+import { RaffleDetails } from '../types/Raffle.types';
 
 const RafflesAdmin: FC = () => {
   const { address } = useAccount();
   const { signMessageAsync } = useSignMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedRaffle, setSelectedRaffle] = useState<IRaffleDetails | null>(null);
+  const [selectedRaffle, setSelectedRaffle] = useState<RaffleDetails | null>(null);
   const [loading, setLoading] = useState(true);
-  const [raffles, setRaffles] = useState<IRaffleDetails[]>([]);
+  const [raffles, setRaffles] = useState<RaffleDetails[]>([]);
 
   useEffect(() => {
     if (address) {

@@ -4,7 +4,7 @@ export interface RaffleCondition {
   points: number;
 }
 
-export interface IRaffleDetails {
+export interface RaffleDetails {
   id: string;
   project_name: string;
   project_status: string;

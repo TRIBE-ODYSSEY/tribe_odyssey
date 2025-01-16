@@ -1,10 +1,10 @@
 // context/RaffleContext.tsx
 import { createContext, useContext, useState, ReactNode } from 'react';
-import { IRaffleDetails } from '../types/Raffle.types';
+import { RaffleDetails } from '../types/Raffle.types';
 
 interface RaffleContextType {
-  currentRaffle: IRaffleDetails | null;
-  setCurrentRaffle: (raffle: IRaffleDetails | null) => void;
+  currentRaffle: RaffleDetails | null;
+  setCurrentRaffle: (raffle: RaffleDetails | null) => void;
   refreshTrigger: number;
   refreshRaffles: () => void;
 }
@@ -12,7 +12,7 @@ interface RaffleContextType {
 const RaffleContext = createContext<RaffleContextType | null>(null);
 
 export const RaffleProvider = ({ children }: { children: ReactNode }) => {
-  const [currentRaffle, setCurrentRaffle] = useState<IRaffleDetails | null>(null);
+  const [currentRaffle, setCurrentRaffle] = useState<RaffleDetails | null>(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const refreshRaffles = () => setRefreshTrigger(prev => prev + 1);

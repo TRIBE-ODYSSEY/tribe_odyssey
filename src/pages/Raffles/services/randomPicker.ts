@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { 
-  IRaffleDetails, 
+  RaffleDetails, 
   Participant, 
   Activity, 
   Winner, 
@@ -17,7 +17,7 @@ interface RandomPickerConfig {
 }
 
 interface RandomPickerService {
-  getProjectDetails(id: string): Promise<ApiResponse<IRaffleDetails[]>>;
+  getProjectDetails(id: string): Promise<ApiResponse<RaffleDetails[]>>;
   getParticipants(id: string): Promise<ApiResponse<Participant[]>>;
   getActivities(id: string): Promise<ApiResponse<Activity[]>>;
   getWinner(id: string): Promise<ApiResponse<Winner>>;
@@ -26,9 +26,9 @@ interface RandomPickerService {
   deleteProject(id: string): Promise<ApiResponse<any>>;
   updateProject(id: string, data: RaffleInput): Promise<ApiResponse<any>>;
   createProject(data: RaffleInput): Promise<ApiResponse<any>>;
-  getProjects(): Promise<ApiResponse<IRaffleDetails[]>>;
-  getProject(id: string): Promise<ApiResponse<IRaffleDetails>>;
-  getProjectByProjectKey(projectKey: string): Promise<ApiResponse<IRaffleDetails>>;
+  getProjects(): Promise<ApiResponse<RaffleDetails[]>>;
+  getProject(id: string): Promise<ApiResponse<RaffleDetails>>;
+  getProjectByProjectKey(projectKey: string): Promise<ApiResponse<RaffleDetails>>;
 }
 
 class RandomPickerServiceImpl implements RandomPickerService {
@@ -100,7 +100,7 @@ class RandomPickerServiceImpl implements RandomPickerService {
   }
 
   // API Methods
-  async getProjectDetails(id: string): Promise<ApiResponse<IRaffleDetails[]>> {
+  async getProjectDetails(id: string): Promise<ApiResponse<RaffleDetails[]>> {
     try {
       const token = await this.getToken();
       const response = await this.api.get(`/projects/${id}`, {
@@ -205,7 +205,7 @@ class RandomPickerServiceImpl implements RandomPickerService {
     }
   }
 
-  async getProjects(): Promise<ApiResponse<IRaffleDetails[]>> {
+  async getProjects(): Promise<ApiResponse<RaffleDetails[]>> {
     try {
       const token = await this.getToken();
       const response = await this.api.get('/projects', { headers: { Authorization: `Bearer ${token}` } });
@@ -215,23 +215,23 @@ class RandomPickerServiceImpl implements RandomPickerService {
     }
   }
 
-  async getProject(id: string): Promise<ApiResponse<IRaffleDetails>> {
+  async getProject(id: string): Promise<ApiResponse<RaffleDetails>> {
     try {
       const token = await this.getToken();
       const response = await this.api.get(`/projects/${id}`, { headers: { Authorization: `Bearer ${token}` } });
       return { success: true, data: response.data };
     } catch (error) {
-      return { success: false, data: {} as IRaffleDetails, error: 'Failed to fetch project' };
+      return { success: false, data: {} as RaffleDetails, error: 'Failed to fetch project' };
     }
   }
 
-  async getProjectByProjectKey(projectKey: string): Promise<ApiResponse<IRaffleDetails>> {
+  async getProjectByProjectKey(projectKey: string): Promise<ApiResponse<RaffleDetails>> {
     try {
       const token = await this.getToken();
       const response = await this.api.get(`/projects/projectKey/${projectKey}`, { headers: { Authorization: `Bearer ${token}` } });
       return { success: true, data: response.data };
     } catch (error) {
-      return { success: false, data: {} as IRaffleDetails, error: 'Failed to fetch project' };
+      return { success: false, data: {} as RaffleDetails, error: 'Failed to fetch project' };
     }
   }
 }

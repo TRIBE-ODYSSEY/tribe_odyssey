@@ -1,15 +1,15 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { IRaffleDetails } from '../types/Raffle.types';
+import { RaffleDetails } from '../types/Raffle.types';
 
 interface UseRafflesReturn {
-  raffles: IRaffleDetails[];
+  raffles: RaffleDetails[];
   loading: boolean;
   error: string | null;
 }
 
 const useRaffles = (onlyOpen: boolean, trigger: number): UseRafflesReturn => {
-  const [raffles, setRaffles] = useState<IRaffleDetails[]>([]);
+  const [raffles, setRaffles] = useState<RaffleDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
