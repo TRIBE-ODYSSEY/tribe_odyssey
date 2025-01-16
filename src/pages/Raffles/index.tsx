@@ -3,7 +3,6 @@ import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { useAccount } from 'wagmi';
 import PageLayout from '@src/components/common/layout/PageLayout';
-import { RaffleProvider } from './context/RaffleContext';
 
 // Components
 import RafflesOpened from './components/RafflesOpened';
@@ -30,22 +29,20 @@ const Raffles: React.FC = () => {
   };
 
   return (
-    <RaffleProvider>
-      <PageLayout>
-        <AnimatePresence mode="wait">
-          <Routes location={location} key={location.pathname}>
-            <Route path="/" element={<RafflesOpened />} />
-            <Route path="/:id" element={<RaffleDetails />} />
-            <Route path="/winners" element={<Winners />} />
-            <Route 
-              path="/admin" 
-              element={<ProtectedRoute element={<RafflesAdmin />} />} 
-            />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </AnimatePresence>
-      </PageLayout>
-    </RaffleProvider>
+    <PageLayout>
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<RafflesOpened />} />
+          <Route path="/:id" element={<RaffleDetails />} />
+          <Route path="/winners" element={<Winners />} />
+          <Route 
+            path="/admin" 
+            element={<ProtectedRoute element={<RafflesAdmin />} />} 
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AnimatePresence>
+    </PageLayout>
   );
 };
 

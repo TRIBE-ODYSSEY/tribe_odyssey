@@ -2,6 +2,7 @@
 import useLazyLoading from '@hooks/useLazyLoading';
 import React, { lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import { RaffleProvider } from './pages/Raffles/context/RaffleContext';
 
 // Lazy loaded pages
 const HomePage = lazy(() => import('@src/pages/HomePage'));
@@ -25,30 +26,32 @@ const AppRoutes: React.FC = () => {
   useLazyLoading();
 
   return (
-    <Routes>
-      {/* Public Routes */}
-      <Route path="/" element={<HomePage />} />
-      <Route path="/health" element={<HealthChecker />} />
-      <Route path="/4kTribe" element={<FourKPage />} />
-      <Route path="/molten" element={<MoltenPage />} />
-      <Route path="/tribalbeats" element={<TribalBeatsPage />} />
-      <Route path="/checker" element={<Tribal19CheckerPage />} />
-      <Route path="/council" element={<CouncilPage />} />
-      <Route path="/drops" element={<DropsPage />} />
-      <Route path="/collection" element={<CollectionPage />} />
-      <Route path="/wallpapers" element={<WallpapersPage />} />
-      <Route path="/ens" element={<ENSPage />} />
-      
-      {/* Raffle Routes */}
-      <Route path="/raffles/*" element={<RafflesPage />} />
-      
-      {/* Other Routes */}
-      <Route path="/staking" element={<StakingApesPage />} />
-      <Route path="/account" element={<ProfilePage />} />
-      <Route path="/winners" element={<WinnersPage />} />
-      {/* 404 Route */}
-      <Route path="*" element={<NetworkErrors />} />
-    </Routes>
+    <RaffleProvider>
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<HomePage />} />
+        <Route path="/health" element={<HealthChecker />} />
+        <Route path="/4kTribe" element={<FourKPage />} />
+        <Route path="/molten" element={<MoltenPage />} />
+        <Route path="/tribalbeats" element={<TribalBeatsPage />} />
+        <Route path="/checker" element={<Tribal19CheckerPage />} />
+        <Route path="/council" element={<CouncilPage />} />
+        <Route path="/drops" element={<DropsPage />} />
+        <Route path="/collection" element={<CollectionPage />} />
+        <Route path="/wallpapers" element={<WallpapersPage />} />
+        <Route path="/ens" element={<ENSPage />} />
+        
+        {/* Raffle Routes */}
+        <Route path="/raffles/*" element={<RafflesPage />} />
+        
+        {/* Other Routes */}
+        <Route path="/staking" element={<StakingApesPage />} />
+        <Route path="/account" element={<ProfilePage />} />
+        <Route path="/winners" element={<WinnersPage />} />
+        {/* 404 Route */}
+        <Route path="*" element={<NetworkErrors />} />
+      </Routes>
+    </RaffleProvider>
   );
 };
 
