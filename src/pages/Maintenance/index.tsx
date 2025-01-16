@@ -6,7 +6,7 @@ import PageTitle from '@src/components/common/PageTitle';
 
 const socialLinks = [
   {
-    name: 'Twitter',
+    name: 'X',
     icon: <FaXTwitter size={24} />,
     href: 'https://x.com/tribeodyssey'
   },
