@@ -35,7 +35,8 @@
       "@actions/*": ["lib/wagmi/actions/*"],
       "@wagmi/*": ["lib/wagmi/*"],
       "@viem/*": ["lib/viem/*"],
-      "@services/*": ["lib/services/*"]
+      "@services/*": ["lib/services/*"],
+      "@maintenance/*": ["pages/Maintenance/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts"],

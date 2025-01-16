@@ -41,6 +41,9 @@ interface ImportMetaEnv {
 	readonly VITE_RANDOM_PICKER_BASE_URL: string
 	readonly VITE_RANDOM_PICKER_USERNAME: string
 	readonly VITE_RANDOM_PICKER_PASSWORD: string
+
+	// Maintenance Mode
+	readonly VITE_MAINTENANCE_MODE: 'true' | 'false'
 }
 
 interface ImportMeta {
