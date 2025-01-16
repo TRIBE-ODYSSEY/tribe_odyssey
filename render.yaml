@@ -21,3 +21,13 @@ services:
         source: /index.html
         destination: /
         statusCode: 301 
+    healthCheckPath: /health
+    autoDeploy: true
+    disk:
+      name: tribe-odyssey-data
+      mountPath: /data
+      sizeGB: 10
+databases:
+  - name: tribe-odyssey-db
+    plan: starter
+    ipAllowList: [] 
