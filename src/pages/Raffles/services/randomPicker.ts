@@ -5,9 +5,8 @@ import {
   Activity, 
   Winner, 
   ApiResponse,
-  RandomPickerService,
   RaffleInput
-} from '../types';
+} from '../types/Raffle.types';
 
 interface RandomPickerConfig {
   readonly username: string;
@@ -15,6 +14,21 @@ interface RandomPickerConfig {
   readonly baseUrl: string;
   readonly UserWsdl: string;
   readonly ProjectWsdl: string;
+}
+
+interface RandomPickerService {
+  getProjectDetails(id: string): Promise<ApiResponse<IRaffleDetails[]>>;
+  getParticipants(id: string): Promise<ApiResponse<Participant[]>>;
+  getActivities(id: string): Promise<ApiResponse<Activity[]>>;
+  getWinner(id: string): Promise<ApiResponse<Winner>>;
+  getNonce(address: string): Promise<string>;
+  enterRaffleProject(id: string, data: { address: string; points: number; signature: string; }): Promise<ApiResponse<any>>;
+  deleteProject(id: string): Promise<ApiResponse<any>>;
+  updateProject(id: string, data: RaffleInput): Promise<ApiResponse<any>>;
+  createProject(data: RaffleInput): Promise<ApiResponse<any>>;
+  getProjects(): Promise<ApiResponse<IRaffleDetails[]>>;
+  getProject(id: string): Promise<ApiResponse<IRaffleDetails>>;
+  getProjectByProjectKey(projectKey: string): Promise<ApiResponse<IRaffleDetails>>;
 }
 
 class RandomPickerServiceImpl implements RandomPickerService {

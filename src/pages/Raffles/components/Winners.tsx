@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { randomPicker } from '../Raffles/services/randomPicker';
-import { IRaffleDetails, ApiResponse } from '../Raffles/types';
+import { randomPicker } from '../services/randomPicker';
+import { IRaffleDetails, ApiResponse } from '../types/Raffle.types';
 import moment from 'moment';
 import { toast } from 'react-toastify';
 import PageTitle from '@src/components/common/PageTitle';

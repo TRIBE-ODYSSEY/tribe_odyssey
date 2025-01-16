@@ -18,7 +18,7 @@ const DropsPage = lazy(() => import('@src/pages/Element19/Drops'));
 const CollectionPage = lazy(() => import('@src/pages/Element19/Collection'));
 const WallpapersPage = lazy(() => import('@src/pages/Assets/Wallpapers'));
 const ProfilePage = lazy(() => import('@src/pages/Profile'));
-const WinnersPage = lazy(() => import('@src/pages/Winners'));
+const WinnersPage = lazy(() => import('@src/pages/Raffles/components/Winners'));
 const NetworkErrors = lazy(() => import('@src/components/common/errors/network/NetworkErrors'));
 
 const AppRoutes: React.FC = () => {

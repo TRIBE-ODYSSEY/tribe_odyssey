@@ -1,6 +1,6 @@
 import React, { useState, FormEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { IRaffleDetails, RaffleInput, RaffleCondition } from '../types';
+import { IRaffleDetails, RaffleInput, RaffleCondition } from '../types/Raffle.types';
 import Button from '@src/components/common/Button';
 
 interface RaffleFormModalProps {

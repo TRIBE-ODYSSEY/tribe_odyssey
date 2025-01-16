@@ -1,13 +1,13 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-const useRaffles = (onlyOpen: boolean, trigger: number) => {
+const useWinners = (trigger: number) => {
   const [raffles, setRaffles] = useState<any[]>([]);
 
   useEffect(() => {
     const fetch = async () => {
       axios
-        .get("/staking/raffles", { params: { onlyOpen: onlyOpen } })
+        .get("/staking/raffles", { params: { onlyClosed: true } })
         .then((response) => {
           setRaffles(response.data.raffles);
         })
@@ -17,11 +17,11 @@ const useRaffles = (onlyOpen: boolean, trigger: number) => {
     };
 
     fetch();
-  }, [onlyOpen, trigger]);
+  }, [trigger]);
 
   return {
     raffles,
   };
 };
 
-export default useRaffles;
+export default useWinners;

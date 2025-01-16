@@ -7,7 +7,7 @@ import { randomPicker } from '../services/randomPicker';
 import PageTitle from '@src/components/common/PageTitle';
 import Button from '@src/components/common/Button';
 import RaffleFormModal from './RaffleFormModal';
-import { IRaffleDetails } from '../types';
+import { IRaffleDetails } from '../types/Raffle.types';
 
 const RafflesAdmin: FC = () => {
   const { address } = useAccount();

@@ -1,30 +1,37 @@
-import * as React from 'react';
+import { FC, ReactElement } from "react";
+
 
 interface ButtonProps {
-  children: React.ReactNode;
-  type?: 'button' | 'submit' | 'reset';
-  disabled?: boolean;
+  children: ReactElement | string;
   className?: string;
+  disabled?: boolean;
   onClick?: () => void;
+  type?: 'button' | 'submit' | 'reset';
 }
 
-const Button: React.FC<ButtonProps> = ({
+const Button: FC<ButtonProps> = ({
   children,
+  className,
+  disabled,
+  onClick,
   type = 'button',
-  disabled = false,
-  className = '',
-  onClick
 }) => {
   return (
     <button
       type={type}
-      disabled={disabled}
-      className={className}
       onClick={onClick}
+      disabled={disabled}
+      className={`transition-all rounded-md h-[50px] flex justify-center items-center px-[20px] ${
+        disabled
+          ? "bg-theme-grey cursor-not-allowed"
+          : "bg-[#B91D1D] hover:bg-[#961616] active:bg-[#870505]"
+      } ${className ? className : ""}`}
     >
       {children}
     </button>
   );
 };
+
+
 
 export default Button;
