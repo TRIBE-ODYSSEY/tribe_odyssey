@@ -199,3 +199,8 @@ export interface PaginatedResponse<T> {
   limit: number;
   totalPages: number;
 }
+
+export interface ImageUploadResponse {
+  imageUrl: string;
+  handleImageUpload: (image: File) => Promise<string>;
+}

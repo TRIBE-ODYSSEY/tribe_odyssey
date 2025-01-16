@@ -1,9 +1,11 @@
-import React, { useState, FormEvent } from 'react';
+import React, { useState, FormEvent, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RaffleDetails, RaffleInput, RaffleCondition } from '../types/Raffle.types';
 import Button from '@src/components/common/Button';
-import { useAccount } from 'wagmi';
+import { useAccount, useSignMessage } from 'wagmi';
 import { raffleService } from '@src/services/RaffleService';
+import { useRaffleContext } from '../context/RaffleContext';
+import { toast } from 'react-toastify';
 
 interface RaffleFormModalProps {
   isOpen: boolean;
@@ -21,6 +23,9 @@ const RaffleFormModal: React.FC<RaffleFormModalProps> = ({
   mode
 }) => {
   const { address } = useAccount();
+  const { signMessageAsync } = useSignMessage();
+  const { refreshRaffles } = useRaffleContext();
+  
   const [formData, setFormData] = useState<RaffleInput>(() => ({
     project_name: initialData?.project_name || '',
     prize_name: initialData?.prize_name || '',
@@ -40,6 +45,37 @@ const RaffleFormModal: React.FC<RaffleFormModalProps> = ({
   }));
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (initialData) {
+      setFormData({
+        ...initialData,
+        signature: '',
+        nonce: '',
+        adminAddress: ''
+      });
+      setImagePreview(initialData.prize_image);
+    }
+  }, [initialData]);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      // Add image upload logic here
+      const formData = new FormData();
+      formData.append('image', file);
+      
+      // Example upload call
+      const response = await raffleService.uploadImage(formData);
+      setFormData(prev => ({ ...prev, prize_image: response.imageUrl }));
+      setImagePreview(URL.createObjectURL(file));
+    } catch (error) {
+      toast.error('Failed to upload image');
+    }
+  };
 
   const handleSubmitForm = async (e: FormEvent) => {
     e.preventDefault();
@@ -48,11 +84,13 @@ const RaffleFormModal: React.FC<RaffleFormModalProps> = ({
     setIsSubmitting(true);
     try {
       const nonce = await raffleService.getNonce(address);
-      const signature = await raffleService.createAdminSignatureMessage(
+      const message = raffleService.createAdminSignatureMessage(
         mode === 'create' ? 'Create Raffle' : 'Edit Raffle',
         { ...formData, adminAddress: address },
         nonce
       );
+      
+      const signature = await signMessageAsync({ message });
 
       await onSubmit({
         ...formData,
@@ -60,9 +98,12 @@ const RaffleFormModal: React.FC<RaffleFormModalProps> = ({
         nonce,
         adminAddress: address
       });
+      
+      refreshRaffles();
       onClose();
-    } catch (error) {
-      console.error('Form submission error:', error);
+      toast.success(`Raffle ${mode === 'create' ? 'created' : 'updated'} successfully`);
+    } catch (error: any) {
+      toast.error(error.message || `Failed to ${mode} raffle`);
     } finally {
       setIsSubmitting(false);
     }
@@ -97,7 +138,7 @@ const RaffleFormModal: React.FC<RaffleFormModalProps> = ({
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
-          className="bg-gray-800 rounded-lg p-8 w-full max-w-2xl m-4"
+          className="bg-gray-800 rounded-lg p-8 w-full max-w-2xl m-4 max-h-[90vh] overflow-y-auto"
         >
           <h2 className="text-2xl font-semibold mb-6">
             {mode === 'create' ? 'Create New Raffle' : 'Edit Raffle'}
@@ -204,6 +245,34 @@ const RaffleFormModal: React.FC<RaffleFormModalProps> = ({
               <label className="text-sm">
                 Show results publicly
               </label>
+            </div>
+
+            <div className="mb-6">
+              <label className="block text-sm font-medium mb-2">
+                Prize Image
+              </label>
+              <div className="flex items-center space-x-4">
+                {imagePreview && (
+                  <img 
+                    src={imagePreview} 
+                    alt="Prize preview" 
+                    className="w-24 h-24 object-cover rounded-lg"
+                  />
+                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                  id="prize-image"
+                />
+                <label
+                  htmlFor="prize-image"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg cursor-pointer hover:bg-blue-700 transition-colors"
+                >
+                  Upload Image
+                </label>
+              </div>
             </div>
 
             <div className="flex justify-end gap-4 mt-8">

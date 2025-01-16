@@ -1,8 +1,9 @@
 // src/AppRoutes.tsx
 import useLazyLoading from '@hooks/useLazyLoading';
-import React, { lazy } from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { RaffleProvider } from './pages/Raffles/context/RaffleContext';
+import LoadingSpinner from '@src/components/common/LoadingSpinner';
 
 // Lazy loaded pages
 const HomePage = lazy(() => import('@src/pages/HomePage'));
@@ -21,6 +22,7 @@ const WallpapersPage = lazy(() => import('@src/pages/Assets/Wallpapers'));
 const ProfilePage = lazy(() => import('@src/pages/Profile'));
 const NetworkErrors = lazy(() => import('@src/components/common/errors/network/NetworkErrors'));
 const MaintenancePage = lazy(() => import('@src/pages/Maintenance'));
+
 const MAINTENANCE_MODE = import.meta.env.VITE_MAINTENANCE_MODE === 'true';
 
 const AppRoutes: React.FC = () => {
@@ -31,7 +33,7 @@ const AppRoutes: React.FC = () => {
   }
 
   return (
-    <RaffleProvider>
+    <Suspense fallback={<LoadingSpinner />}>
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<HomePage />} />
@@ -46,16 +48,23 @@ const AppRoutes: React.FC = () => {
         <Route path="/wallpapers" element={<WallpapersPage />} />
         <Route path="/ens" element={<ENSPage />} />
         
-        {/* Raffle Routes */}
-        <Route path="/raffles/*" element={<RafflesPage />} />
+        {/* Raffle Routes - Wrapped in RaffleProvider */}
+        <Route path="/raffles/*" element={
+          <RaffleProvider>
+            <Suspense fallback={<LoadingSpinner />}>
+              <RafflesPage />
+            </Suspense>
+          </RaffleProvider>
+        } />
         
         {/* Other Routes */}
         <Route path="/staking" element={<StakingApesPage />} />
         <Route path="/account" element={<ProfilePage />} />
+        
         {/* 404 Route */}
         <Route path="*" element={<NetworkErrors />} />
       </Routes>
-    </RaffleProvider>
+    </Suspense>
   );
 };
 

@@ -24,5 +24,5 @@ export const menuConfig = {
   ],
   'The Council': [
     { name: 'Council', path: '/council' }
-  ],
+  ]
 }; 

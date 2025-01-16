@@ -13,7 +13,10 @@ import {
 
 class RaffleService {
   private readonly api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || '/api'
+    baseURL: import.meta.env.VITE_API_URL || 'https://tribeodyssey.net',
+    headers: {
+      'Content-Type': 'application/json',
+    }
   });
 
   private readonly provider = new JsonRpcProvider(
@@ -320,22 +323,101 @@ class RaffleService {
 
   // Admin signature verification helper
   createAdminSignatureMessage(action: string, params: Record<string, any>, nonce: string): string {
-    const orderedParams = Object.keys(params)
-      .sort()
-      .map(key => `${key}: ${params[key]}`)
-      .join('\n');
-
-    return `${action}\n\n${orderedParams}\nNonce: ${nonce}`;
+    const timestamp = Date.now();
+    return JSON.stringify({
+      action,
+      params,
+      nonce,
+      timestamp,
+    });
   }
 
   // Nonce management
   async getNonce(address: string): Promise<string> {
     try {
-      const response = await this.api.get(`/nonce/${address}`);
-      return response.data.nonce;
+      const response = await this.api.get<ApiResponse<{ nonce: string }>>(
+        `/nonce/${address}`
+      );
+      return response.data.data.nonce;
     } catch (error) {
       console.error('Failed to get nonce:', error);
       throw new Error('Failed to get nonce');
+    }
+  }
+
+  // Helper method for handling file uploads
+  private async handleFileUpload(file: File): Promise<string> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await this.uploadImage(formData);
+      return response.imageUrl;
+    } catch (error) {
+      console.error('Failed to upload file:', error);
+      throw new Error('Failed to upload file');
+    }
+  }
+
+  // Helper method for image validation
+  private validateImage(file: File): boolean {
+    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    const maxSize = 5 * 1024 * 1024; // 5MB
+
+    if (!validTypes.includes(file.type)) {
+      throw new Error('Invalid file type. Please upload a JPEG, PNG, GIF, or WEBP image.');
+    }
+
+    if (file.size > maxSize) {
+      throw new Error('File size too large. Maximum size is 5MB.');
+    }
+
+    return true;
+  }
+
+  // Helper method for handling API errors
+  private handleApiError(error: any): never {
+    if (axios.isAxiosError(error)) {
+      const message = error.response?.data?.error || error.message;
+      throw new Error(message);
+    }
+    throw error;
+  }
+
+  async uploadImage(formData: FormData): Promise<{ imageUrl: string }> {
+    try {
+      // Get the file from FormData
+      const file = formData.get('file') as File;
+      
+      // Validate the image before uploading
+      this.validateImage(file);
+
+      const response = await this.api.post<ApiResponse<{ imageUrl: string }>>(
+        '/upload/image',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+
+      if (!response.data.success) {
+        throw new Error(response.data.error || 'Failed to upload image');
+      }
+
+      return response.data.data;
+    } catch (error) {
+      return this.handleApiError(error);
+    }
+  }
+
+  // Public method to handle file uploads from components
+  async uploadRaffleImage(file: File): Promise<string> {
+    try {
+      return await this.handleFileUpload(file);
+    } catch (error) {
+      return this.handleApiError(error);
     }
   }
 }
