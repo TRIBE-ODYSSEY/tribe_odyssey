@@ -3,14 +3,16 @@ import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 import moment from 'moment';
 import { useAccount, useSignMessage } from 'wagmi';
-import { randomPicker } from '../services/randomPicker';
+import { raffleService } from '@src/services/RaffleService';
 import PageTitle from '@src/components/common/PageTitle';
 import Button from '@src/components/common/Button';
 import RaffleFormModal from './RaffleFormModal';
-import { RaffleDetails } from '../types/Raffle.types';
+import { RaffleDetails, RaffleInput } from '../types/Raffle.types';
+import NetworkErrors, { ErrorTypes } from '@src/components/common/errors/network/NetworkErrors';
 
 const RafflesAdmin: FC = () => {
   const { address } = useAccount();
+  if (!address) return null;
   const { signMessageAsync } = useSignMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRaffle, setSelectedRaffle] = useState<RaffleDetails | null>(null);
@@ -26,18 +28,16 @@ const RafflesAdmin: FC = () => {
   const fetchRaffles = async () => {
     try {
       setLoading(true);
-      const nonce = await randomPicker.getNonce(address!);
-      const signature = await signMessageAsync({
-        message: `I am signing my one-time nonce: ${nonce}`,
-      });
+      const nonce = await raffleService.getNonce(address!);
+      const message = raffleService.createAdminSignatureMessage(
+        'Fetch Raffles',
+        { adminAddress: address },
+        nonce
+      );
+      const signature = await signMessageAsync({ message });
       
-      const response = await randomPicker.getProjects();
-      if (response.success) {
-        setRaffles(response.data.map(raffle => ({
-          ...raffle,
-          signature
-        })));
-      }
+      const response = await raffleService.getAllRaffles(undefined, { signature, nonce });
+      setRaffles(response);
     } catch (error) {
       toast.error('Failed to fetch raffles');
     } finally {
@@ -49,13 +49,36 @@ const RafflesAdmin: FC = () => {
     if (!window.confirm('Are you sure you want to delete this raffle?')) return;
 
     try {
-      const response = await randomPicker.deleteProject(id);
-      if (response.success) {
-        toast.success('Raffle deleted successfully');
-        fetchRaffles();
-      }
+      const nonce = await raffleService.getNonce(address);
+      const message = raffleService.createAdminSignatureMessage(
+        'Delete Raffle',
+        { raffleId: id, adminAddress: address },
+        nonce
+      );
+      const signature = await signMessageAsync({ message });
+
+      await raffleService.deleteRaffle(id, { signature, nonce, adminAddress: address });
+      toast.success('Raffle deleted successfully');
+      fetchRaffles();
     } catch (error) {
       toast.error('Failed to delete raffle');
+    }
+  };
+
+  const handleSubmit = async (data: RaffleInput) => {
+    try {
+      if (selectedRaffle) {
+        await raffleService.updateRaffle(selectedRaffle.id, data);
+        toast.success('Raffle updated successfully');
+      } else {
+        await raffleService.createRaffle(data);
+        toast.success('Raffle created successfully');
+      }
+      setIsModalOpen(false);
+      setSelectedRaffle(null);
+      fetchRaffles();
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to save raffle');
     }
   };
 
@@ -65,6 +88,10 @@ const RafflesAdmin: FC = () => {
         <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-purple-500" />
       </div>
     );
+  }
+
+  if (!address) {
+    return <NetworkErrors type={ErrorTypes.NOT_FOUND} />;
   }
 
   return (
@@ -102,7 +129,10 @@ const RafflesAdmin: FC = () => {
                   Status: {raffle.project_status}
                 </p>
                 <p className="text-gray-400">
-                  Created: {moment(raffle.raffle_at).format('MMM D, YYYY')}
+                  Created: {moment(raffle.created_at).format('MMM D, YYYY')}
+                </p>
+                <p className="text-gray-400">
+                  Entries: {raffle.entry_count}
                 </p>
               </div>
               <div className="flex gap-4">
@@ -133,22 +163,7 @@ const RafflesAdmin: FC = () => {
           setIsModalOpen(false);
           setSelectedRaffle(null);
         }}
-        onSubmit={async (data) => {
-          try {
-            if (selectedRaffle) {
-              await randomPicker.updateProject(selectedRaffle.id, data);
-              toast.success('Raffle updated successfully');
-            } else {
-              await randomPicker.createProject(data);
-              toast.success('Raffle created successfully');
-            }
-            setIsModalOpen(false);
-            setSelectedRaffle(null);
-            fetchRaffles();
-          } catch (error) {
-            toast.error('Failed to save raffle');
-          }
-        }}
+        onSubmit={handleSubmit}
         initialData={selectedRaffle}
         mode={selectedRaffle ? 'edit' : 'create'}
       />

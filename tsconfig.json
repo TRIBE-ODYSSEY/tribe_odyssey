@@ -35,11 +35,12 @@
       "@actions/*": ["lib/wagmi/actions/*"],
       "@wagmi/*": ["lib/wagmi/*"],
       "@viem/*": ["lib/viem/*"],
-      "@services/*": ["lib/services/*"],
-      "@maintenance/*": ["pages/Maintenance/*"]
+      "@services/*": ["services/*"],
+      "@maintenance/*": ["pages/Maintenance/*"],
+      "@util/*": ["utils/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts", "randomPicker.ts"],
   "buildOptions": {
     "outDir": "./dist",
     "noEmit": true,

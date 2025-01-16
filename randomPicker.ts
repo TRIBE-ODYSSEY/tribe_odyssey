@@ -6,7 +6,7 @@ import {
   Winner, 
   ApiResponse,
   RaffleInput
-} from '../types/Raffle.types';
+} from './src/pages/Raffles/types/Raffle.types';
 
 interface RandomPickerConfig {
   readonly username: string;

@@ -8,11 +8,7 @@ interface Props {
   onSelectParticipant: (address: string) => void;
 }
 
-const ActivityFeed: FC<Props> = ({ 
-  activities, 
-  selectedParticipant, 
-  onSelectParticipant 
-}) => {
+const ActivityFeed: FC<Props> = ({ activities, selectedParticipant, onSelectParticipant }) => {
   return (
     <div className="bg-gray-800 rounded-lg p-6">
       <h2 className="text-xl font-semibold mb-4">Recent Activity</h2>

@@ -2,6 +2,8 @@ import React, { useState, FormEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RaffleDetails, RaffleInput, RaffleCondition } from '../types/Raffle.types';
 import Button from '@src/components/common/Button';
+import { useAccount } from 'wagmi';
+import { raffleService } from '@src/services/RaffleService';
 
 interface RaffleFormModalProps {
   isOpen: boolean;
@@ -18,32 +20,49 @@ const RaffleFormModal: React.FC<RaffleFormModalProps> = ({
   initialData,
   mode
 }) => {
-  const [formData, setFormData] = useState<RaffleInput>(
-    initialData ? {
-      displayName: initialData.project_name,
-      conditions: initialData.conditions,
-      publicResults: initialData.publicResults,
-      website: initialData.website,
-      prizeCount: 1,
-      prizeName: initialData.prize_name
-    } : {
-      displayName: '',
-      conditions: [{ points: 100, entry: 1 }],
-      publicResults: true,
-      website: '',
-      prizeCount: 1,
-      prizeName: ''
-    }
-  );
+  const { address } = useAccount();
+  const [formData, setFormData] = useState<RaffleInput>(() => ({
+    project_name: initialData?.project_name || '',
+    prize_name: initialData?.prize_name || '',
+    prize_image: initialData?.prize_image || '',
+    nft_id: initialData?.nft_id || '',
+    raffle_at: initialData?.raffle_at || '',
+    endDate: initialData?.endDate || '',
+    conditions: initialData?.conditions || [{ points: 100, entry: 1 }],
+    publicResults: initialData?.publicResults ?? true,
+    website: initialData?.website || '',
+    project_description: initialData?.project_description || '',
+    min_points: initialData?.min_points || 0,
+    max_entries_per_user: initialData?.max_entries_per_user || 0,
+    signature: '',
+    nonce: '',
+    adminAddress: ''
+  }));
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmitForm = async (e: FormEvent) => {
     e.preventDefault();
+    if (!address) return;
+
     setIsSubmitting(true);
     try {
-      await onSubmit(formData);
+      const nonce = await raffleService.getNonce(address);
+      const signature = await raffleService.createAdminSignatureMessage(
+        mode === 'create' ? 'Create Raffle' : 'Edit Raffle',
+        { ...formData, adminAddress: address },
+        nonce
+      );
+
+      await onSubmit({
+        ...formData,
+        signature,
+        nonce,
+        adminAddress: address
+      });
       onClose();
+    } catch (error) {
+      console.error('Form submission error:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -90,8 +109,8 @@ const RaffleFormModal: React.FC<RaffleFormModalProps> = ({
                 Display Name
               </label>
               <input
-                value={formData.displayName}
-                onChange={(e) => setFormData({ ...formData, displayName: e.target.value })}
+                value={formData.project_name}
+                onChange={(e) => setFormData({ ...formData, project_name: e.target.value })}
                 className="w-full bg-gray-700 rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter raffle name"
                 required
@@ -103,8 +122,8 @@ const RaffleFormModal: React.FC<RaffleFormModalProps> = ({
                 Prize Name
               </label>
               <input
-                value={formData.prizeName}
-                onChange={(e) => setFormData({ ...formData, prizeName: e.target.value })}
+                value={formData.prize_name}
+                onChange={(e) => setFormData({ ...formData, prize_name: e.target.value })}
                 className="w-full bg-gray-700 rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter prize name"
                 required

@@ -8,26 +8,40 @@ interface Props {
   participant: Participant;
   isSelected: boolean;
   onClick: () => void;
+  showTimestamp?: boolean;
 }
 
-const ParticipantCard: FC<Props> = ({ participant, isSelected, onClick }) => (
+const ParticipantCard: FC<Props> = ({ 
+  participant, 
+  isSelected, 
+  onClick,
+  showTimestamp = true 
+}) => (
   <div 
     className={`flex justify-between items-center p-3 bg-gray-700 rounded-lg cursor-pointer 
               hover:bg-gray-600 transition-colors ${isSelected ? 'ring-2 ring-blue-500' : ''}`}
     onClick={onClick}
   >
     <div className="flex items-center gap-3">
-      <AddressAvatar address={participant.address} size={32} className="rounded-full" />
+      <AddressAvatar 
+        address={participant.address} 
+        size={32} 
+        className="rounded-full" 
+      />
       <div>
         <div className="font-medium">
           {participant.user?.name ?? shortenAddress(participant.address)}
         </div>
-        <div className="text-sm text-gray-400">{participant.entry} Entries</div>
+        <div className="text-sm text-gray-400">
+          {participant.entry} {participant.entry === 1 ? 'Entry' : 'Entries'}
+        </div>
       </div>
     </div>
-    <div className="text-sm text-gray-400">
-      {moment(participant.entered_at).fromNow()}
-    </div>
+    {showTimestamp && (
+      <div className="text-sm text-gray-400">
+        {moment(participant.entered_at).fromNow()}
+      </div>
+    )}
   </div>
 );
 

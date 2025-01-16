@@ -1,36 +1,27 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { RaffleDetails } from '../types/Raffle.types';
+import { raffleService } from '@src/services/RaffleService';
 
-interface UseRafflesReturn {
-  raffles: RaffleDetails[];
-  loading: boolean;
-  error: string | null;
-}
-
-const useRaffles = (onlyOpen: boolean, trigger: number): UseRafflesReturn => {
+const useRaffles = (onlyOpen: boolean, trigger: number) => {
   const [raffles, setRaffles] = useState<RaffleDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetch = async () => {
+    const fetchRaffles = async () => {
       try {
-        const response = await axios.get("/staking/raffles", { 
-          params: { status: onlyOpen ? 'active' : 'all' } 
-        });
-        setRaffles(response.data?.raffles || []);
-        setError(null);
+        const status = onlyOpen ? 'active' : undefined;
+        const response = await raffleService.getAllRaffles(status);
+        setRaffles(response);
       } catch (error) {
-        console.error(error);
-        setError("Error fetching raffles");
+        setError("Failed to fetch raffles");
         setRaffles([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetch();
+    fetchRaffles();
   }, [onlyOpen, trigger]);
 
   return { raffles, loading, error };

@@ -4,7 +4,7 @@ import moment from 'moment';
 import PageTitle from '@src/components/common/PageTitle';
 import { Spinner } from 'flowbite-react';
 import NetworkErrors, { ErrorTypes } from '@src/components/common/errors/network/NetworkErrors';
-import { randomPicker } from '../services/randomPicker';
+import { raffleService } from '@src/services/RaffleService';
 import { RaffleDetails } from '../types/Raffle.types';
 import { toast } from 'react-toastify';
 
@@ -20,17 +20,8 @@ const Winners: React.FC = () => {
   const fetchCompletedRaffles = async () => {
     try {
       setLoading(true);
-      const response = await randomPicker.getProjects();
-      
-      if (response.success) {
-        // Filter for completed raffles only
-        const completed = response.data.filter(raffle => 
-          raffle.project_status === 'completed' || raffle.project_status === 'closed'
-        );
-        setCompletedRaffles(completed);
-      } else {
-        throw new Error(response.error || 'Failed to fetch raffles');
-      }
+      const raffles = await raffleService.getAllRaffles('completed');
+      setCompletedRaffles(raffles);
     } catch (err) {
       setError(err as Error);
       toast.error('Failed to load winners');
@@ -42,10 +33,12 @@ const Winners: React.FC = () => {
 
   const handleViewWinner = async (raffleId: string) => {
     try {
-      const response = await randomPicker.getWinner(raffleId);
-      if (response.success && response.data) {
-        // Check if winner exists and open the protocol page
-        window.open(`https://app.randompicker.com/protocol/${raffleId}`, '_blank');
+      const entries = await raffleService.getRaffleEntries(raffleId);
+      const result = await raffleService.selectWinner(raffleId, entries);
+      
+      if (result.winner) {
+        // Open the verification page with proof
+        window.open(`/raffle/${raffleId}/proof/${result.verificationHash}`, '_blank');
       } else {
         toast.error('Winner information not available');
       }
@@ -95,7 +88,7 @@ const Winners: React.FC = () => {
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
-                  target.src = '/placeholder-image.png'; // Add a placeholder image
+                  target.src = '/placeholder-image.png';
                 }}
               />
               <div className="absolute top-3 left-3 flex gap-2">
