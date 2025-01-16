@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { RaffleDetails } from '../types/Raffle.types';
-import { randomPicker } from '../services/randomPicker';
-import { toast } from 'react-toastify';
+import axios from "axios";
 
 interface UseWinnersReturn {
   raffles: RaffleDetails[];
@@ -16,23 +15,15 @@ const useWinners = (trigger: number): UseWinnersReturn => {
 
   useEffect(() => {
     const fetchWinners = async () => {
-      try {
-        setLoading(true);
-        const response = await randomPicker.getProjectDetails('completed');
-        if (response.success) {
-          setRaffles(response.data);
-          setError(null);
-        } else {
-          setError(response.error || 'Failed to load winners');
-          toast.error(response.error || 'Failed to load winners');
-        }
-      } catch (error) {
-        console.error('Failed to fetch winners:', error);
-        setError('Failed to load winners');
-        toast.error('Failed to load winners');
-      } finally {
-        setLoading(false);
-      }
+      axios
+        .get("/staking/raffles", { params: { onlyClosed: true } })
+        .then((response) => {
+          setRaffles(response.data.raffles);
+        })
+        .catch((error) => {
+          console.error(error);
+          setError(error.message);
+        });
     };
 
     fetchWinners();

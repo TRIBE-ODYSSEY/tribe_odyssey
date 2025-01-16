@@ -21,7 +21,7 @@ const CouncilPage: React.FC = () => {
       "Ask to be admitted to the council in our Discord server."
     ],
     ctaLink: "https://app.aragon.org/#/daos/base/0xb88e7e7c71bdf1124d1b73093f2946dc153644d1/dashboard",
-    ctaText: "See the Council"
+    ctaText: "The Council"
   };
 
   return (
