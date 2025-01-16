@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-enum ErrorTypes {
+export enum ErrorTypes {
   NOT_FOUND = 'NOT_FOUND',
   INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR', 
   NETWORK_ERROR = 'NETWORK_ERROR',

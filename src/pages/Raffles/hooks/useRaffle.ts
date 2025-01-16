@@ -1,28 +1,41 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { IRaffleDetails, Participant, Activity, Winner } from '../types/Raffle.types';
 
-const useRaffle = (id: string, trigger: number) => {
-  const [raffle, setRaffle] = useState<any>();
-  const [winner, setWinner] = useState<any>();
-  const [participants, setParticipants] = useState<any[]>([]);
-  const [activities, setActivities] = useState<any[]>([]);
+interface UseRaffleReturn {
+  raffle: IRaffleDetails | null;
+  participants: Participant[];
+  activities: Activity[];
+  winner: Winner | null;
+  loading: boolean;
+  error: string | null;
+}
+
+const useRaffle = (id: string, trigger: number): UseRaffleReturn => {
+  const [raffle, setRaffle] = useState<IRaffleDetails | null>(null);
+  const [winner, setWinner] = useState<Winner | null>(null);
+  const [participants, setParticipants] = useState<Participant[]>([]);
+  const [activities, setActivities] = useState<Activity[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetch = async () => {
-      axios
-        .get("/staking/raffle", { params: { id: id } })
-        .then((response) => {
-          setRaffle(response.data.raffle);
-          setParticipants(response.data.participants);
-          setActivities(response.data.activities);
-          setWinner(response.data.winner);
-        })
-        .catch((error) => {
-          console.error(error);
-          toast.error("Error fetching raffle details");
-        });
-
+      try {
+        const response = await axios.get("/staking/raffle", { params: { id } });
+        setRaffle(response.data.raffle);
+        setParticipants(response.data.participants);
+        setActivities(response.data.activities);
+        setWinner(response.data.winner);
+        setError(null);
+      } catch (error) {
+        console.error(error);
+        setError("Error fetching raffle details");
+        toast.error("Error fetching raffle details");
+      } finally {
+        setLoading(false);
+      }
     };
 
     if (id) {
@@ -30,12 +43,7 @@ const useRaffle = (id: string, trigger: number) => {
     }
   }, [id, trigger]);
 
-  return {
-    raffle,
-    participants,
-    activities,
-    winner,
-  };
+  return { raffle, participants, activities, winner, loading, error };
 };
 
 export default useRaffle;

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 import { motion } from 'framer-motion';
@@ -15,23 +15,12 @@ import RaffleCard from './common/RaffleCard';
 
 const RafflesOpened: React.FC = () => {
   const navigate = useNavigate();
-  const { address, isConnected } = useAccount();
+  const { isConnected } = useAccount();
   const { refreshTrigger } = useRaffleContext();
   const { raffles, loading } = useRaffles(true, refreshTrigger);
   const { enterRaffle } = useRaffleActions();
   
   const [loadingIndex, setLoadingIndex] = useState(-1);
-  const [countDown, setCountDown] = useState<string>("");
-  const intervalRef = useRef<NodeJS.Timeout>();
-
-  useEffect(() => {
-    // Cleanup interval on unmount
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, []);
 
   const handleEnterRaffle = async (raffleId: string, points: number, index: number) => {
     if (!isConnected) {

@@ -5,7 +5,7 @@ import moment from 'moment';
 import useRaffle from '../hooks/useRaffle';
 import { useRaffleContext } from '../context/RaffleContext';
 import PageTitle from '@src/components/common/PageTitle';
-import ErrorMessage from '@src/components/common/errors/network/NetworkErrors';
+import NetworkErrors, { ErrorTypes } from '@src/components/common/errors/network/NetworkErrors';
 import { Spinner } from 'flowbite-react';
 import RaffleConditionCard from './common/RaffleConditionCard';
 import ParticipantList from './common/ParticipantList';
@@ -32,7 +32,9 @@ const RaffleDetails: FC = () => {
   }
 
   if (error || !raffle) {
-    return <ErrorMessage message={error || 'Raffle not found'} />;
+    return <NetworkErrors 
+      type={ErrorTypes.NOT_FOUND}
+    />;
   }
 
   return (
