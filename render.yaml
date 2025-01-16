@@ -9,6 +9,8 @@ services:
     envVars:
       - key: NODE_VERSION
         value: 18.17.0
+      - key: NODE_ENV
+        value: production
     headers:
       - path: /*
         name: Cache-Control
@@ -16,6 +18,12 @@ services:
       - path: /assets/*
         name: Cache-Control
         value: public, max-age=31536000, immutable
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: X-Content-Type-Options 
+        value: nosniff
     routes:
       - type: rewrite
         source: /*
@@ -23,14 +31,25 @@ services:
       - type: redirect
         source: /index.html
         destination: /
-        statusCode: 301 
+        statusCode: 308
+      - type: redirect
+        source: /(.*)/$
+        destination: /$1
+        statusCode: 308
     healthCheckPath: /health
     autoDeploy: true
     disk:
       name: tribe-odyssey-data
       mountPath: /data
-      sizeGB: 10
+      sizeGB: 20
+    scaling:
+      minInstances: 1
+      maxInstances: 3
+      targetMemoryPercent: 80
 databases:
   - name: tribe-odyssey-db
     plan: starter
-    ipAllowList: [] 
+    ipAllowList: []
+    backups:
+      enabled: true
+      retentionPeriodDays: 7
