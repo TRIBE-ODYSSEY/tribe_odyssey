@@ -90,7 +90,7 @@ const MaintenancePage: React.FC = () => {
 
           {/* Status Updates */}
           <div className="mt-12 text-sm text-gray-500">
-            For status updates, please follow us on{' '}
+            For status updates, please follow us on{'X'}
             <a 
               href="https://x.com/tribeodyssey" 
               target="_blank" 
