@@ -1,16 +1,59 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import moment from 'moment';
-import { useRaffleContext } from '../context/RaffleContext';
-import useWinners from '../hooks/useWinners';
 import PageTitle from '@src/components/common/PageTitle';
 import { Spinner } from 'flowbite-react';
 import NetworkErrors, { ErrorTypes } from '@src/components/common/errors/network/NetworkErrors';
 import { randomPicker } from '../services/randomPicker';
+import { RaffleDetails } from '../types/Raffle.types';
+import { toast } from 'react-toastify';
 
 const Winners: React.FC = () => {
-  const { refreshTrigger } = useRaffleContext();
-  const { raffles: completedRaffles, loading, error } = useWinners(refreshTrigger);
+  const [completedRaffles, setCompletedRaffles] = useState<RaffleDetails[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    fetchCompletedRaffles();
+  }, []);
+
+  const fetchCompletedRaffles = async () => {
+    try {
+      setLoading(true);
+      const response = await randomPicker.getProjects();
+      
+      if (response.success) {
+        // Filter for completed raffles only
+        const completed = response.data.filter(raffle => 
+          raffle.project_status === 'completed' || raffle.project_status === 'closed'
+        );
+        setCompletedRaffles(completed);
+      } else {
+        throw new Error(response.error || 'Failed to fetch raffles');
+      }
+    } catch (err) {
+      setError(err as Error);
+      toast.error('Failed to load winners');
+      console.error('Error fetching completed raffles:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleViewWinner = async (raffleId: string) => {
+    try {
+      const response = await randomPicker.getWinner(raffleId);
+      if (response.success && response.data) {
+        // Check if winner exists and open the protocol page
+        window.open(`https://app.randompicker.com/protocol/${raffleId}`, '_blank');
+      } else {
+        toast.error('Winner information not available');
+      }
+    } catch (error) {
+      console.error('Error fetching winner:', error);
+      toast.error('Failed to fetch winner information');
+    }
+  };
 
   if (loading) {
     return (
@@ -23,17 +66,6 @@ const Winners: React.FC = () => {
   if (error || !Array.isArray(completedRaffles)) {
     return <NetworkErrors type={ErrorTypes.NOT_FOUND} />;
   }
-
-  const handleViewWinner = async (raffleId: string) => {
-    try {
-      const response = await randomPicker.getWinner(raffleId);
-      if (response.success) {
-        window.open(`https://app.randompicker.com/protocol/${raffleId}`, '_blank');
-      }
-    } catch (error) {
-      console.error('Error fetching winner:', error);
-    }
-  };
 
   return (
     <motion.div
@@ -61,6 +93,10 @@ const Winners: React.FC = () => {
                 src={raffle.prize_image} 
                 alt={raffle.project_name}
                 className="w-full h-full object-cover"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = '/placeholder-image.png'; // Add a placeholder image
+                }}
               />
               <div className="absolute top-3 left-3 flex gap-2">
                 <span className="bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full 
@@ -79,7 +115,7 @@ const Winners: React.FC = () => {
                 <div className="flex justify-between items-center mb-2">
                   <span>Total Entries</span>
                   <span className="font-medium text-white">
-                    {raffle.entry_count.toLocaleString()}
+                    {raffle.entry_count?.toLocaleString() || '0'}
                   </span>
                 </div>
                 <div className="flex justify-between items-center mb-4">
