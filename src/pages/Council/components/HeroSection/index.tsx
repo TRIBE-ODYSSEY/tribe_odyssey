@@ -41,7 +41,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           target="_blank" 
           rel="noopener noreferrer" 
           className="inline-block px-8 py-3 bg-white hover:bg-white/90 
-                   text-red-600 rounded-full font-inter text-lg transition-300"
+                   text-red-600 rounded-full font-inter text-lg font-semibold transition-300"
         >
           {ctaText}
         </a>

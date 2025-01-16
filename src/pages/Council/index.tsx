@@ -3,9 +3,7 @@ import PageLayout from '@src/components/common/layout/PageLayout';
 import HeroSection from './components/HeroSection';
 import FeatureGrid from './components/FeatureGrid';
 import LandscapeHero from './components/LandscapeHero';
-import Timeline from './components/Timeline';
 import { features } from './data/features.data';
-import { timelineEvents } from './data/timeline.data';
 
 const CouncilPage: React.FC = () => {
   useEffect(() => {
@@ -14,16 +12,16 @@ const CouncilPage: React.FC = () => {
 
   const heroProps = {
     logoSrc: "/images/council_logo.jpg",
-    tribunusImageSrc: "/images/tribunus.png",
+    tribunusImageSrc: "/images/tribunus.png", 
     aragonLogoSrc: "/images/aragon_Logo.svg",
-    title: "Tribe Council",
+    title: "Shaping Our Future",
     descriptions: [
-      "Through blood and stone, through fire and breath, Tribunus Plebis The Gladiator leads with iron and grit.",
       "In the grand arena of governance, where decisions echo through the halls of time, the Council shapes the destiny of our tribe.",
-      "The Voice of the Tribe."
+      "The council is overseen by the Tribunus Plebis who has the role of protecting the rights and interests of the Tribe.",
+      "Ask to be admitted to the council in our Discord server."
     ],
     ctaLink: "https://app.aragon.org/#/daos/base/0xb88e7e7c71bdf1124d1b73093f2946dc153644d1/dashboard",
-    ctaText: "Join the Council"
+    ctaText: "See the Council"
   };
 
   return (
@@ -35,12 +33,6 @@ const CouncilPage: React.FC = () => {
             <FeatureGrid features={features} />
           </div>
         </div>
-
-        <Timeline
-          title="Council Roadmap"
-          subtitle="Our journey of growth and innovation"
-          events={timelineEvents}
-        />
 
         <LandscapeHero
           imageSrc="/images/MWCouncil.jpg"
@@ -55,4 +47,4 @@ const CouncilPage: React.FC = () => {
   );
 };
 
-export default CouncilPage; 
+export default CouncilPage;
