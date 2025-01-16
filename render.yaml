@@ -3,6 +3,9 @@ services:
     name: tribe-odyssey
     buildCommand: yarn install && yarn build
     staticPublishPath: ./dist
+    maintenance:
+      path: /maintenance
+      enabled: false
     envVars:
       - key: NODE_VERSION
         value: 18.17.0

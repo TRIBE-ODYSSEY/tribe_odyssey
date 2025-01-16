@@ -22,9 +22,14 @@ const ProfilePage = lazy(() => import('@src/pages/Profile'));
 const WinnersPage = lazy(() => import('@src/pages/Raffles/components/Winners'));
 const NetworkErrors = lazy(() => import('@src/components/common/errors/network/NetworkErrors'));
 const MaintenancePage = lazy(() => import('@src/pages/Maintenance'));
+const MAINTENANCE_MODE = import.meta.env.VITE_MAINTENANCE_MODE === 'true';
 
 const AppRoutes: React.FC = () => {
   useLazyLoading();
+
+  if (MAINTENANCE_MODE) {
+    return <MaintenancePage />;
+  }
 
   return (
     <RaffleProvider>
@@ -51,7 +56,6 @@ const AppRoutes: React.FC = () => {
         <Route path="/winners" element={<WinnersPage />} />
         {/* 404 Route */}
         <Route path="*" element={<NetworkErrors />} />
-        <Route path="/maintenance" element={<MaintenancePage />} />
       </Routes>
     </RaffleProvider>
   );
