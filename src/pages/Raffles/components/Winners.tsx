@@ -1,23 +1,39 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import moment from 'moment';
-import useWinners from '../hooks/useWinners';
 import { useRaffleContext } from '../context/RaffleContext';
+import useWinners from '../hooks/useWinners';
 import PageTitle from '@src/components/common/PageTitle';
 import { Spinner } from 'flowbite-react';
 import NetworkErrors, { ErrorTypes } from '@src/components/common/errors/network/NetworkErrors';
+import { randomPicker } from '../services/randomPicker';
 
 const Winners: React.FC = () => {
   const { refreshTrigger } = useRaffleContext();
   const { raffles: completedRaffles, loading, error } = useWinners(refreshTrigger);
 
   if (loading) {
-    return <Spinner />;
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Spinner size="xl" />
+      </div>
+    );
   }
 
   if (error || !Array.isArray(completedRaffles)) {
     return <NetworkErrors type={ErrorTypes.NOT_FOUND} />;
   }
+
+  const handleViewWinner = async (raffleId: string) => {
+    try {
+      const response = await randomPicker.getWinner(raffleId);
+      if (response.success) {
+        window.open(`https://app.randompicker.com/protocol/${raffleId}`, '_blank');
+      }
+    } catch (error) {
+      console.error('Error fetching winner:', error);
+    }
+  };
 
   return (
     <motion.div
@@ -31,14 +47,14 @@ const Winners: React.FC = () => {
         Discover our latest raffle winners and their prizes
       </p>
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {completedRaffles.map((raffle) => (
           <motion.div
             key={raffle.id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-gray-800 rounded-xl overflow-hidden hover:shadow-lg 
-                     transition-all duration-300 border border-gray-700"
+            className="bg-[#1a1a1a] rounded-xl overflow-hidden hover:shadow-lg 
+                     transition-all duration-300 border border-gray-800"
           >
             <div className="relative aspect-square">
               <img 
@@ -49,8 +65,8 @@ const Winners: React.FC = () => {
               <div className="absolute top-3 left-3 flex gap-2">
                 <span className="bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full 
                                text-sm font-medium">#{raffle.nft_id}</span>
-                <span className="bg-green-500/90 backdrop-blur-sm px-3 py-1 rounded-full 
-                               text-sm font-medium">Completed</span>
+                <span className="bg-red-500/90 backdrop-blur-sm px-3 py-1 rounded-full 
+                               text-sm font-medium">{moment(raffle.raffle_at).fromNow()}</span>
               </div>
             </div>
             
@@ -74,15 +90,13 @@ const Winners: React.FC = () => {
                 </div>
               </div>
 
-              <a 
-                href={`https://app.randompicker.com/protocol/${raffle.id}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg 
-                         hover:bg-blue-700 transition-colors inline-block text-center"
+              <button 
+                onClick={() => handleViewWinner(raffle.id)}
+                className="w-full mt-3 py-2 text-center bg-white/5 hover:bg-white/10 
+                         rounded-lg transition-colors duration-200 text-sm font-medium"
               >
                 View Winner
-              </a>
+              </button>
             </div>
           </motion.div>
         ))}
