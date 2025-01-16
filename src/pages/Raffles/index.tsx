@@ -33,8 +33,8 @@ const Raffles: React.FC = () => {
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<RafflesOpened />} />
-          <Route path="/:id" element={<RaffleDetails />} />
           <Route path="/winners" element={<Winners />} />
+          <Route path="/:id" element={<RaffleDetails />} />
           <Route 
             path="/admin" 
             element={<ProtectedRoute element={<RafflesAdmin />} />} 

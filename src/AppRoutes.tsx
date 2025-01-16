@@ -19,7 +19,6 @@ const DropsPage = lazy(() => import('@src/pages/Element19/Drops'));
 const CollectionPage = lazy(() => import('@src/pages/Element19/Collection'));
 const WallpapersPage = lazy(() => import('@src/pages/Assets/Wallpapers'));
 const ProfilePage = lazy(() => import('@src/pages/Profile'));
-const WinnersPage = lazy(() => import('@src/pages/Raffles/components/Winners'));
 const NetworkErrors = lazy(() => import('@src/components/common/errors/network/NetworkErrors'));
 const MaintenancePage = lazy(() => import('@src/pages/Maintenance'));
 const MAINTENANCE_MODE = import.meta.env.VITE_MAINTENANCE_MODE === 'true';
@@ -53,7 +52,6 @@ const AppRoutes: React.FC = () => {
         {/* Other Routes */}
         <Route path="/staking" element={<StakingApesPage />} />
         <Route path="/account" element={<ProfilePage />} />
-        <Route path="/winners" element={<WinnersPage />} />
         {/* 404 Route */}
         <Route path="*" element={<NetworkErrors />} />
       </Routes>

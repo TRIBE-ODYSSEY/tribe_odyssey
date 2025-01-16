@@ -20,7 +20,7 @@ export const menuConfig = {
   Staking: [
     { name: 'Stake Apes', path: '/staking' },
     { name: 'Raffles', path: '/raffles' },
-    { name: 'Winners', path: '/winners' },
+    { name: 'Winners', path: '/raffles/winners' },
   ],
   'The Council': [
     { name: 'Council', path: '/council' }
