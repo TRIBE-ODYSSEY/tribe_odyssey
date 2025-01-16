@@ -19,11 +19,12 @@ const useRaffles = (onlyOpen: boolean, trigger: number): UseRafflesReturn => {
         const response = await axios.get("/staking/raffles", { 
           params: { status: onlyOpen ? 'active' : 'all' } 
         });
-        setRaffles(response.data);
+        setRaffles(response.data?.raffles || []);
         setError(null);
       } catch (error) {
         console.error(error);
         setError("Error fetching raffles");
+        setRaffles([]);
       } finally {
         setLoading(false);
       }

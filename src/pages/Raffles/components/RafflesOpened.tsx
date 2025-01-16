@@ -53,7 +53,7 @@ const RafflesOpened: React.FC = () => {
       <PageTitle>Active Raffles</PageTitle>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-        {raffles.map((raffle: IRaffleDetails, index: number) => (
+        {Array.isArray(raffles) && raffles.map((raffle: IRaffleDetails, index: number) => (
           <RaffleCard
             key={raffle.id}
             raffle={raffle}
@@ -63,7 +63,7 @@ const RafflesOpened: React.FC = () => {
           />
         ))}
         
-        {raffles.length === 0 && (
+        {(!Array.isArray(raffles) || raffles.length === 0) && (
           <div className="col-span-full text-center text-gray-400 py-12">
             No active raffles at the moment
           </div>
