@@ -29,6 +29,7 @@ export default defineConfig({
       '@hooks': path.resolve(__dirname, 'src/lib/hooks'),
       '@services': path.resolve(__dirname, 'src/lib/services'),
       '@pages': path.resolve(__dirname, 'src/pages'),
+      '@maintenance': path.resolve(__dirname, 'src/pages/Maintenance'),
     },
   },
   assetsInclude: ['**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.svg', '**/*.gif'],
@@ -36,6 +37,9 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: undefined,
+        entryFileNames: 'index.js',
+        chunkFileNames: 'chunk-[name].js',
+        assetFileNames: 'asset-[name].[ext]',
       },
     },
   },

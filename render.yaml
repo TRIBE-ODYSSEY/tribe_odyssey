@@ -31,15 +31,12 @@ services:
       - type: redirect
         source: /index.html
         destination: /
-        statusCode: 404
       - type: redirect
         source: /(.*)/$
         destination: /$1
-        statusCode: 404
       - type: redirect
         source: http://*
         destination: https://$HOST
-        statusCode: 301
     healthCheckPath: /health
     autoDeploy: true
     disk:
