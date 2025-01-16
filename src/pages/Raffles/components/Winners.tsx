@@ -1,43 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { randomPicker } from '../services/randomPicker';
-import { IRaffleDetails, ApiResponse } from '../types/Raffle.types';
 import moment from 'moment';
-import { toast } from 'react-toastify';
+import useWinners from '../hooks/useWinners';
+import { useRaffleContext } from '../context/RaffleContext';
 import PageTitle from '@src/components/common/PageTitle';
+import { Spinner } from 'flowbite-react';
+import NetworkErrors, { ErrorTypes } from '@src/components/common/errors/network/NetworkErrors';
 
 const Winners: React.FC = () => {
-  const [completedRaffles, setCompletedRaffles] = useState<IRaffleDetails[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { refreshTrigger } = useRaffleContext();
+  const { raffles: completedRaffles, error } = useWinners(refreshTrigger);
 
-  useEffect(() => {
-    fetchCompletedRaffles();
-  }, []);
+  if (!completedRaffles) {
+    return <Spinner />;
+  }
 
-  const fetchCompletedRaffles = async () => {
-    try {
-      setIsLoading(true);
-      const response: ApiResponse<IRaffleDetails[]> = await randomPicker.getProjectDetails('completed');
-      
-      if (response.success) {
-        setCompletedRaffles(response.data);
-      } else {
-        toast.error(response.error || 'Failed to load winners');
-      }
-    } catch (error) {
-      console.error('Failed to fetch completed raffles:', error);
-      toast.error('Failed to load winners');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-red-500" />
-      </div>
-    );
+  if (error || !Array.isArray(completedRaffles)) {
+    return <NetworkErrors type={ErrorTypes.NOT_FOUND} />;
   }
 
   return (
@@ -95,6 +74,12 @@ const Winners: React.FC = () => {
               </div>
             </motion.div>
           ))}
+
+          {completedRaffles.length === 0 && (
+            <div className="col-span-full text-center text-gray-400 py-12">
+              No completed raffles yet
+            </div>
+          )}
         </div>
       </div>
     </div>

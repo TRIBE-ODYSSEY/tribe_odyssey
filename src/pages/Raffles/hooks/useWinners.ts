@@ -1,8 +1,15 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { IRaffleDetails } from '../types/Raffle.types';
 
-const useWinners = (trigger: number) => {
-  const [raffles, setRaffles] = useState<any[]>([]);
+interface UseWinnersReturn {
+  raffles: IRaffleDetails[];
+  error: string | null;
+}
+
+const useWinners = (trigger: number): UseWinnersReturn => {
+  const [raffles, setRaffles] = useState<IRaffleDetails[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetch = async () => {
@@ -13,15 +20,14 @@ const useWinners = (trigger: number) => {
         })
         .catch((error) => {
           console.error(error);
+          setError(error.message);
         });
     };
 
     fetch();
   }, [trigger]);
 
-  return {
-    raffles,
-  };
+  return { raffles, error };
 };
 
 export default useWinners;
