@@ -15,14 +15,17 @@ const useWinners = (trigger: number): UseWinnersReturn => {
 
   useEffect(() => {
     const fetchWinners = async () => {
+      setLoading(true);
       axios
         .get("/staking/raffles", { params: { onlyClosed: true } })
         .then((response) => {
           setRaffles(response.data.raffles);
+          setLoading(false);
         })
         .catch((error) => {
           console.error(error);
           setError(error.message);
+          setLoading(false);
         });
     };
 
