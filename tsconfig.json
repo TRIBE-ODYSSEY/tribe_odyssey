@@ -40,7 +40,7 @@
       "@util/*": ["utils/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts", "randomPicker.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts"],
   "buildOptions": {
     "outDir": "./dist",
     "noEmit": true,
