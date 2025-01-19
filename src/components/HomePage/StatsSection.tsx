@@ -39,7 +39,8 @@ const StatsSection: React.FC = () => {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
       >
-        <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12 text-white/90">
+        <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12 
+                     text-[var(--color-text-primary)]">
           Statistics
         </h2>
         
@@ -52,17 +53,17 @@ const StatsSection: React.FC = () => {
             >
               <Card
                 className="h-full flex flex-col items-center justify-center p-6 sm:p-8 
-                          backdrop-blur-sm bg-white/5 hover:bg-white/10 
-                          transition-all duration-300 rounded-xl
-                          border border-white/10 hover:border-white/20"
+                          bg-[var(--color-overlay-dark)]/5 hover:bg-[var(--color-overlay-dark)]/10 
+                          backdrop-blur-sm transition-all duration-300 rounded-xl
+                          border border-[var(--color-text-primary)]/10 hover:border-[var(--color-text-primary)]/20"
               >
                 <div className="flex flex-col items-center justify-center text-center space-y-2">
                   <h3 className="text-3xl sm:text-4xl font-bold 
-                               bg-gradient-to-r from-red-500 to-pink-500 
+                               bg-gradient-to-r from-[var(--color-button-primary)] to-[var(--color-button-hover)] 
                                bg-clip-text text-transparent">
                     {value}
                   </h3>
-                  <p className="text-sm sm:text-base text-white/70 font-medium">
+                  <p className="text-sm sm:text-base text-[var(--color-text-muted)] font-medium">
                     {label}
                   </p>
                 </div>

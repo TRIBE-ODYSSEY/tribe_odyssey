@@ -51,14 +51,14 @@ const accomplishments: Accomplishment[] = [
 
 const AccomplishmentsSection: React.FC = () => {
   return (
-    <section className="w-full bg-backgroundDark">
+    <section className="w-full bg-[var(--color-background)]">
       <div className="container mx-auto px-4 py-16 md:py-24">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold text-white/90 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-[var(--color-text-primary)] mb-6">
               Accomplishments
             </h2>
-            <p className="text-lg md:text-xl text-white/70 max-w-4xl mx-auto">
+            <p className="text-lg md:text-xl text-[var(--color-text-muted)] max-w-4xl mx-auto">
               We build, We create, and We accomplish.
             </p>
           </div>
@@ -67,21 +67,24 @@ const AccomplishmentsSection: React.FC = () => {
             {accomplishments.map((item) => (
               <div
                 key={item.id}
-                className="bg-black/20 hover:bg-black/30 backdrop-blur-sm transition-all duration-300 p-6 rounded-xl border border-white/5"
+                className="bg-[var(--color-overlay-dark)]/5 hover:bg-[var(--color-overlay-dark)]/10 
+                         backdrop-blur-sm transition-all duration-300 p-6 rounded-xl 
+                         border border-[var(--color-text-primary)]/10 
+                         hover:border-[var(--color-text-primary)]/20"
               >
                 <div className="flex flex-col h-full">
                   <div className="flex items-center gap-3 mb-4">
                     <img 
                       src="/images/StarIcon.svg" 
                       alt="Star" 
-                      className="w-6 h-6 text-white"
+                      className="w-6 h-6 text-[var(--color-text-primary)]"
                       loading="lazy"
                     />
-                    <h3 className="text-xl font-semibold text-white/90">
+                    <h3 className="text-xl font-semibold text-[var(--color-text-primary)]">
                       {item.title}
                     </h3>
                   </div>
-                  <p className="text-white/70 text-sm leading-relaxed">
+                  <p className="text-[var(--color-text-muted)] text-sm leading-relaxed">
                     {item.description}
                   </p>
                 </div>

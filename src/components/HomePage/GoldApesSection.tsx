@@ -57,7 +57,7 @@ const GoldApesSection = () => {
           : 'hidden sm:block w-40 h-40 md:w-56 md:h-56 z-0 opacity-80 hover:opacity-100'
     }`,
     card: position === Math.floor(displayIndices.length / 2)
-      ? 'rounded-3xl shadow-2xl ring-2 ring-yellow-400/50' 
+      ? 'rounded-3xl shadow-2xl ring-2 ring-[var(--color-button-primary)]/50' 
       : 'rounded-3xl shadow-2xl'
   });
 
@@ -65,10 +65,10 @@ const GoldApesSection = () => {
     <section className="container mx-auto px-4 py-16 md:py-24">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-8 sm:mb-16">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white/80 mb-4 sm:mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[var(--color-text-primary)] mb-4 sm:mb-6">
             TRIBE19 CLUB
           </h2>
-          <p className="text-base sm:text-lg md:text-xl text-white/70 max-w-3xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl text-[var(--color-text-muted)] max-w-3xl mx-auto">
             Unlock the prestige of joining the exclusive club for holders of all 19 existing species. 
             Enjoy unparalleled fame and lavish rewards!
           </p>
@@ -97,15 +97,15 @@ const GoldApesSection = () => {
                     <div className={`mt-4 text-center transition-all duration-300 ${
                       i === Math.floor(displayIndices.length / 2) ? 'opacity-100' : 'opacity-0'
                     }`}>
-                      <h3 className="text-lg font-semibold text-white/90 mb-2">
+                      <h3 className="text-lg font-semibold text-[var(--color-text-primary)] mb-2">
                         {ape.name}
                       </h3>
                       <a
                         href={ape.twitter}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-white/70 hover:text-white 
-                                 transition-colors duration-200"
+                        className="inline-flex items-center gap-2 text-[var(--color-text-muted)] 
+                                 hover:text-[var(--color-text-primary)] transition-colors duration-200"
                       >
                         <FaXTwitter className="w-5 h-5" />
                       </a>
@@ -119,16 +119,20 @@ const GoldApesSection = () => {
           {/* Navigation Arrows */}
           <button
             onClick={handlePrevious}
-            className="absolute left-0 top-1/2 -translate-y-1/2 p-2 bg-black/40 hover:bg-black/60 
-                     rounded-full text-white/80 hover:text-white transition-all duration-300"
+            className="absolute left-0 top-1/2 -translate-y-1/2 p-2 
+                     bg-[var(--color-overlay-dark)]/40 hover:bg-[var(--color-overlay-dark)]/60 
+                     rounded-full text-[var(--color-text-primary)]/80 hover:text-[var(--color-text-primary)] 
+                     transition-all duration-300"
             aria-label="Previous"
           >
             <IoChevronBackOutline className="w-6 h-6" />
           </button>
           <button
             onClick={handleNext}
-            className="absolute right-0 top-1/2 -translate-y-1/2 p-2 bg-black/40 hover:bg-black/60 
-                     rounded-full text-white/80 hover:text-white transition-all duration-300"
+            className="absolute right-0 top-1/2 -translate-y-1/2 p-2 
+                     bg-[var(--color-overlay-dark)]/40 hover:bg-[var(--color-overlay-dark)]/60 
+                     rounded-full text-[var(--color-text-primary)]/80 hover:text-[var(--color-text-primary)] 
+                     transition-all duration-300"
             aria-label="Next"
           >
             <IoChevronForwardOutline className="w-6 h-6" />
@@ -142,18 +146,18 @@ const GoldApesSection = () => {
               'data-src': goldApes[currentIndex].image,
               alt: goldApes[currentIndex].alt,
             }}
-            className="w-full rounded-3xl shadow-2xl ring-2 ring-yellow-400/50 mb-4"
+            className="w-full rounded-3xl shadow-2xl ring-2 ring-[var(--color-button-primary)]/50 mb-4"
           />
           <div className="text-center mb-4">
-            <h3 className="text-lg font-semibold text-white/90 mb-2">
+            <h3 className="text-lg font-semibold text-[var(--color-text-primary)] mb-2">
               {goldApes[currentIndex].name}
             </h3>
             <a
               href={goldApes[currentIndex].twitter}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-white/70 hover:text-white 
-                       transition-colors duration-200"
+              className="inline-flex items-center gap-2 text-[var(--color-text-muted)] 
+                       hover:text-[var(--color-text-primary)] transition-colors duration-200"
             >
               <FaXTwitter className="w-5 h-5" />
             </a>
@@ -163,7 +167,9 @@ const GoldApesSection = () => {
               <div
                 key={ape.id}
                 className={`w-14 h-14 rounded-lg overflow-hidden cursor-pointer transition-all duration-300 
-                          ${index === currentIndex ? 'ring-2 ring-yellow-400/50' : 'opacity-70 hover:opacity-100'}`}
+                          ${index === currentIndex 
+                            ? 'ring-2 ring-[var(--color-button-primary)]/50' 
+                            : 'opacity-70 hover:opacity-100'}`}
                 onClick={() => setCurrentIndex(index)}
               >
                 <img 

@@ -27,39 +27,46 @@ const WhispersOfLoresSection: React.FC = () => {
 
   return (
     <section className="max-w-7xl mx-auto px-4 py-6 sm:py-12">
-      <section className="text-center mb-8 sm:mb-12">
-        <h2 className="text-3xl sm:text-4xl font-semibold bg-gt-to-b from-white to-white/70 bg-clip-text text-transparent mb-3">
+      <div className="text-center mb-8 sm:mb-12">
+        <h2 className="text-3xl sm:text-4xl font-semibold text-[var(--color-text-primary)] mb-3">
           Whispers of Lore
         </h2>
-        <h1 className="text-2xl sm:text-4xl text-white/80 w-full sm:w-2/3 mx-auto px-4">
-          The Whispers of Lores
-        </h1>
-      </section>
+        <p className="text-lg sm:text-xl text-[var(--color-text-muted)] w-full sm:w-2/3 mx-auto">
+          Ancient tales that shape our future
+        </p>
+      </div>
 
-      <section className="flex flex-col md:flex-row gap-6 md:gap-4 px-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-4">
         {lores.map((lore) => (
           <div
             key={lore.id}
-            className="flex-1 bg-white/10 backdrop-blur-lg border border-white/20 rounded-lg overflow-hidden transform transition-transform duration-300 cursor-pointer hover:-translate-y-2"
+            className="bg-[var(--color-overlay-dark)]/5 hover:bg-[var(--color-overlay-dark)]/10 
+                     backdrop-blur-sm border border-[var(--color-text-primary)]/10 
+                     hover:border-[var(--color-text-primary)]/20 rounded-lg overflow-hidden 
+                     transform transition-all duration-300 cursor-pointer hover:-translate-y-2"
           >
-            <section className="relative h-48 sm:h-60 overflow-hidden">
+            <div className="relative h-48 sm:h-60 overflow-hidden">
               <Card
                 image={{ 'data-src': lore.image, alt: lore.title }}
-                data-src={lore.image} 
                 className="w-full h-full object-cover transition-transform duration-300 ease-out hover:scale-105"
               />
-              <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black to-transparent"></div>
-              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-white/20"></div>
-            </section>
+              <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-overlay-dark)] to-transparent"></div>
+              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r 
+                            from-transparent via-[var(--color-text-primary)]/20 to-transparent"></div>
+            </div>
             <div className="p-4 sm:p-6">
-              <h5 className="text-lg sm:text-xl font-semibold mb-2 bg-gradient-to-r from-red-600 to-pink-500 bg-clip-text text-transparent">
+              <h3 className="text-lg sm:text-xl font-semibold mb-2 
+                           bg-gradient-to-r from-[var(--color-button-primary)] to-[var(--color-button-hover)] 
+                           bg-clip-text text-transparent">
                 {lore.title}
-              </h5>
-              <p className="text-sm text-white/80 leading-6">{lore.content}</p>
+              </h3>
+              <p className="text-sm text-[var(--color-text-muted)] leading-relaxed">
+                {lore.content}
+              </p>
             </div>
           </div>
         ))}
-      </section>
+      </div>
     </section>
   );
 };

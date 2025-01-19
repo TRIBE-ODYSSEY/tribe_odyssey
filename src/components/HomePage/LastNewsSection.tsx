@@ -7,14 +7,14 @@ const LatestNewsSection = () => {
   if (loading) {
     return (
       <section className="max-w-7xl mx-auto px-4 py-12">
-        <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8">
+        <h2 className="text-3xl sm:text-4xl font-bold text-[var(--color-text-primary)] text-center mb-8">
           Latest Updates
         </h2>
         <div className="flex flex-col md:flex-row space-y-6 md:space-y-0 md:space-x-6">
           {[1, 2, 3].map((i) => (
             <div 
               key={i} 
-              className="flex-1 animate-pulse bg-white/10 rounded-lg h-[400px]"
+              className="flex-1 animate-pulse bg-[var(--color-text-primary)]/10 rounded-lg h-[400px]"
             />
           ))}
         </div>
@@ -25,17 +25,17 @@ const LatestNewsSection = () => {
   if (error) {
     return (
       <section className="max-w-7xl mx-auto px-4 py-12">
-        <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8">
+        <h2 className="text-3xl sm:text-4xl font-bold text-[var(--color-text-primary)] text-center mb-8">
           Latest Updates
         </h2>
-        <p className="text-center text-red-500">{error}</p>
+        <p className="text-center text-[var(--color-button-primary)]">{error}</p>
       </section>
     );
   }
 
   return (
     <section className="max-w-7xl mx-auto px-4 py-12">
-      <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8">
+      <h2 className="text-3xl sm:text-4xl font-bold text-[var(--color-text-primary)] text-center mb-8">
         Latest Updates
       </h2>
 
@@ -50,9 +50,13 @@ const LatestNewsSection = () => {
           >
             <Card
               height="auto"
-              className="flex flex-col h-full overflow-hidden transition-transform duration-300 group-hover:-translate-y-2"
+              className="flex flex-col h-full overflow-hidden transition-transform duration-300 
+                       bg-[var(--color-overlay-dark)]/5 hover:bg-[var(--color-overlay-dark)]/10 
+                       backdrop-blur-sm border border-[var(--color-text-primary)]/10 
+                       hover:border-[var(--color-text-primary)]/20 rounded-xl
+                       group-hover:-translate-y-2"
             >
-              <div className="relative h-48 overflow-hidden bg-gray-900">
+              <div className="relative h-48 overflow-hidden bg-[var(--color-tertiary)]">
                 {post.thumbnail && (
                   <img
                     src={post.thumbnail}
@@ -61,17 +65,18 @@ const LatestNewsSection = () => {
                     loading="lazy"
                   />
                 )}
-                <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 h-1/2 
+                              bg-gradient-to-t from-[var(--color-overlay-dark)] to-transparent" />
               </div>
 
               <div className="p-6 flex flex-col flex-grow">
-                <h3 className="text-xl font-semibold mb-3 line-clamp-2 text-white/90">
+                <h3 className="text-xl font-semibold mb-3 line-clamp-2 text-[var(--color-text-primary)]">
                   {post.title}
                 </h3>
-                <p className="text-sm text-white/70 mb-4 line-clamp-3">
+                <p className="text-sm text-[var(--color-text-muted)] mb-4 line-clamp-3">
                   {post.content}
                 </p>
-                <time className="text-sm text-white/50 mt-auto">
+                <time className="text-sm text-[var(--color-text-muted)]/50 mt-auto">
                   {post.pubDate}
                 </time>
               </div>

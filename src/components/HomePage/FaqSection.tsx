@@ -75,19 +75,23 @@ const FaqSection: React.FC = () => {
       {faqItems.map((faq) => (
         <div
           key={faq.id}
-          className="bg-black/20 backdrop-blur-sm rounded-xl border border-white/5 overflow-hidden"
+          className="bg-[var(--color-overlay-dark)]/5 backdrop-blur-sm rounded-xl 
+                   border border-[var(--color-text-primary)]/10 
+                   hover:border-[var(--color-text-primary)]/20 overflow-hidden
+                   transition-all duration-300"
         >
           <button
-            className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-white/5 transition-colors"
+            className="w-full px-6 py-4 text-left flex items-center justify-between 
+                     hover:bg-[var(--color-overlay-dark)]/10 transition-colors duration-300"
             onClick={() => toggleFaq(faq.id)}
             aria-expanded={openId === faq.id}
           >
-            <span className="text-lg font-semibold text-white/90">
+            <span className="text-lg font-semibold text-[var(--color-text-primary)]">
               {faq.question}
             </span>
-            <span className={`transform transition-transform ${openId === faq.id ? 'rotate-45' : ''}`}>
+            <span className={`transform transition-transform duration-300 ${openId === faq.id ? 'rotate-45' : ''}`}>
               <svg
-                className="w-5 h-5 text-white/70"
+                className="w-5 h-5 text-[var(--color-text-muted)]"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -102,8 +106,8 @@ const FaqSection: React.FC = () => {
             </span>
           </button>
           {openId === faq.id && (
-            <div className="px-6 pb-4 text-white/70">
-              <p className="text-sm md:text-base leading-relaxed">
+            <div className="px-6 pb-4">
+              <p className="text-sm md:text-base leading-relaxed text-[var(--color-text-muted)]">
                 {faq.answer}
               </p>
             </div>
@@ -114,10 +118,10 @@ const FaqSection: React.FC = () => {
   );
 
   return (
-    <section className="w-full bg-backgroundDark">
+    <section className="w-full bg-[var(--color-background)]">
       <div className="container mx-auto px-4 py-16 md:py-24">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold text-white/90 text-center mb-12">
+          <h2 className="text-4xl md:text-5xl font-bold text-[var(--color-text-primary)] text-center mb-12">
             FAQ
           </h2>
 
