@@ -28,9 +28,9 @@ const Card: React.FC<CardProps> = ({
 
   return (
     <section
-      className={`relative overflow-hidden rounded-lg 
-                bg-[var(--color-overlay-dark)] backdrop-blur-sm 
-                border border-[var(--color-text-primary)]/5
+      className={`relative overflow-hidden rounded-[20px] 
+                bg-[var(--color-overlay-dark)]/15 backdrop-blur-[20px]
+                border-2 border-[var(--color-text-primary)]/[0.15]
                 transition-all duration-300 ${className}`}
       style={{
         height: size || height || 'auto',
@@ -56,15 +56,22 @@ const Card: React.FC<CardProps> = ({
             }}
             loading="lazy"
           />
+          {/* Drop shadow effect */}
+          <div className="absolute inset-0 shadow-[inset_0px_2px_20px_rgba(0,0,0,0.1)]" />
+          
+          {/* Background blur effect */}
+          <div className="absolute inset-0 backdrop-blur-[10px] opacity-0 
+                       group-hover:opacity-100 transition-opacity duration-300" />
+          
           {/* Gradient overlay for images */}
           <div className="absolute inset-0 bg-gradient-to-t 
-                        from-[var(--color-overlay-dark)] to-transparent 
-                        opacity-0 transition-opacity duration-300 
-                        group-hover:opacity-100" />
+                       from-[var(--color-overlay-dark)]/100 to-transparent/0 
+                       opacity-0 transition-opacity duration-300 
+                       group-hover:opacity-100" />
         </div>
       )}
       {children && (
-        <div className={`${image ? 'p-4 sm:p-6' : ''} text-[var(--color-text-on-dark)]`}>
+        <div className={`${image ? 'p-5' : ''} text-[var(--color-text-on-dark)]`}>
           {children}
         </div>
       )}
