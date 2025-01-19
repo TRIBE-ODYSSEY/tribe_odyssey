@@ -28,10 +28,6 @@ const ENSPage: React.FC = () => {
     console.log('Registering:', domainName);
   };
 
-  const handleInfoClick = () => {
-    console.log('Info clicked');
-  };
-
   return (
     <PageLayout>
       <div className="container mx-auto px-4 pt-20">
