@@ -99,10 +99,11 @@ const WalletSection: React.FC = () => {
   const isStakingPath = location.pathname.includes('/staking');
   const isRafflesAdminPath = location.pathname.includes('/raffles/admin');
   const isRafflesPath = location.pathname.includes('/raffles');
+  const isENSPage = location.pathname.includes('/ens');
 
   return (
     <div className="flex items-center gap-2">
-      {isStakingPath || isRafflesAdminPath || isRafflesPath ? (
+      {isStakingPath || isRafflesAdminPath || isRafflesPath || isENSPage ? (
         <ConnectButton.Custom>
           {({
             account,
