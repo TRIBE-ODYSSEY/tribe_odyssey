@@ -31,7 +31,7 @@ const sections: SectionComponent[] = [
 
 const HomePage: React.FC = () => {
   return (
-    <section className="max-w-full">
+    <section className="max-w-full bg-[var(--color-background)]">
       <Suspense
         fallback={
           <Spinner color="warning" aria-label="Warning spinner example" />

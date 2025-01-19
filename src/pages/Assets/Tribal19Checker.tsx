@@ -201,7 +201,8 @@ const Tribal19CheckerPage: React.FC = () => {
       <div className="container mx-auto px-4 pt-20">
         <div className="max-w-[600px] mx-auto">
           <PageTitle>
-            <span className="bg-gradient-to-b from-white/90 to-white/0 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-b from-[var(--color-text-primary)] to-[var(--color-text-primary)]/0 
+                           bg-clip-text text-transparent">
               Tribe 19 Checker
             </span>
           </PageTitle>
@@ -211,22 +212,26 @@ const Tribal19CheckerPage: React.FC = () => {
             <div className="relative">
               <input
                 type="text"
-                className={`w-full px-6 py-4 bg-black/20 border ${
-                  error ? 'border-red-500' : 'border-white/15'
-                } rounded-full text-white/60 placeholder-white/40 focus:outline-none focus:border-white/30
-                transition-all duration-300`}
+                className={`w-full px-6 py-4 bg-[var(--color-overlay-dark)] border 
+                         ${error ? 'border-[var(--color-button-primary)]' : 'border-[var(--color-text-primary)]/15'} 
+                         rounded-full text-[var(--color-text-on-dark)] 
+                         placeholder-[var(--color-text-secondary)]/30 
+                         focus:outline-none focus:border-[var(--color-text-primary)]/30
+                         transition-all duration-300`}
                 placeholder="ETH ADDRESS/ENS"
                 value={address}
                 onChange={handleAddressChange}
                 disabled={isLoading}
               />
               <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                <svg className="w-6 h-6 text-white/60" fill="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 text-[var(--color-text-on-dark)]/60" 
+                     fill="currentColor" 
+                     viewBox="0 0 24 24">
                   <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
                 </svg>
               </div>
               {error && (
-                <p className="mt-2 text-sm text-red-500">{error}</p>
+                <p className="mt-2 text-sm text-[var(--color-button-primary)]">{error}</p>
               )}
             </div>
 
@@ -236,14 +241,15 @@ const Tribal19CheckerPage: React.FC = () => {
               disabled={!isValidAddress || isLoading}
               className={`w-full py-4 px-6 rounded-full transition-all duration-300
                 ${isValidAddress && !isLoading 
-                  ? 'bg-red-600 hover:bg-red-700 transform hover:-translate-y-0.5' 
-                  : 'bg-red-600/50 cursor-not-allowed'
-                } text-white font-medium`}
+                  ? 'bg-[var(--color-button-primary)] hover:bg-[var(--color-button-hover)] transform hover:-translate-y-0.5' 
+                  : 'bg-[var(--color-button-disabled)] cursor-not-allowed'
+                } text-[var(--color-text-on-primary)] font-medium`}
             >
               {isLoading ? (
                 <div className="flex items-center justify-center gap-2">
-                  <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                  Analysing...
+                  <div className="w-5 h-5 border-2 border-[var(--color-text-primary)]/20 
+                                border-t-[var(--color-text-primary)] rounded-full animate-spin" />
+                  <span>Analysing...</span>
                 </div>
               ) : (
                 'Analyse'
@@ -253,8 +259,10 @@ const Tribal19CheckerPage: React.FC = () => {
             {/* Results Section */}
             {result && (
               <div className={`transition-all duration-800 ease-in-out
-                ${result.isEligible ? 'bg-green-500/5 border-green-500/50' : 'bg-blue-500/5 border-blue-500/50'}
-                border rounded-lg p-4 text-white`}
+                ${result.isEligible 
+                  ? 'bg-[var(--color-button-primary)]/5 border-[var(--color-button-primary)]/50' 
+                  : 'bg-[var(--color-button-disabled)]/5 border-[var(--color-button-disabled)]/50'}
+                border rounded-lg p-4 text-[var(--color-text-on-dark)]`}
               >
                 {result.message}
               </div>

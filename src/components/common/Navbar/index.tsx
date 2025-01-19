@@ -17,11 +17,11 @@ const MenuDropdown: React.FC<{ title: string; items: Array<{ name: string; path:
     <Menu as="div" className="relative">
       {({ open }) => (
         <>
-          <Menu.Button className="flex items-center text-white/80 hover:text-white px-3 py-2">
+          <Menu.Button className="flex items-center text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] px-3 py-2 transition-colors">
             {title}
             {open ? <RiArrowDropUpLine /> : <RiArrowDropDownLine />}
           </Menu.Button>
-          <Menu.Items className="absolute left-0 mt-2 w-48 rounded-md bg-[#1A1A1A] border border-[#2A2A2A] shadow-lg backdrop-blur-sm">
+          <Menu.Items className="absolute left-0 mt-2 w-48 rounded-md bg-[var(--color-secondary)] border border-[#2A2A2A] shadow-lg backdrop-blur-sm">
             <div className="py-1">
               {items.map((item) => (
                 <Menu.Item key={item.name}>
@@ -32,7 +32,7 @@ const MenuDropdown: React.FC<{ title: string; items: Array<{ name: string; path:
                         target="_blank"
                         rel="noopener noreferrer"
                         className={`${
-                          active ? 'bg-[#2A2A2A] text-white' : 'text-white/70'
+                          active ? 'bg-[#2A2A2A] text-[var(--color-text-primary)]' : 'text-[var(--color-text-secondary)]'
                         } block px-4 py-2 text-sm transition-colors`}
                       >
                         {item.name}
@@ -41,7 +41,7 @@ const MenuDropdown: React.FC<{ title: string; items: Array<{ name: string; path:
                       <Link
                         to={item.path}
                         className={`${
-                          active ? 'bg-[#2A2A2A] text-white' : 'text-white/70'
+                          active ? 'bg-[#2A2A2A] text-[var(--color-text-primary)]' : 'text-[var(--color-text-secondary)]'
                         } block px-4 py-2 text-sm transition-colors`}
                       >
                         {item.name}
@@ -71,7 +71,7 @@ const SocialIcons: React.FC<{ className?: string }> = ({ className }) => {
         <a
           key={idx}
           href={social.href}
-          className="text-white/70 hover:text-white transition-colors text-lg sm:text-xl"
+          className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-lg sm:text-xl"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -172,7 +172,7 @@ const MobileNav: React.FC<{
       <div className="h-full flex flex-col pt-16 pb-8 px-4 overflow-y-auto">
         <button 
           onClick={onClose} 
-          className="absolute top-4 right-4 text-white/80 hover:text-white"
+          className="absolute top-4 right-4 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
           aria-label="Close menu"
         >
           <IoClose className="w-6 h-6" />
@@ -204,7 +204,7 @@ const Navbar: React.FC = () => {
   }, []);
 
   return (
-    <nav className="sticky top-0 w-full bg-backgroundDark/95 backdrop-blur-sm z-50">
+    <nav className="sticky top-0 w-full bg-[var(--color-background)]/95 backdrop-blur-sm z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
         <div className="flex items-center justify-between md:justify-center gap-4">
           <Link to="/" className="flex items-center">
@@ -224,7 +224,7 @@ const Navbar: React.FC = () => {
 
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden text-white/80 hover:text-white"
+            className="md:hidden text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
             aria-label="Toggle menu"
           >
             <FaBars size={22} />

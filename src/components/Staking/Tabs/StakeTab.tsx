@@ -132,26 +132,28 @@ const StakeTab: React.FC<StakeTabProps> = ({
         <Button
           onClick={handleApprove}
           disabled={!address || isWaiting}
-          className="w-full"
+          className="w-full bg-[var(--color-button-primary)] hover:bg-[var(--color-button-hover)] 
+                    text-[var(--color-text-on-primary)]"
         >
           Approve Staking Contract
         </Button>
       ) : (
         <>
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium text-white">
+            <h3 className="text-lg font-medium text-[var(--color-text-primary)]">
               Available NFTs ({unstaked.length})
             </h3>
             <button
               onClick={selectAll}
-              className="text-red-400 hover:text-red-300 transition-colors"
+              className="text-[var(--color-button-primary)] hover:text-[var(--color-button-hover)] 
+                       transition-colors duration-200"
             >
               {selectedNFTs.length === unstaked.length ? 'Deselect All' : 'Select All'}
             </button>
           </div>
 
           {unstaked.length === 0 ? (
-            <div className="text-center py-12 text-white/60">
+            <div className="text-center py-12 text-[var(--color-text-muted)]">
               No unstaked NFTs found
             </div>
           ) : (
@@ -172,7 +174,8 @@ const StakeTab: React.FC<StakeTabProps> = ({
           <Button
             onClick={handleStake}
             disabled={selectedNFTs.length === 0 || !address || isWaiting}
-            className="w-full"
+            className="w-full bg-[var(--color-button-primary)] hover:bg-[var(--color-button-hover)] 
+                      text-[var(--color-text-on-primary)] disabled:bg-[var(--color-button-disabled)]"
           >
             {isWaiting ? 'Staking...' : `Stake Selected (${selectedNFTs.length})`}
           </Button>

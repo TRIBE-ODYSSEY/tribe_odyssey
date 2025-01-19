@@ -32,11 +32,12 @@ const marketplaces = [
 
 const MaintenancePage: React.FC = () => {
   return (
-    <div className="min-h-screen bg-backgroundDark relative overflow-hidden">
+    <div className="min-h-screen bg-[var(--color-background)] relative overflow-hidden">
       <div 
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: `radial-gradient(ellipse at 50% 0%, #FF0009 0%, rgba(255, 0, 9, 0.05) 50%, transparent 100%)`,
+          background: `radial-gradient(ellipse at 50% 0%, var(--color-button-primary) 0%, 
+                      rgba(255, 0, 9, 0.05) 50%, transparent 100%)`,
           opacity: '0.05',
           mixBlendMode: 'screen',
         }}
@@ -49,7 +50,7 @@ const MaintenancePage: React.FC = () => {
         >
           <PageTitle>System Maintenance</PageTitle>
           
-          <p className="text-lg text-gray-400 mb-12">
+          <p className="text-lg text-[var(--color-text-muted)] mb-12">
             We're currently upgrading our systems to bring you an even better experience.
             Please check back soon.
           </p>
@@ -63,7 +64,8 @@ const MaintenancePage: React.FC = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.1 }}
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] 
+                         transition-colors duration-200"
                 aria-label={link.name}
               >
                 {link.icon}
@@ -80,22 +82,29 @@ const MaintenancePage: React.FC = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.05 }}
-                className="bg-gray-800/50 p-4 rounded-lg flex items-center justify-center
-                         hover:bg-gray-700/50 transition-colors"
+                className="bg-[var(--color-overlay-dark)] p-4 rounded-xl 
+                         flex items-center justify-center
+                         hover:bg-[var(--color-overlay-dark)]/80 
+                         transition-colors duration-200
+                         border border-[var(--color-text-primary)]/10"
               >
-                {marketplace.logo}
+                <span className="text-[var(--color-text-on-dark)]">
+                  {marketplace.logo}
+                </span>
               </motion.a>
             ))}
           </div>
 
           {/* Status Updates */}
-          <div className="mt-12 text-sm text-gray-500">
-            For status updates, please follow us on{'X'}
+          <div className="mt-12 text-sm text-[var(--color-text-muted)]">
+            For status updates, please follow us on X
             <a 
               href="https://x.com/tribeodyssey" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-red-400 hover:text-red-300"
+              className="ml-1 text-[var(--color-button-primary)] 
+                       hover:text-[var(--color-button-hover)] 
+                       transition-colors duration-200"
             >
               Twitter
             </a>

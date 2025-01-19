@@ -1,4 +1,5 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 
 interface Props {
   children: ReactNode;
@@ -30,16 +31,23 @@ class ErrorBoundary extends Component<Props, State> {
   public render() {
     if (this.state.hasError) {
       return (
-        <div
-          style={{
-            padding: '20px',
-            textAlign: 'center',
-            color: 'white',
-            background: 'linear-gradient(180deg, #14121b 0%, #000000 100%)',
-          }}
-        >
-          <h1>Sorry.. there was an error</h1>
-          <p>{this.state.error?.message}</p>
+        <div className="min-h-screen bg-[var(--color-background)] flex items-center justify-center p-4">
+          <div className="max-w-md w-full text-center space-y-4">
+            <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">
+              Oops! Something went wrong
+            </h1>
+            <p className="text-[var(--color-text-muted)]">
+              {this.state.error?.message || 'An unexpected error occurred'}
+            </p>
+            <Link 
+              to="/"
+              className="inline-block px-6 py-2 bg-[var(--color-button-primary)] 
+                       text-[var(--color-text-on-primary)] rounded-lg 
+                       hover:bg-[var(--color-button-hover)] transition-colors duration-200"
+            >
+              Return Home
+            </Link>
+          </div>
         </div>
       );
     }

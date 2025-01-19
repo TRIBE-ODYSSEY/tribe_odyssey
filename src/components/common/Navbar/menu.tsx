@@ -54,34 +54,38 @@ const Menu: React.FC<MenuProps> = ({
   };
 
   return (
-    <div className="menu-container">
+    <div className="menu-container relative z-50">
       <div 
         className={`
-          menu relative transition-all duration-200 overflow-hidden
-          ${isMobile ? 'w-full mt-1' : 'absolute min-w-[180px]'}
+          menu relative transition-all duration-300 overflow-hidden
+          ${isMobile ? 'w-full mt-2' : 'absolute min-w-[180px]'}
           ${className}
         `}
         style={!isMobile ? { width } : undefined}
       >
         <div className={`
-          ${isMobile ? 'bg-black/40' : 'bg-white/90'} 
-          backdrop-blur-lg border border-white/10 
-          shadow-xl rounded-xl
+          ${isMobile 
+            ? 'bg-[var(--color-overlay-dark)] shadow-[0_8px_32px_rgba(0,0,0,0.4)]' 
+            : 'bg-[var(--color-overlay-light)]'} 
+          backdrop-blur-xl border border-[var(--color-text-primary)]/15 
+          shadow-xl rounded-2xl
+          ${isMobile ? 'p-2' : 'p-1'}
         `}>
-          <ul className="p-1">
+          <ul className={`space-y-1 ${isMobile ? 'divide-y divide-[var(--color-text-primary)]/5' : ''}`}>
             {items.map((item, index) => (
-              <li key={index}>
+              <li key={index} className={`${isMobile ? 'py-1 first:pt-0 last:pb-0' : ''}`}>
                 {item.href?.startsWith('/') ? (
                   <Link
                     to={item.href}
                     onClick={(e) => handleItemClick(e, item)}
                     className={`
-                      block w-full text-left px-4 py-2.5 
-                      transition-colors rounded-lg my-0.5
+                      block w-full text-left px-4 py-3
+                      transition-all duration-200 rounded-xl
                       ${isMobile 
-                        ? 'text-white/90 hover:text-white hover:bg-white/10' 
-                        : 'text-gray-800 hover:bg-gray-100'
+                        ? 'text-[var(--color-text-on-dark)] hover:bg-[var(--color-text-primary)]/10 active:bg-[var(--color-text-primary)]/15 text-base font-medium' 
+                        : 'text-[var(--color-text-on-light)] hover:bg-[var(--color-text-primary)]/5 text-sm'
                       }
+                      hover:translate-x-1 hover:shadow-md
                     `}
                   >
                     {item.label}
@@ -91,12 +95,13 @@ const Menu: React.FC<MenuProps> = ({
                     href={item.href || '#'}
                     onClick={(e) => handleItemClick(e, item)}
                     className={`
-                      block w-full text-left px-4 py-2.5 
-                      transition-colors rounded-lg my-0.5
+                      block w-full text-left px-4 py-3
+                      transition-all duration-200 rounded-xl
                       ${isMobile 
-                        ? 'text-white/90 hover:text-white hover:bg-white/10' 
-                        : 'text-gray-800 hover:bg-gray-100'
+                        ? 'text-[var(--color-text-on-dark)] hover:bg-[var(--color-text-primary)]/10 active:bg-[var(--color-text-primary)]/15 text-base font-medium' 
+                        : 'text-[var(--color-text-on-light)] hover:bg-[var(--color-text-primary)]/5 text-sm'
                       }
+                      hover:translate-x-1 hover:shadow-md
                     `}
                   >
                     {item.label}

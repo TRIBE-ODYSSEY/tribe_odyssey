@@ -10,15 +10,17 @@ const beats = [
 ];
 
 const BeatCard: React.FC<{ title: string; url: string }> = ({ title, url }) => (
-  <div className="group w-full p-6 bg-[#181818] rounded-lg border border-white/10 
+  <div className="group w-full p-6 bg-[var(--color-secondary)] rounded-lg 
+                  border border-[var(--color-text-primary)]/10 
                   transition-all duration-300 hover:-translate-y-0.5 
-                  hover:border-white/20">
+                  hover:border-[var(--color-text-primary)]/20">
     <div className="flex flex-col gap-5">
-      <MusicalNoteIcon className="w-12 h-12 text-red-600" />
+      <MusicalNoteIcon className="w-12 h-12 text-[var(--color-button-primary)]" />
       <div className="flex justify-between items-center w-full">
-        <span className="text-white">{title}</span>
+        <span className="text-[var(--color-text-primary)]">{title}</span>
         <a href={url} 
-           className="text-red-600 hover:opacity-80 transition-opacity duration-300">
+           className="text-[var(--color-button-primary)] hover:text-[var(--color-button-hover)] 
+                    transition-colors duration-300">
           Download
         </a>
       </div>
@@ -41,7 +43,7 @@ const TribalBeatsPage: React.FC = () => {
         <div className="flex flex-col items-center max-w-[960px] mx-auto gap-16">
           {/* Description Section */}
           <div className="flex flex-col items-center gap-8 w-full">
-            <p className="text-white/80 text-lg text-center max-w-[800px] 
+            <p className="text-[var(--color-text-secondary)] text-lg text-center max-w-[800px] 
                          leading-relaxed font-medium">
               Thanks to Leeroy, reppin' Tribe just got even easier with the
               legendary musician and DJ (The Prodigy) creating some badass custom
@@ -49,10 +51,10 @@ const TribalBeatsPage: React.FC = () => {
             </p>
 
             <div className="flex items-center gap-4">
-              <span className="text-white/80">Follow Leeroy</span>
+              <span className="text-[var(--color-text-secondary)]">Follow Leeroy</span>
               <button
                 onClick={handleTwitterClick}
-                className="text-[#fe3737] p-2 rounded-full 
+                className="text-[var(--color-button-primary)] p-2 rounded-full 
                          hover:scale-110 transition-transform duration-300"
               >
                 <FaXTwitter className="w-5 h-5" />

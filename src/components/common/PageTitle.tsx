@@ -12,7 +12,10 @@ const PageTitle: React.FC<PageTitleProps> = ({ children }) => {
         fontFamily: 'Montserrat, sans-serif',
         lineHeight: '100%',
         letterSpacing: '-3%',
-        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.6) 100%)',
+        background: `linear-gradient(180deg, 
+          var(--color-text-primary) 0%, 
+          rgba(255, 255, 255, 0.6) 100%
+        )`,
         WebkitBackgroundClip: 'text',
         WebkitTextFillColor: 'transparent',
         backgroundClip: 'text'

@@ -21,7 +21,7 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({ events, title, subtit
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6 }}
-            className="text-3xl md:text-4xl font-bold text-white/90 mb-4"
+            className="text-3xl md:text-4xl font-bold text-[var(--color-text-primary)] mb-4"
           >
             {title}
           </motion.h2>
@@ -29,7 +29,7 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({ events, title, subtit
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-lg text-white/70"
+            className="text-lg text-[var(--color-text-secondary)]"
           >
             {subtitle}
           </motion.p>
@@ -38,10 +38,10 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({ events, title, subtit
         <div className="relative max-w-4xl mx-auto">
           {/* Timeline Line */}
           <div className="absolute left-4 md:left-1/2 transform md:-translate-x-px 
-                        top-0 bottom-0 w-px bg-white/10">
+                        top-0 bottom-0 w-px bg-[var(--color-text-secondary)]/10">
             <motion.div
               style={{ height: lineHeight }}
-              className="w-full bg-gradient-to-b from-red-500 to-red-600"
+              className="w-full bg-gradient-to-b from-[var(--color-button-primary)] to-[var(--color-button-hover)]"
             />
           </div>
 

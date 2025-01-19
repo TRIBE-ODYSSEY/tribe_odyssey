@@ -82,12 +82,14 @@ const StakingStats: React.FC = () => {
       {stats.map((stat) => (
         <Card
           key={stat.label}
-          className="p-4 backdrop-blur-sm bg-white/5 hover:bg-white/10 transition-all duration-300"
+          className="p-4 bg-[var(--color-overlay-dark)]/5 hover:bg-[var(--color-overlay-dark)]/10 
+                   backdrop-blur-sm transition-all duration-300"
           data-tooltip={stat.tooltip}
         >
           <div className="text-center">
-            <p className="text-white/70 text-sm mb-1">{stat.label}</p>
-            <p className="text-2xl font-bold bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent">
+            <p className="text-[var(--color-text-muted)] text-sm mb-1">{stat.label}</p>
+            <p className="text-2xl font-bold bg-gradient-to-r from-[var(--color-button-primary)] 
+                       to-[var(--color-button-hover)] bg-clip-text text-transparent">
               {stat.value}
             </p>
           </div>

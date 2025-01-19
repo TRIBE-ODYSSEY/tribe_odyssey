@@ -42,35 +42,37 @@ const HealthChecker: React.FC = () => {
   };
 
   const cardProps = {
-    className: 'custom-card-class backdrop-blur-sm',
+    className: 'bg-[var(--color-overlay-dark)]/5 backdrop-blur-sm border border-[var(--color-text-primary)]/10',
     image: {
       'data-src': '/images/health-check.png',
       alt: 'Health Check Status',
     },
     children: (
-      <div className="p-4">
-        <h2 className="text-xl font-bold mb-4">System Health Status</h2>
+      <div className="p-4 space-y-4">
+        <h2 className="text-xl font-bold text-[var(--color-text-primary)] mb-4">
+          System Health Status
+        </h2>
         <div className="space-y-2">
-          <div className="flex justify-between">
-            <span>Wallet Connection:</span>
+          <div className="flex justify-between items-center">
+            <span className="text-[var(--color-text-muted)]">Wallet Connection:</span>
             <span className={isConnected ? 'text-green-400' : 'text-red-400'}>
               {isConnected ? 'Connected' : 'Disconnected'}
             </span>
           </div>
-          <div className="flex justify-between">
-            <span>Network:</span>
+          <div className="flex justify-between items-center">
+            <span className="text-[var(--color-text-muted)]">Network:</span>
             <span className={chainId ? 'text-green-400' : 'text-red-400'}>
               {chainId ? getChainName(chainId) : 'Not Connected'}
             </span>
           </div>
-          <div className="flex justify-between">
-            <span>Chain ID:</span>
+          <div className="flex justify-between items-center">
+            <span className="text-[var(--color-text-muted)]">Chain ID:</span>
             <span className={chainId ? 'text-green-400' : 'text-red-400'}>
               {chainId || 'Unknown'}
             </span>
           </div>
-          <div className="flex justify-between">
-            <span>Node Health:</span>
+          <div className="flex justify-between items-center">
+            <span className="text-[var(--color-text-muted)]">Node Health:</span>
             <span className={isHealthy ? 'text-green-400' : 'text-red-400'}>
               {isHealthy ? 'Healthy' : 'Unhealthy'}
             </span>
@@ -81,8 +83,9 @@ const HealthChecker: React.FC = () => {
   };
 
   return (
-    <div className="w-full flex items-center justify-center min-h-screen bg-gradient-to-b from-gray-900 to-black">
-      <div className="max-w-md w-full mx-4">
+    <div className="min-h-screen bg-gradient-to-b from-[var(--color-tertiary)] to-[var(--color-background)] 
+                    flex items-center justify-center p-4">
+      <div className="max-w-md w-full mx-auto">
         <Card {...cardProps} />
       </div>
     </div>

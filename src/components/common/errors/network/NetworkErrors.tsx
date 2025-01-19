@@ -37,6 +37,11 @@ const NetworkErrors: React.FC<NetworkErrorsProps> = ({ type = ErrorTypes.NOT_FOU
           title: '401 - Unauthorized',
           message: 'You do not have permission to access this page.'
         };
+      case ErrorTypes.WALLET_NOT_CONNECTED:
+        return {
+          title: 'Wallet Not Connected',
+          message: 'Please connect your wallet to access this feature.'
+        };
       default:
         return {
           title: 'Error',
@@ -48,15 +53,25 @@ const NetworkErrors: React.FC<NetworkErrorsProps> = ({ type = ErrorTypes.NOT_FOU
   const { title, message } = getErrorContent();
 
   return (
-    <div className="error-bg flex flex-col items-center justify-center min-h-screen text-center p-4">
-      <h1 className="text-4xl font-bold mb-4">{title}</h1>
-      <p className="text-lg mb-8">{message}</p>
-      <Link 
-        to="/" 
-        className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-      >
-        Go back to Home
-      </Link>
+    <div className="min-h-screen bg-[var(--color-background)] flex items-center justify-center p-4">
+      <div className="max-w-md w-full text-center space-y-6 
+                    bg-[var(--color-overlay-dark)]/5 backdrop-blur-sm 
+                    rounded-xl border border-[var(--color-text-primary)]/10 p-8">
+        <h1 className="text-3xl font-bold text-[var(--color-text-primary)]">
+          {title}
+        </h1>
+        <p className="text-lg text-[var(--color-text-muted)]">
+          {message}
+        </p>
+        <Link 
+          to="/" 
+          className="inline-block px-6 py-3 bg-[var(--color-button-primary)] 
+                   text-[var(--color-text-on-primary)] rounded-lg 
+                   hover:bg-[var(--color-button-hover)] transition-colors duration-200"
+        >
+          Return Home
+        </Link>
+      </div>
     </div>
   );
 };

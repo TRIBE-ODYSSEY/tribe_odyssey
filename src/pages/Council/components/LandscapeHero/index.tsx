@@ -62,13 +62,13 @@ const LandscapeHero: React.FC<LandscapeHeroProps> = ({
           className="absolute inset-0 z-10 flex flex-col justify-center items-center px-4"
         >
           <div className="max-w-4xl mx-auto text-center">
-            <h3 className="text-red-500 font-montserrat text-lg mb-4 tracking-wider uppercase">
+            <h3 className="text-[var(--color-button-primary)] font-montserrat text-lg mb-4 tracking-wider uppercase">
               {subtitle}
             </h3>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 font-montserrat">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[var(--color-text-primary)] mb-6 font-montserrat">
               {title}
             </h2>
-            <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg md:text-xl text-[var(--color-text-secondary)] max-w-2xl mx-auto leading-relaxed">
               {description}
             </p>
           </div>

@@ -29,8 +29,11 @@ const NFTCard: React.FC<NFTCardProps> = ({
       onClick={onClick}
       className={`
         relative rounded-xl overflow-hidden cursor-pointer
-        ${isSelected ? 'ring-2 ring-red-500' : 'ring-1 ring-white/10'}
-        transition-all duration-200 hover:ring-white/20
+        ${isSelected 
+          ? 'ring-2 ring-[var(--color-button-primary)]' 
+          : 'ring-1 ring-[var(--color-text-primary)]/10'
+        }
+        transition-all duration-200 hover:ring-[var(--color-text-primary)]/20
       `}
     >
       <div className="aspect-square relative">
@@ -46,19 +49,24 @@ const NFTCard: React.FC<NFTCardProps> = ({
         />
         
         {isStaked && (
-          <div className="absolute top-2 right-2 bg-red-500/90 text-white text-xs px-2 py-1 rounded-full">
+          <div className="absolute top-2 right-2 bg-[var(--color-button-primary)]/90 
+                         text-[var(--color-text-on-primary)] text-xs px-2 py-1 rounded-full">
             Staked
           </div>
         )}
 
-        <div className="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-sm px-2 py-1">
-          <p className="text-white text-sm text-center font-medium">#{tokenId}</p>
+        <div className="absolute bottom-0 left-0 right-0 bg-[var(--color-overlay-dark)] 
+                       backdrop-blur-sm px-2 py-1">
+          <p className="text-[var(--color-text-on-dark)] text-sm text-center font-medium">
+            #{tokenId}
+          </p>
         </div>
         
         {isSelected && (
-          <div className="absolute inset-0 bg-red-500/20 backdrop-blur-sm flex items-center justify-center">
+          <div className="absolute inset-0 bg-[var(--color-button-primary)]/20 
+                         backdrop-blur-sm flex items-center justify-center">
             <svg
-              className="w-8 h-8 text-white"
+              className="w-8 h-8 text-[var(--color-text-on-primary)]"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"

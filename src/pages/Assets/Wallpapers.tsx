@@ -110,23 +110,26 @@ const WallpaperPage: React.FC = () => {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Left Panel */}
           <div className="w-full lg:w-1/2 space-y-6">
-            <h1 className="text-3xl font-montserrat font-bold text-white">
+            <h1 className="text-3xl font-montserrat font-bold text-[var(--color-text-on-dark)]">
               Tribe NFT Wallpapers
             </h1>
 
-            <div className="bg-dark-800/80 backdrop-blur-sm rounded-lg p-6 border border-white/10">
+            <div className="bg-[var(--color-overlay-dark)] backdrop-blur-sm rounded-lg p-6 
+                          border border-[var(--color-text-primary)]/10">
               {/* Ape ID Input */}
               <div className="space-y-4">
-                <label className="block text-white font-medium">
+                <label className="block text-[var(--color-text-on-dark)] font-medium">
                   Enter your Tribe Ape ID:
                 </label>
                 <input
                   type="text"
                   value={apeId}
                   onChange={(e) => setApeId(e.target.value)}
-                  className="w-full px-4 py-3 bg-dark-900/80 border border-white/20 
-                           rounded-lg text-white placeholder-white/50 
-                           focus:border-white/40 focus:ring-1 focus:ring-white/40 
+                  className="w-full px-4 py-3 bg-[var(--color-background)]/80 
+                           border border-[var(--color-text-primary)]/20 rounded-lg 
+                           text-[var(--color-text-on-dark)] placeholder-[var(--color-text-secondary)]/30 
+                           focus:border-[var(--color-text-primary)]/40 
+                           focus:ring-1 focus:ring-[var(--color-text-primary)]/40 
                            outline-none transition-all duration-200"
                   placeholder="Tribe Ape ID"
                 />
@@ -136,65 +139,67 @@ const WallpaperPage: React.FC = () => {
                 <>
                   {/* Logo Selection */}
                   <div className="mt-6">
-                    <label className="block text-white font-medium mb-2">
+                    <label className="block text-[var(--color-text-on-dark)] font-medium mb-2">
                       Select Logo Style:
                     </label>
                     <select
                       value={logoType}
                       onChange={(e) => setLogoType(e.target.value)}
-                      className="w-full px-4 py-3 bg-dark-900/80 border border-white/20 
-                               rounded-lg text-white focus:border-white/40 
-                               focus:ring-1 focus:ring-white/40 outline-none 
-                               transition-all duration-200"
+                      className="w-full px-4 py-3 bg-[var(--color-background)]/80 
+                               border border-[var(--color-text-primary)]/20 rounded-lg 
+                               text-[var(--color-text-on-dark)] 
+                               focus:border-[var(--color-text-primary)]/40 
+                               focus:ring-1 focus:ring-[var(--color-text-primary)]/40 
+                               outline-none transition-all duration-200"
                     >
-                      <option value="none" className="bg-dark-900">No Logo</option>
-                      <option value="white" className="bg-dark-900">White Logo</option>
-                      <option value="black" className="bg-dark-900">Black Logo</option>
-                      <option value="red" className="bg-dark-900">Red Logo</option>
+                      <option value="none" className="bg-[var(--color-background)]">No Logo</option>
+                      <option value="white" className="bg-[var(--color-background)]">White Logo</option>
+                      <option value="black" className="bg-[var(--color-background)]">Black Logo</option>
+                      <option value="red" className="bg-[var(--color-background)]">Red Logo</option>
                     </select>
                   </div>
 
                   {/* Sliders */}
                   <div className="mt-6 space-y-4">
                     <div className="space-y-2">
-                      <label className="text-white">Image Scale</label>
+                      <label className="text-[var(--color-text-on-dark)]">Image Scale</label>
                       <input
                         type="range"
                         min="50"
                         max="200"
                         value={imageScale}
                         onChange={(e) => setImageScale(Number(e.target.value))}
-                        className="w-full accent-red-600"
+                        className="w-full accent-[var(--color-button-primary)]"
                       />
-                      <span className="text-white/70">{imageScale}%</span>
+                      <span className="text-[var(--color-text-secondary)]/70">{imageScale}%</span>
                     </div>
 
                     {logoType !== 'none' && (
                       <>
                         <div className="space-y-2">
-                          <label className="text-white">Logo Scale</label>
+                          <label className="text-[var(--color-text-on-dark)]">Logo Scale</label>
                           <input
                             type="range"
                             min="50"
                             max="200"
                             value={logoScale}
                             onChange={(e) => setLogoScale(Number(e.target.value))}
-                            className="w-full accent-red-600"
+                            className="w-full accent-[var(--color-button-primary)]"
                           />
-                          <span className="text-white/70">{logoScale}%</span>
+                          <span className="text-[var(--color-text-secondary)]/70">{logoScale}%</span>
                         </div>
 
                         <div className="space-y-2">
-                          <label className="text-white">Logo Position</label>
+                          <label className="text-[var(--color-text-on-dark)]">Logo Position</label>
                           <input
                             type="range"
                             min="50"
                             max="200"
                             value={logoPosition}
                             onChange={(e) => setLogoPosition(Number(e.target.value))}
-                            className="w-full accent-red-600"
+                            className="w-full accent-[var(--color-button-primary)]"
                           />
-                          <span className="text-white/70">{logoPosition}%</span>
+                          <span className="text-[var(--color-text-secondary)]/70">{logoPosition}%</span>
                         </div>
                       </>
                     )}
@@ -208,14 +213,14 @@ const WallpaperPage: React.FC = () => {
                 disabled={isLoading || !apeId}
                 className={`w-full mt-6 py-3 px-6 rounded-lg flex items-center justify-center
                           ${isLoading || !apeId 
-                            ? 'bg-red-600/50 cursor-not-allowed' 
-                            : 'bg-red-600 hover:bg-red-700'
-                          } text-white transition-colors`}
+                            ? 'bg-[var(--color-button-disabled)] cursor-not-allowed' 
+                            : 'bg-[var(--color-button-primary)] hover:bg-[var(--color-button-hover)]'
+                          } text-[var(--color-text-on-primary)] transition-colors`}
               >
                 {isLoading ? (
                   <div className="flex items-center gap-2">
-                    <div className="w-5 h-5 border-2 border-white/20 border-t-white 
-                                  rounded-full animate-spin" />
+                    <div className="w-5 h-5 border-2 border-[var(--color-text-primary)]/20 
+                                  border-t-[var(--color-text-primary)] rounded-full animate-spin" />
                     Loading...
                   </div>
                 ) : (
@@ -228,23 +233,29 @@ const WallpaperPage: React.FC = () => {
           {/* Right Panel - Preview */}
           <div className="w-full lg:w-1/2">
             <div className="flex justify-center items-center mb-4">
-              <span className={`mr-2 ${!isDesktop ? 'text-white' : 'text-white/50'}`}>
+              <span className={`mr-2 ${!isDesktop 
+                ? 'text-[var(--color-text-on-dark)]' 
+                : 'text-[var(--color-text-on-dark)]/50'}`}>
                 Mobile
               </span>
               <Switch
                 checked={isDesktop}
                 onChange={setIsDesktop}
-                className={`${isDesktop ? 'bg-red-600' : 'bg-red-600/50'}
-                          relative inline-flex h-6 w-11 items-center rounded-full 
-                          transition-colors focus:outline-none`}
+                className={`${isDesktop 
+                  ? 'bg-[var(--color-button-primary)]' 
+                  : 'bg-[var(--color-button-primary)]/50'}
+                  relative inline-flex h-6 w-11 items-center rounded-full 
+                  transition-colors focus:outline-none`}
               >
                 <span
                   className={`${isDesktop ? 'translate-x-6' : 'translate-x-1'}
                             inline-block h-4 w-4 transform rounded-full 
-                            bg-white transition-transform`}
+                            bg-[var(--color-text-primary)] transition-transform`}
                 />
               </Switch>
-              <span className={`ml-2 ${isDesktop ? 'text-white' : 'text-white/50'}`}>
+              <span className={`ml-2 ${isDesktop 
+                ? 'text-[var(--color-text-on-dark)]' 
+                : 'text-[var(--color-text-on-dark)]/50'}`}>
                 Desktop
               </span>
             </div>
@@ -252,17 +263,10 @@ const WallpaperPage: React.FC = () => {
             <div className="relative">
               <canvas
                 ref={canvasRef}
-                className={`mx-auto ${isDesktop ? 'w-[543px] h-[351px]' : 'w-[282px] h-[611px]'}
-                          bg-dark-900 rounded-lg border border-white/10`}
                 width={isDesktop ? 543 : 282}
                 height={isDesktop ? 351 : 611}
+                className="mx-auto bg-[var(--color-overlay-dark)] rounded-lg"
               />
-              {isLoading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-lg">
-                  <div className="w-8 h-8 border-2 border-white/20 border-t-white 
-                                rounded-full animate-spin" />
-                </div>
-              )}
             </div>
           </div>
         </div>

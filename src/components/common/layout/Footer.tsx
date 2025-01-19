@@ -8,7 +8,7 @@ export const Footer: React.FC = () => {
   const socialLinks = [{ Icon: Discord, href: 'https://discord.gg/T7Bv5JsFYd' }];
 
   return (
-    <footer className="w-full px-4 py-8 sm:py-10 bg-gradient-to-b from-transparent to-[#14121b]">
+    <footer className="w-full px-4 py-8 sm:py-10 bg-gradient-to-b from-transparent to-[var(--color-tertiary)]">
       <div className="container mx-auto max-w-7xl">
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
           {/* Logo Section */}
@@ -25,7 +25,7 @@ export const Footer: React.FC = () => {
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 sm:gap-8">
               {Object.entries(menuConfig).map(([title, links]) => (
                 <div key={title}>
-                  <h6 className="mb-3 text-base font-medium text-white/90">
+                  <h6 className="mb-3 text-base font-medium text-[var(--color-text-primary)]">
                     {title}
                   </h6>
                   <div className="flex flex-col gap-2">
@@ -36,7 +36,7 @@ export const Footer: React.FC = () => {
                           href={link.path}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-sm text-white/70 hover:text-white transition-colors duration-200"
+                          className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200"
                         >
                           {link.name}
                         </a>
@@ -44,7 +44,7 @@ export const Footer: React.FC = () => {
                         <Link
                           key={link.name}
                           to={link.path}
-                          className="text-sm text-white/70 hover:text-white transition-colors duration-200"
+                          className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200"
                         >
                           {link.name}
                         </Link>
@@ -57,11 +57,11 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
-        <div className="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent my-8" />
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-[var(--color-text-secondary)]/20 to-transparent my-8" />
 
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-white/70">
-            © {currentYear} TRIBE. All rights reserved.
+          <p className="text-sm text-[var(--color-text-secondary)]">
+            © {currentYear} TRIBE ODYSSEY. All rights reserved.
           </p>
 
           <div className="flex items-center gap-4">
@@ -71,7 +71,7 @@ export const Footer: React.FC = () => {
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-white/70 hover:text-white transition-colors duration-200"
+                className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200"
               >
                 <Icon />
               </a>

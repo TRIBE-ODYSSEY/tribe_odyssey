@@ -83,20 +83,27 @@ const StakeApes: React.FC = () => {
         <div className="max-w-7xl mx-auto">
           <PageTitle>Stake Apes</PageTitle>
           
-          <div className="mb-8 p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
-            <p className="text-center text-white/80">
+          <div className="mb-8 p-4 rounded-xl bg-[var(--color-overlay-dark)]/10 
+                        border border-[var(--color-text-primary)]/10 backdrop-blur-sm">
+            <p className="text-center text-[var(--color-text-on-dark)]">
               Earn 10 NANA Points per day for each staked Tribe Ape
             </p>
           </div>
           
-          <StakingStats />
-          
-          <StakingTabs 
-            onStake={handleStake}
-            onUnstake={handleUnstake}
-            isWaiting={waiting}
-            refreshTrigger={refreshTrigger}
-          />
+          <div className="space-y-8">
+            <StakingStats />
+            
+            <div className="bg-[var(--color-overlay-dark)]/5 backdrop-blur-sm 
+                          rounded-xl border border-[var(--color-text-primary)]/10 
+                          overflow-hidden">
+              <StakingTabs 
+                onStake={handleStake}
+                onUnstake={handleUnstake}
+                isWaiting={waiting}
+                refreshTrigger={refreshTrigger}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </PageLayout>

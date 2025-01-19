@@ -19,7 +19,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
       />
 
       <div className="flex flex-col items-center lg:items-start flex-1 max-w-[535px]">
-        <h1 className="font-montserrat text-4xl md:text-5xl text-white/90 
+        <h1 className="font-montserrat text-4xl md:text-5xl text-[var(--color-text-primary)] 
                      text-center lg:text-left mb-6">
           {title}
         </h1>
@@ -30,7 +30,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
               index === descriptions.length - 1 
                 ? 'text-base' 
                 : 'text-lg md:text-xl'
-            } text-white/70`}>
+            } text-[var(--color-text-secondary)]`}>
               {desc}
             </p>
           ))}
@@ -40,14 +40,13 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           href={ctaLink}
           target="_blank" 
           rel="noopener noreferrer" 
-          className="inline-block px-8 py-3 bg-white hover:bg-white/90 
-                   text-red-600 rounded-full font-inter text-lg font-semibold transition-300"
+          className="btn-primary inline-block px-8 py-3"
         >
           {ctaText}
         </a>
 
         <div className="flex flex-col items-center lg:items-start gap-2 mt-8">
-          <span className="text-white/50 text-sm">Powered by</span>
+          <span className="text-[var(--color-text-muted)] text-sm">Powered by</span>
           <img 
             src={aragonLogoSrc}
             alt="Aragon DAO"

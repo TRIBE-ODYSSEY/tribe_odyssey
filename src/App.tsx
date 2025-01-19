@@ -16,9 +16,8 @@ const App: React.FC = () => {
     }
   }, [isConnected, navigate]);
 
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black">
+    <div className="min-h-screen bg-gradient-to-b from-[var(--color-tertiary)] to-[var(--color-background)]">
       <div className="fixed top-4 right-4 z-50">
         <ConnectButton />
       </div>
@@ -26,7 +25,11 @@ const App: React.FC = () => {
       <Suspense
         fallback={
           <div className="flex h-screen items-center justify-center">
-            <Spinner color="warning" aria-label="Loading" />
+            <Spinner 
+              color="warning" 
+              aria-label="Loading"
+              className="text-[var(--color-button-primary)]" 
+            />
           </div>
         }
       >

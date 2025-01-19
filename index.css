@@ -11,8 +11,33 @@
 
 /* Root Variables */
 :root {
-  --tribe-bg: #181818;
-  --tribe-text: #c4c4c4;
+  /* Core colors from the selection */
+  --color-primary: #FF0008;
+  --color-secondary: #181818;
+  --color-tertiary: #0B081C;
+  --color-accent: #ECECEC;
+  
+  /* UI Element colors */
+  --color-background: #181818;
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #ECECEC;
+  --color-text-muted: #c4c4c4;
+  
+  /* Text colors for overlays */
+  --color-text-on-dark: #FFFFFF;
+  --color-text-on-light: #181818;
+  --color-text-on-primary: #FFFFFF;
+  --color-text-on-secondary: #ECECEC;
+  --color-text-on-accent: #181818;
+  
+  /* Button colors */
+  --color-button-primary: #FF0008;
+  --color-button-hover: #FF0009;
+  --color-button-disabled: #181818;
+  
+  /* Overlay background colors */
+  --color-overlay-dark: rgba(24, 24, 24, 0.95);
+  --color-overlay-light: rgba(236, 236, 236, 0.95);
 }
 
 /* * {
@@ -23,15 +48,17 @@
 @layer base {
   html,
   body {
-    overflow-x: hidden;
-    height: 100%;
-    width: 100%;
+    @apply overflow-x-hidden h-full w-full;
   }
+  
   body {
-    font-family: 'Montserrat', sans-serif;
-    background-color: var(--tribe-bg);
-    color: var(--tribe-text);
+    @apply font-['Montserrat'] bg-[var(--color-background)] text-[var(--color-text-muted)];
   }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-[var(--color-text-primary)];
+  }
+  
   ul {
     @apply list-none flex flex-row;
   }
@@ -41,9 +68,18 @@
 }
 /* Components Layer */
 @layer components {
+  .btn-primary {
+    @apply bg-[#FF0008] hover:bg-[#FF0009]/90 text-white px-4 py-2 rounded-lg 
+           transition-colors duration-200 ease-in-out;
+  }
+  
+  .btn-secondary {
+    @apply bg-[#181818] hover:bg-[#181818]/90 text-white px-4 py-2 rounded-lg
+           transition-colors duration-200 ease-in-out;
+  }
+
   .li1 {
-    display: inline-block;
-    margin-inline: 1rem;
+    @apply inline-block mx-4;
   }
 
   /* .grid {
@@ -52,8 +88,8 @@
   .g-center {
     @apply flex flex-col items-center justify-center text-center space-y-8;
   }
-  max-w-full .nav {
-    @apply border  border-blue-600 overflow-x-hidden justify-center flex flex-row;
+  .nav {
+    @apply overflow-x-hidden justify-center flex flex-row;
   }
   .menu {
     @apply group-hover:block hidden;
@@ -73,11 +109,31 @@
   }
 
   .card {
-    @apply w-4/5 max-w-lg h-auto;
+    @apply w-4/5 max-w-lg h-auto bg-[#181818] rounded-lg shadow-lg;
   }
 
   .content-1 {
     @apply flex flex-col;
+  }
+
+  .text-on-dark {
+    @apply text-[var(--color-text-on-dark)];
+  }
+  
+  .text-on-light {
+    @apply text-[var(--color-text-on-light)];
+  }
+  
+  .text-on-primary {
+    @apply text-[var(--color-text-on-primary)];
+  }
+  
+  .text-on-secondary {
+    @apply text-[var(--color-text-on-secondary)];
+  }
+  
+  .text-on-accent {
+    @apply text-[var(--color-text-on-accent)];
   }
 }
 
@@ -97,23 +153,17 @@
 
 /* Logo Slider Styles */
 .logo-slider-container {
-  margin: 0 -12px;
+  @apply mx-[-12px];
 }
 
 .logo-slider .slick-track {
-  display: flex !important;
-  align-items: center !important;
+  @apply flex items-center;
 }
 
 .logo-slider .slick-slide {
-  height: auto !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  @apply h-auto flex items-center justify-center;
 }
 
 .logo-slider .slick-slide > div {
-  width: 100%;
-  display: flex;
-  justify-content: center;
+  @apply w-full flex justify-center;
 }
