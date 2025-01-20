@@ -82,13 +82,24 @@ const SocialIcons: React.FC<{ className?: string }> = ({ className }) => {
   );
 };
 
-const NavMenu: React.FC<{ isMobile?: boolean; onClose?: () => void }> = ({ isMobile }) => {
+const NavMenu: React.FC<{ isMobile?: boolean; onClose?: () => void }> = ({ isMobile, onClose }) => {
   const commonClasses = `flex ${isMobile ? 'flex-col w-full gap-4' : 'items-center gap-2'}`;
 
   return (
     <div className={commonClasses}>
       {Object.entries(menuConfig).map(([title, items]) => (
-        <MenuDropdown key={title} title={title} items={items} />
+        Array.isArray(items) ? (
+          <MenuDropdown key={title} title={title} items={items} />
+        ) : (
+          <Link
+            key={title}
+            to={items}
+            className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] px-3 py-2 transition-colors"
+            onClick={isMobile ? onClose : undefined}
+          >
+            {title}
+          </Link>
+        )
       ))}
     </div>
   );

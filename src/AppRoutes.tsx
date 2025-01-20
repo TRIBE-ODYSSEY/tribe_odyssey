@@ -22,6 +22,7 @@ const WallpapersPage = lazy(() => import('@src/pages/Assets/Wallpapers'));
 const ProfilePage = lazy(() => import('@src/pages/Profile'));
 const NetworkErrors = lazy(() => import('@src/components/common/errors/network/NetworkErrors'));
 const MaintenancePage = lazy(() => import('@src/pages/Maintenance'));
+const ThreadsPage = lazy(() => import('@src/pages/Threads'));
 
 const MAINTENANCE_MODE = import.meta.env.VITE_MAINTENANCE_MODE === 'true';
 
@@ -47,7 +48,8 @@ const AppRoutes: React.FC = () => {
         <Route path="/collection" element={<CollectionPage />} />
         <Route path="/wallpapers" element={<WallpapersPage />} />
         <Route path="/ens" element={<ENSPage />} />
-        
+        <Route path="/threads" element={<ThreadsPage />} />
+
         {/* Raffle Routes - Wrapped in RaffleProvider */}
         <Route path="/raffles/*" element={
           <RaffleProvider>

@@ -1,8 +1,13 @@
-export const menuConfig = {
-  Element19: [
-    { name: 'Drops', path: '/drops' },
-    { name: 'Collection', path: '/collection' },
-  ],
+type MenuLink = {
+  name: string;
+  path: string;
+};
+
+type MenuConfig = {
+  [key: string]: MenuLink[] | string;
+};
+
+export const menuConfig: MenuConfig = {
   Assets: [
     { name: '4K Tribe', path: '/4ktribe' },
     { name: 'Wallpapers', path: '/wallpapers' },
@@ -22,7 +27,6 @@ export const menuConfig = {
     { name: 'Raffles', path: '/raffles' },
     { name: 'Winners', path: '/raffles/winners' },
   ],
-  'The Council': [
-    { name: 'Council', path: '/council' }
-  ]
-}; 
+  Council: '/council',
+  Threads: '/threads'
+};

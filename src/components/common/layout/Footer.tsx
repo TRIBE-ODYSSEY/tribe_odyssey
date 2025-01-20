@@ -23,32 +23,41 @@ export const Footer: React.FC = () => {
           {/* Links Section */}
           <div className="flex-grow">
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 sm:gap-8">
-              {Object.entries(menuConfig).map(([title, links]) => (
+              {Object.entries(menuConfig).map(([title, items]) => (
                 <div key={title}>
                   <h6 className="mb-3 text-base font-medium text-[var(--color-text-primary)]">
                     {title}
                   </h6>
                   <div className="flex flex-col gap-2">
-                    {links.map((link) =>
-                      link.path.startsWith('http') ? (
-                        <a
-                          key={link.name}
-                          href={link.path}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200"
-                        >
-                          {link.name}
-                        </a>
-                      ) : (
-                        <Link
-                          key={link.name}
-                          to={link.path}
-                          className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200"
-                        >
-                          {link.name}
-                        </Link>
-                      )
+                    {Array.isArray(items) ? (
+                      items.map((link) => (
+                        link.path.startsWith('http') ? (
+                          <a
+                            key={link.name}
+                            href={link.path}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200"
+                          >
+                            {link.name}
+                          </a>
+                        ) : (
+                          <Link
+                            key={link.name}
+                            to={link.path}
+                            className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200"
+                          >
+                            {link.name}
+                          </Link>
+                        )
+                      ))
+                    ) : (
+                      <Link
+                        to={items}
+                        className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200"
+                      >
+                        {title}
+                      </Link>
                     )}
                   </div>
                 </div>

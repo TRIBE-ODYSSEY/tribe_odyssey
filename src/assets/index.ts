@@ -26,6 +26,7 @@ const IMAGE_PATHS = {
   THREADS_HOODIE_BACK: 'images/THREADS-hoodie-back.png',
   SEND_HOODIES: 'images/send-hoodies.png',
   ETH_LOGO: 'images/eth-logo.png',
+  THREADS_MAIN: 'images/ThreadHoodieMain.png',
   // Alliance
   VERRON_HAYNES: 'images/vyron.jpg',
   CELEBRITY2: 'images/vyron.jpg', 

@@ -23,7 +23,8 @@ export const IMAGES = {
     hoodieFront: '/images/THRADS-hoodie-front.png',
     hoodieBack: '/images/THRADS-hoodie-back.png',
     sendHoodies: '/images/send-hoodies.png',
-    ethLogo: '/images/eth-logo.png'
+    ethLogo: '/images/eth-logo.png',
+    ThreadHoodieMain: '/images/ThreadHoodieMain.png'
   },
 
   // Alliance section

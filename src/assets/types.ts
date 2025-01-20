@@ -29,6 +29,7 @@ export interface ThreadsImages {
   hoodieBack: string;
   sendHoodies: string;
   ethLogo: string;
+  ThreadHoodieMain: string;
 }
 
 export interface AllianceSection {

@@ -99,8 +99,8 @@ const FaqSection: React.FC = () => {
           >
             <div className="flex items-center gap-3">
               <img 
-                src={`/images/ToxicIcon.png`}
-                alt="Toxic"
+                src={`/images/ToxinIconRed.png`}
+                alt="ToxinRed"
                 className="w-6 h-6"
                 loading="lazy"
               />
