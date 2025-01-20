@@ -13,6 +13,10 @@ const MenuDropdown: React.FC<{ title: string; items: Array<{ name: string; path:
   title, 
   items 
 }) => {
+  const handleClick = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <Menu as="div" className="relative">
       {({ open }) => (
@@ -34,6 +38,7 @@ const MenuDropdown: React.FC<{ title: string; items: Array<{ name: string; path:
                         className={`${
                           active ? 'bg-[#2A2A2A] text-[var(--color-text-primary)]' : 'text-[var(--color-text-secondary)]'
                         } block px-4 py-2 text-sm transition-colors`}
+                        onClick={handleClick}
                       >
                         {item.name}
                       </a>
@@ -43,6 +48,7 @@ const MenuDropdown: React.FC<{ title: string; items: Array<{ name: string; path:
                         className={`${
                           active ? 'bg-[#2A2A2A] text-[var(--color-text-primary)]' : 'text-[var(--color-text-secondary)]'
                         } block px-4 py-2 text-sm transition-colors`}
+                        onClick={handleClick}
                       >
                         {item.name}
                       </Link>
