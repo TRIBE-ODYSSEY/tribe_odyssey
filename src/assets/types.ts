@@ -67,6 +67,9 @@ export interface Icons {
   specialButtonCore4: string;
   starIcon: string;
   hexGrid: string;
+  toxicIconRed: string;
+  toxinIconRed: string;
+  toxicIcon: string;
 }
 
 export interface T19Profile {

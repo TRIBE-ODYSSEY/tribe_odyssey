@@ -65,7 +65,10 @@ export const IMAGES = {
   icons: {
     specialButtonCore: '/images/special-button-core.svg',
     starIcon: '/images/StarIcon.svg',
-    hexGrid: '/images/hex-grid.svg'
+    hexGrid: '/images/hex-grid.svg',
+    toxicIconRed: '/images/ToxicIconRed.png',
+    toxinIconRed: '/images/ToxinIconRed.png',
+    toxicIcon: '/images/ToxicIcon.png'
   },
 
   // Other images

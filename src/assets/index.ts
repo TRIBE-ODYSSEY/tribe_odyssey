@@ -49,6 +49,9 @@ const IMAGE_PATHS = {
   SPECIAL_BUTTON_CORE_4: 'images/special-button-core.svg',
   STAR_ICON: 'images/StarIcon.svg',
   HEX_GRID: 'images/hex-grid.svg',
+  TOXIC_ICON_RED: 'images/ToxicIconRed.png',
+  TOXIN_ICON_RED: 'images/ToxinIconRed.png',
+  TOXIC_ICON: 'images/ToxicIcon.png',
   // Others
   MOLTEN_THRONE: "images/molten-throne.png",
   TRIBUNUS: 'images/tribunus.png',
