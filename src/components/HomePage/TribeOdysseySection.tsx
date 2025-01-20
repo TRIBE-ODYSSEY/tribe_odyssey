@@ -127,11 +127,9 @@ const ContentSection = () => (
 const TribeOdysseySection: React.FC = () => {
   useLazyLoading();
   const [selectedImage, setSelectedImage] = useState(sideImages[0]);
-
   const handleImageClick = (image: typeof sideImages[0]) => {
     setSelectedImage(image);
   };
-
   const sideImagesToShow = sideImages.filter(img => img.src !== selectedImage.src);
 
   return (
@@ -139,9 +137,56 @@ const TribeOdysseySection: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
           {/* Left Section with Images */}
-          <div className="w-full lg:w-[50%] xl:w-[55%] relative flex justify-start">
-            <MainImage selectedImage={selectedImage} />
-            <SideImages sideImagesToShow={sideImagesToShow} handleImageClick={handleImageClick} />
+          <div className="w-full lg:w-[50%] xl:w-[55%] relative">
+            {/* Main Image */}
+            <div className="flex justify-center lg:justify-start">
+              <MainImage selectedImage={selectedImage} />
+            </div>
+
+            {/* Desktop Side Images - Vertical Stack */}
+            <div className="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 
+                          flex-col gap-4 z-10">
+              {sideImagesToShow.map((image) => (
+                <div 
+                  key={image.alt}
+                  className="w-24 xl:w-28 2xl:w-32 cursor-pointer transform 
+                           hover:scale-105 transition-all duration-300"
+                  onClick={() => handleImageClick(image)}
+                >
+                  <Card
+                    image={{
+                      'data-src': image.src,
+                      alt: image.alt,
+                    }}
+                    className="rounded-2xl shadow-lg aspect-square overflow-hidden
+                             border border-[var(--color-text-primary)]/10 
+                             hover:border-[var(--color-text-primary)]/20"
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Mobile Side Images - Horizontal Row */}
+            <div className="flex lg:hidden justify-center gap-4 mt-6 w-full">
+              {sideImagesToShow.map((image) => (
+                <div 
+                  key={image.alt}
+                  className="w-20 sm:w-24 cursor-pointer"
+                  onClick={() => handleImageClick(image)}
+                >
+                  <Card
+                    image={{
+                      'data-src': image.src,
+                      alt: image.alt,
+                    }}
+                    className="rounded-2xl shadow-lg aspect-square overflow-hidden 
+                             hover:scale-105 transition-transform duration-300
+                             border border-[var(--color-text-primary)]/10 
+                             hover:border-[var(--color-text-primary)]/20"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Right Section with Content */}
