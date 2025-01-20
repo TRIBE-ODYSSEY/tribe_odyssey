@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 interface FaqItem {
   id: string;
   question: string;
+  icon: string;
   answer: string;
 }
 
@@ -10,51 +11,61 @@ const faqs: FaqItem[] = [
   {
     id: 'what-is-nft',
     question: 'What is an NFT?',
+    icon: 'ToxicIcon.png',
     answer: 'NFTs (Non-Fungible Tokens) are unique digital assets that cannot be replicated. They are stored on a blockchain and can represent ownership of digital items like art, music, videos, and more. Each NFT has a unique identifier that proves its authenticity and ownership.'
   },
   {
     id: 'check-rarity',
     question: 'What are Bitcoin Ordinals?',
+    icon: 'ToxicIcon.png',
     answer: 'Bitcoin Ordinals are digital collectibles that have had data inscribed (written to) on individual satoshis on the Bitcoin blockchain. Each inscribed sat is one-of-a-kind and can be owned, collected, and traded like a non-fungible token (NFT).'
   },
   {
     id: 'tribe-benefits',
     question: 'What are the benefits of holding TRIBE NFT?',
+    icon: 'ToxicIcon.png',
     answer: 'TRIBE NFT holders receive exclusive benefits including access to community events, voting rights on project decisions, early access to new releases, special merchandise, and participation in our rewards program.'
   },
   {
     id: 'twitter-connect',
     question: 'How do I get connected with my TRIBE on X?',
+    icon: 'ToxicIcon.png',
     answer: 'You can connect with your TRIBE on X by following our official account and joining our community discussions. We regularly share updates, announcements, and engage with our holders through X.'
   },
   {
     id: 'tribe-difference',
     question: 'How is TRIBE different from other NFT projects?',
+    icon: 'ToxicIcon.png',
     answer: 'TRIBE stands out through our unique community-first approach, innovative utility features, high-quality artwork, and sustainable long-term vision. We focus on creating real value for our holders through continuous development and engagement.'
   },
   {
     id: 'total-supply',
     question: 'What is the total supply?',
+    icon: 'ToxicIcon.png',
     answer: 'Tribe was a claimed NFT with a limited mint window that followed it. As such there are only 9401 Tribe NFT in existence. The Mint window will NEVER be opened again, and no further tribe claims can be completed. The scarcity can not change.'
   },
   {
     id: 'how-to-buy',
     question: 'How do I buy Tribe NFT?',
+    icon: 'ToxicIcon.png',
     answer: 'You can buy a tribe NFT on our own marketplace (https://apeshop.tribeodyssey.com), or other third party marketplaces such as:Opensea, LooksRare, X2Y2'
   },
   {
     id: 'discord-join',
     question: 'How do I join TRIBE Discord server?',
+    icon: 'ToxicIcon.png',
     answer: 'You can join our Discord server by clicking the Discord link on our website or social media channels. Once joined, verify your account and follow the onboarding process to access all channels.'
   },
   {
     id: 'download-resolution',
     question: 'How do I download 4K resolution of my TRIBE?',
+    icon: 'ToxicIcon.png',
     answer: 'You can navigate the site, go to Assets, 4K Tribe, enter your asset number and hit download.'
   },
   {
     id: 'marketplace',
     question: 'Does TRIBE has its own marketplace?',
+    icon: 'ToxicIcon.png',
     answer: 'Yes, TRIBE has its own dedicated marketplace where you can buy, sell, and trade TRIBE NFTs with 0% fees. Our marketplace provides a secure and user-friendly platform for all transactions.'
   }
 ];
@@ -86,9 +97,17 @@ const FaqSection: React.FC = () => {
             onClick={() => toggleFaq(faq.id)}
             aria-expanded={openId === faq.id}
           >
-            <span className="text-lg font-semibold text-[var(--color-text-primary)]">
-              {faq.question}
-            </span>
+            <div className="flex items-center gap-3">
+              <img 
+                src={`/images/ToxicIcon.png`}
+                alt="Toxic"
+                className="w-6 h-6"
+                loading="lazy"
+              />
+              <span className="text-lg font-semibold text-[var(--color-text-primary)]">
+                {faq.question}
+              </span>
+            </div>
             <span className={`transform transition-transform duration-300 ${openId === faq.id ? 'rotate-45' : ''}`}>
               <svg
                 className="w-5 h-5 text-[var(--color-text-muted)]"

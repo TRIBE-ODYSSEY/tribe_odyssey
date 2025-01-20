@@ -75,8 +75,8 @@ const AccomplishmentsSection: React.FC = () => {
                 <div className="flex flex-col h-full">
                   <div className="flex items-center gap-3 mb-4">
                     <img 
-                      src="/images/StarIcon.svg" 
-                      alt="Star" 
+                      src="/images/ToxicIcon.png" 
+                      alt="Toxic" 
                       className="w-6 h-6 text-[var(--color-text-primary)]"
                       loading="lazy"
                     />

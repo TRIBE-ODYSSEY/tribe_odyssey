@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import PageTitle from '@src/components/common/PageTitle';
 import PageLayout from '@src/components/common/layout/PageLayout';
 import { Switch } from '@headlessui/react';
 import date from 'date-and-time';
@@ -174,9 +175,9 @@ const WallpaperPage: React.FC = () => {
         <div className="container mx-auto px-4 max-w-7xl">
           {/* Header Section */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold text-[var(--color-text-primary)] mb-4">
+            <PageTitle>
               Tribe NFT Wallpapers
-            </h1>
+            </PageTitle>
             <p className="text-lg text-[var(--color-text-secondary)] max-w-2xl mx-auto">
               Create custom wallpapers featuring your Tribe NFT for both desktop and mobile devices.
             </p>

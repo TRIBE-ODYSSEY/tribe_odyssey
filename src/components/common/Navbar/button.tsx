@@ -22,7 +22,7 @@ const Button: React.FC<ButtonProps> = ({
       {...props}
     >
       <ShinyButtonBg />
-      <div className="relative z-10 flex items-center justify-center gap-2">
+      <div className="relative z-10 flex items-center justify-center gap-2 whitespace-nowrap">
         {isWalletConnected ? (
           <>
             <span className="text-white/90">{children}</span>
@@ -31,10 +31,10 @@ const Button: React.FC<ButtonProps> = ({
         ) : (
           <>
             {isHomePage ? (
-              <>
-                <FaDiscord className="w-5 h-5 text-white" />
+              <div className="flex items-center justify-center gap-2 whitespace-nowrap">
+                <FaDiscord className="w-5 h-5 text-white flex-shrink-0" />
                 <span className="text-white">Join Discord</span>
-              </>
+              </div>
             ) : (
               <span className="text-white">{children}</span>
             )}

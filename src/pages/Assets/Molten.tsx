@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import PageTitle from '@src/components/common/PageTitle';
 import PageLayout from '@src/components/common/layout/PageLayout';
-import { LockClosedIcon } from '@heroicons/react/24/solid';
 
 const MoltenPage: React.FC = () => {
   useEffect(() => {
@@ -20,7 +19,12 @@ const MoltenPage: React.FC = () => {
         
         <div className="min-h-[60vh] flex flex-col items-center justify-center 
                      bg-[var(--color-overlay-dark)] backdrop-blur-lg rounded-2xl p-8">
-          <LockClosedIcon className="w-20 h-20 text-[var(--color-button-primary)] mb-6 animate-pulse" />
+          <img 
+            src="/images/ToxicIcon.png"
+            alt="Toxic"
+            className="w-20 h-20 text-[var(--color-button-primary)] mb-6 animate-pulse"
+            loading="lazy"
+          />
           <h2 className="text-4xl font-bold text-[var(--color-text-on-dark)] mb-4">Coming Soon</h2>
           <p className="text-[var(--color-text-on-dark)]/70 text-lg text-center max-w-md">
             A new molten experience is being forged. Stay tuned for updates.

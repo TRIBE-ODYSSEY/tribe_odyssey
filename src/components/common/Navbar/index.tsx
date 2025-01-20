@@ -152,8 +152,10 @@ const WalletSection: React.FC = () => {
         <CustomButton
           onClick={() => window.open('https://discord.gg/T7Bv5JsFYd', '_blank')}
         >
-          <FaDiscord className="text-xl" />
-          Join Discord
+          <div className="flex items-center gap-2">
+            <FaDiscord className="text-xl" />
+            <span>Join Discord</span>
+          </div>
         </CustomButton>
       )}
     </div>
