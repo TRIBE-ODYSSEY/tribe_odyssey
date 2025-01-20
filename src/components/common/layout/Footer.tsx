@@ -46,7 +46,7 @@ export const Footer: React.FC = () => {
                             key={link.name}
                             to={link.path}
                             className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200"
-                            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                            onClick={() => setTimeout(() => window.scrollTo(0, 0), 0)}
                           >
                             {link.name}
                           </Link>
@@ -56,7 +56,7 @@ export const Footer: React.FC = () => {
                       <Link
                         to={items}
                         className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200"
-                        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                        onClick={() => setTimeout(() => window.scrollTo(0, 0), 0)}
                       >
                         {title}
                       </Link>

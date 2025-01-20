@@ -14,7 +14,9 @@ const MenuDropdown: React.FC<{ title: string; items: Array<{ name: string; path:
   items 
 }) => {
   const handleClick = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 0);
   };
 
   return (
@@ -101,7 +103,12 @@ const NavMenu: React.FC<{ isMobile?: boolean; onClose?: () => void }> = ({ isMob
             key={title}
             to={items}
             className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] px-3 py-2 transition-colors"
-            onClick={isMobile ? onClose : undefined}
+            onClick={() => {
+              if (isMobile) onClose?.();
+              setTimeout(() => {
+                window.scrollTo(0, 0);
+              }, 0);
+            }}
           >
             {title}
           </Link>
