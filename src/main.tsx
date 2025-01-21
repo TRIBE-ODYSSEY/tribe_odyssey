@@ -13,21 +13,19 @@ import {
   darkTheme,
   createAuthenticationAdapter,
   RainbowKitAuthenticationProvider,
-  getDefaultWallets
 } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
 import { config } from '@src/lib/wagmi/config';
-import { createSiweMessage } from 'viem/siwe';
 import { useAuthStore } from '@src/lib/store/authStore';
 import { authService } from '@src/lib/services/authService';
-// Create authentication adapter
+
 const authenticationAdapter = createAuthenticationAdapter({
   getNonce: async () => {
     return await authService.getNonce();
   },
 
   createMessage: ({ nonce, address, chainId }) => {
-    return createSiweMessage({
+    return {
       domain: window.location.host,
       address,
       statement: 'Sign in to Tribe Odyssey.',
@@ -35,8 +33,7 @@ const authenticationAdapter = createAuthenticationAdapter({
       version: '1',
       chainId,
       nonce,
-      resources: [window.location.origin],
-    });
+    };
   },
 
   verify: async ({ message, signature }) => {
@@ -48,7 +45,6 @@ const authenticationAdapter = createAuthenticationAdapter({
   },
 });
 
-// Create Query Client
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -59,15 +55,15 @@ const queryClient = new QueryClient({
   },
 });
 
-const { wallets } = getDefaultWallets({
-  appName: 'Tribe Odyssey',
-  projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID || ''
-});
-
-// Main App Component
 const MainApp = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   
+  useEffect(() => {
+    if (isAuthenticated) {
+      authService.getAuthStatus();
+    }
+  }, [isAuthenticated]);
+
   return (
     <React.StrictMode>
       <BrowserRouter>
@@ -104,5 +100,4 @@ const MainApp = () => {
   );
 };
 
-// Render the app
 ReactDOM.createRoot(document.getElementById('root')!).render(<MainApp />);

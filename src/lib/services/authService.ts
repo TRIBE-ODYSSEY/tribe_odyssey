@@ -1,8 +1,7 @@
 import axios from 'axios';
-import { generateNonce, SiweMessage } from 'siwe';
 import { useAuthStore } from '../store/authStore';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://tribeodyssey.net/api';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 class AuthenticationError extends Error {
   constructor(message: string) {
@@ -14,30 +13,31 @@ class AuthenticationError extends Error {
 export const authService = {
   getNonce: async () => {
     try {
-      const nonce = generateNonce();
-      localStorage.setItem('siwe_nonce', nonce);
+      const { data: nonce } = await axios.get(`${API_BASE}/auth/nonce`);
+      localStorage.setItem('auth_nonce', nonce);
       return nonce;
     } catch (error) {
       throw new AuthenticationError('Failed to generate nonce');
     }
   },
 
-  verify: async (message: string, signature: string) => {
+  verify: async (message: { address: string, chainId: number }, signature: string) => {
     const store = useAuthStore.getState();
     store.setLoading(true);
     
     try {
-      const siweMessage = new SiweMessage(message);
-      const nonce = localStorage.getItem('siwe_nonce') || undefined;
+      const nonce = localStorage.getItem('auth_nonce') || undefined;
       
-      const fields = await siweMessage.verify({ 
+      const { data } = await axios.post(`${API_BASE}/auth/verify`, {
+        address: message.address,
+        chainId: message.chainId,
         signature,
-        nonce 
+        nonce
       });
 
-      if (fields.success) {
-        localStorage.removeItem('siwe_nonce');
-        store.setAuth(fields.data.address, fields.data.chainId);
+      if (data.success) {
+        localStorage.removeItem('auth_nonce');
+        store.setAuth(data.address, data.chainId);
         store.incrementLoginCount();
         return true;
       }
@@ -56,8 +56,9 @@ export const authService = {
     store.setLoading(true);
     
     try {
+      await axios.post(`${API_BASE}/auth/logout`);
       store.clearAuth();
-      localStorage.removeItem('siwe_nonce');
+      localStorage.removeItem('auth_nonce');
     } catch (error) {
       store.setError('Logout failed');
     } finally {
@@ -65,14 +66,24 @@ export const authService = {
     }
   },
 
-  getAuthStatus: () => {
-    const { isAuthenticated, address, chainId, lastLogin, loginCount } = useAuthStore.getState();
-    return {
-      isAuthenticated,
-      address,
-      chainId,
-      lastLogin,
-      loginCount
-    };
+  getAuthStatus: async () => {
+    try {
+      const { data } = await axios.get(`${API_BASE}/auth/status`);
+      return {
+        isAuthenticated: data.isAuthenticated,
+        address: data.address,
+        chainId: data.chainId,
+        lastLogin: data.lastLogin,
+        loginCount: data.loginCount
+      };
+    } catch (error) {
+      return {
+        isAuthenticated: false,
+        address: null,
+        chainId: null,
+        lastLogin: null,
+        loginCount: 0
+      };
+    }
   }
 }; 

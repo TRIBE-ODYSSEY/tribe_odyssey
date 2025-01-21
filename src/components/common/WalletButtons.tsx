@@ -1,7 +1,7 @@
 import { WalletButton } from '@rainbow-me/rainbowkit';
 import React from 'react';
 
-export const WalletButtons = () => {
+export const WalletButtons: React.FC = () => {
   return (
     <div className="flex flex-col gap-2">
       <WalletButton wallet="rainbow" />

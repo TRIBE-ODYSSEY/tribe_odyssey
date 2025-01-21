@@ -1,8 +1,7 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { createJSONStorage } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
-interface AuthState {
+interface WalletState {
   address: string | null;
   chainId: number | null;
   isAuthenticated: boolean;
@@ -10,18 +9,25 @@ interface AuthState {
   loginCount: number;
   error: string | null;
   loading: boolean;
-  
-  // Actions
+  nonce: string | null;
+}
+
+interface WalletActions {
   setAuth: (address: string, chainId: number) => void;
   clearAuth: () => void;
   setError: (error: string | null) => void;
   setLoading: (loading: boolean) => void;
   incrementLoginCount: () => void;
+  setNonce: (nonce: string) => void;
+  clearNonce: () => void;
 }
+
+type AuthState = WalletState & WalletActions;
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
+      // State
       address: null,
       chainId: null,
       isAuthenticated: false,
@@ -29,14 +35,17 @@ export const useAuthStore = create<AuthState>()(
       loginCount: 0,
       error: null,
       loading: false,
+      nonce: null,
 
+      // Actions
       setAuth: (address, chainId) => 
         set({ 
           address, 
           chainId, 
           isAuthenticated: true,
           lastLogin: new Date(),
-          error: null
+          error: null,
+          loading: false
         }),
 
       clearAuth: () => 
@@ -44,17 +53,26 @@ export const useAuthStore = create<AuthState>()(
           address: null, 
           chainId: null, 
           isAuthenticated: false,
-          error: null
+          error: null,
+          nonce: null
         }),
 
-      setError: (error) => set({ error }),
+      setError: (error) => set({ error, loading: false }),
+      
       setLoading: (loading) => set({ loading }),
       
       incrementLoginCount: () => 
-        set((state) => ({ loginCount: state.loginCount + 1 })),
+        set((state) => ({ 
+          loginCount: state.loginCount + 1,
+          lastLogin: new Date() 
+        })),
+
+      setNonce: (nonce) => set({ nonce }),
+      
+      clearNonce: () => set({ nonce: null })
     }),
     {
-      name: 'auth-storage',
+      name: 'wallet-storage',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         address: state.address,
