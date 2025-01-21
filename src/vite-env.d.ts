@@ -1,6 +1,7 @@
 /// <reference types="vite/client" />
 /// <reference types="@wagmi/core" />
 /// <reference types="viem" />
+/// <reference types="vitest" />
 
 interface ImportMetaEnv {
 	// App Configuration
@@ -8,7 +9,7 @@ interface ImportMetaEnv {
 	readonly VITE_APP_URL: string
 	readonly VITE_APP_DESCRIPTION: string
 	readonly VITE_API_URL: string
-	
+	readonly VITE_TEST_PORT: string
 	// Web3 Configuration
 	readonly VITE_WALLET_CONNECT_PROJECT_ID: string
 	readonly VITE_ALCHEMY_API_KEY: string

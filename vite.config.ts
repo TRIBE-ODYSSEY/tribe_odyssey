@@ -14,6 +14,26 @@ export default defineConfig({
   plugins: [react()],
   define: {
     'import.meta.env': JSON.stringify(process.env),
+    'process.env': JSON.stringify(process.env),
+    'process.env.VITE_TEST_PORT': JSON.stringify(process.env.VITE_TEST_PORT) || 4444,
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/test/setup.ts',
+    include: ['**/*.{test,spec}.{js,jsx,ts,tsx}'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      exclude: [
+        'node_modules/**',
+        'dist/**',
+        'src/test/**',
+        '**/*.d.ts',
+        '**/*.config.*',
+        '**/types/**'
+      ]
+    },
   },
   server: {
     host: '0.0.0.0',
@@ -38,27 +58,7 @@ export default defineConfig({
           });
         }
       },
-      '/raffles': {
-        target: 'https://tribeodyssey.net',
-        changeOrigin: true,
-        secure: true,
-        ws: true,
-        configure: (proxy, _options) => {
-          proxy.on('error', (err, _req, _res) => {
-            console.log('proxy error', err);
-          });
-          proxy.on('proxyReq', (proxyReq, _req, _res) => {
-            proxyReq.setHeader('Origin', 'https://tribeodyssey.net');
-          });
-        }
-      }
     },
-    cors: {
-      origin: ['https://tribeodyssey.net', 'https://www.tribeodyssey.net'],
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization'],
-      credentials: true
-    }
   },
   preview: {
     host: '0.0.0.0',
