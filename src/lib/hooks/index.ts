@@ -3,4 +3,5 @@ export * from './useWallet';
 export * from './useContract';
 export * from './useTheme';
 export * from './useLazyLoading';
-export * from './useMediumPosts'; 
+export * from './useMediumPosts';
+export * from './useStaking'; 

@@ -1,7 +1,8 @@
 import { useWalletStore } from '../store';
 import { publicClient, walletClient } from '../viem/clients';
-import { formatEther } from 'viem';
-import type { Address } from 'viem';
+import { formatEther, parseEther } from 'viem';
+import type { Address, Hash } from 'viem';
+import { ContractName, writeContract } from '../wagmi/actions/contracts';
 
 export const walletService = {
   getBalance: async (address: Address) => {
@@ -33,6 +34,25 @@ export const walletService = {
     } catch (error) {
       store.setError('Failed to fetch network');
       return null;
+    } finally {
+      store.setLoading(false);
+    }
+  },
+
+  registerENS: async (domainName: string): Promise<Hash> => {
+    const store = useWalletStore.getState();
+    store.setLoading(true);
+    
+    try {
+      return await writeContract(
+        import.meta.env.VITE_ENS_REGISTRAR_ADDRESS as Address,
+        'ENSRegistrar' as ContractName,
+        'register',
+        [domainName, parseEther('0.01')] // Example cost, adjust as needed
+      );
+    } catch (error) {
+      store.setError('Failed to register ENS domain');
+      throw error;
     } finally {
       store.setLoading(false);
     }

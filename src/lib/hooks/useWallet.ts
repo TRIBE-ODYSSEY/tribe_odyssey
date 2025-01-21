@@ -14,6 +14,11 @@ export const useWallet = () => {
     await walletService.getNetwork();
   }, []);
 
+  const registerENS = useCallback(async (domainName: string) => {
+    if (!selectedWallet) throw new Error('No wallet connected');
+    return await walletService.registerENS(domainName);
+  }, [selectedWallet]);
+
   useEffect(() => {
     if (selectedWallet) {
       updateNetwork();
@@ -27,6 +32,7 @@ export const useWallet = () => {
     loading,
     error,
     updateBalance,
-    updateNetwork
+    updateNetwork,
+    registerENS
   };
 }; 

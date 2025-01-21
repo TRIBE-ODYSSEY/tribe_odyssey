@@ -4,6 +4,7 @@ import PageLayout from '../../components/common/layout/PageLayout';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import Button from '../../components/common/Button';
 import { Popover } from '@headlessui/react';
+import { useWallet } from "@src/lib/hooks";
 
 // The HtmlTooltip component is used to show tooltips with information
 // It's used with the InformationCircleIcon button below
@@ -23,9 +24,22 @@ export const HtmlTooltip: React.FC<{ content: React.ReactNode; children: React.R
 
 const ENSPage: React.FC = () => {
   const [domainName, setDomainName] = useState('');
+  const [isRegistering, setIsRegistering] = useState(false);
+  const { selectedWallet, registerENS, loading } = useWallet();
 
-  const handleRegister = () => {
-    console.log('Registering:', domainName);
+  const handleRegister = async () => {
+    if (!selectedWallet || !domainName) return;
+    
+    try {
+      setIsRegistering(true);
+      await registerENS(domainName);
+      // Success notification could be added here
+    } catch (error) {
+      console.error('ENS registration failed:', error);
+      // Error notification could be added here
+    } finally {
+      setIsRegistering(false);
+    }
   };
 
   return (
@@ -98,9 +112,10 @@ const ENSPage: React.FC = () => {
               </div>
               <Button
                 onClick={handleRegister}
+                disabled={!selectedWallet || !domainName || isRegistering || loading}
                 className="btn-primary whitespace-nowrap"
               >
-                Register
+                {isRegistering ? 'Registering...' : 'Register'}
               </Button>
             </div>
           </div>

@@ -4,7 +4,8 @@ import { getDefaultWallets } from '@rainbow-me/rainbowkit'
 
 export const { wallets } = getDefaultWallets({
   appName: 'Tribe Odyssey',
-  projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID || '',
+  projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID || 'e6937fb240cd6f4df6739b75bf0b324d',
+  
 })
 
 export const config = createConfig({
