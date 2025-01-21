@@ -12,6 +12,7 @@ interface ImportMetaEnv {
 	readonly VITE_TEST_PORT: string
 	// Web3 Configuration
 	readonly VITE_WALLET_CONNECT_PROJECT_ID: string
+	readonly VITE_CHAIN_ID: string
 	readonly VITE_ALCHEMY_API_KEY: string
 	readonly VITE_INFURA_API_KEY: string
 	readonly VITE_RPC_URL: string

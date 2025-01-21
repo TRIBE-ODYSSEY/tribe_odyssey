@@ -7,15 +7,11 @@ import { defineConfig } from 'vite';
 // Load environment variables
 dotenv.config();
 
-// Remove console.log as it's not needed in production
-console.log('PORT from .env:', process.env.PORT);
-
 export default defineConfig({
   plugins: [react()],
   define: {
     'import.meta.env': JSON.stringify(process.env),
     'process.env': JSON.stringify(process.env),
-    'process.env.VITE_TEST_PORT': JSON.stringify(process.env.VITE_TEST_PORT) || 4444,
   },
   test: {
     globals: true,
@@ -74,6 +70,7 @@ export default defineConfig({
       '@services': path.resolve(__dirname, 'src/services'),
       '@pages': path.resolve(__dirname, 'src/pages'),
       '@maintenance': path.resolve(__dirname, 'src/pages/Maintenance'),
+      '@test': path.resolve(__dirname, 'src/test'),
     },
   },
   assetsInclude: ['**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.svg', '**/*.gif'],
@@ -94,7 +91,7 @@ export default defineConfig({
   },
   publicDir: 'public',
   optimizeDeps: {
-    include: ['react', 'react-dom'],
+    include: ['react', 'react-dom', 'react-router-dom'],
     exclude: ['@web3modal/ethereum', '@web3modal/react']
   }
 });
