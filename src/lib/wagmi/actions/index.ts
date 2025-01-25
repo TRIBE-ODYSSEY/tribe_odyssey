@@ -1,10 +1,12 @@
-import { sendTransaction, signMessage } from './wallet'
+import { sendTransaction, signMessage, getBalance, getChainId } from './wallet'
 import { readContract, writeContract } from './contracts'
 
 export const wagmiActions = {
   // Wallet actions
   sendTransaction,
   signMessage,
+  getBalance,
+  getChainId,
   
   // Contract actions
   readContract,
@@ -19,6 +21,8 @@ export type WagmiActions = typeof wagmiActions
 export {
   sendTransaction,
   signMessage,
+  getBalance,
+  getChainId,
   readContract,
   writeContract,
 }

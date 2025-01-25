@@ -72,7 +72,7 @@ export const alchemyService = {
           method: 'eth_requestAccounts' 
         });
 
-        if (!accounts || accounts.length === 0) {
+        if (!accounts || (Array.isArray(accounts) && accounts.length === 0)) {
           throw new Error('No accounts found');
         }
 

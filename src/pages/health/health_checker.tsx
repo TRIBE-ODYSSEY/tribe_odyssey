@@ -1,44 +1,63 @@
 import Card from '@src/components/common/card/Card';
 import React, { useEffect, useState } from 'react';
-import { useAccount, useChainId } from 'wagmi';
-import { usePublicClient } from '@src/lib/wagmi/hooks';
+import { useAlchemyContext } from '@src/lib/context/AlchemyContext';
+import { alchemyService } from '@src/lib/config/alchemy';
 
 const HealthChecker: React.FC = () => {
-  const { isConnected } = useAccount();
-  const chainId = useChainId();
-  const publicClient = usePublicClient();
+  const { isConnected, address } = useAlchemyContext();
   const [isHealthy, setIsHealthy] = useState(false);
+  const [chainId, setChainId] = useState<number | null>(null);
+  const [gasPrice, setGasPrice] = useState<bigint | null>(null);
+  const [blockNumber, setBlockNumber] = useState<number | null>(null);
 
   const checkHealth = async () => {
-    if (!publicClient) return false;
     try {
-      const blockNumber = await publicClient.getBlockNumber();
-      return blockNumber > 0n;
+      const provider = await alchemyService.provider.getProvider();
+      const network = await provider.getNetwork();
+      setChainId(Number(network.chainId));
+
+      // Check if we can fetch basic blockchain data
+      const [latestBlock, currentGasPrice] = await Promise.all([
+        alchemyService.blockchain.getLatestBlock(),
+        alchemyService.blockchain.getGasPrice()
+      ]);
+
+      setBlockNumber(Number(latestBlock.number));
+      setGasPrice(BigInt(currentGasPrice.toString()));
+      setIsHealthy(true);
+      return true;
     } catch (error) {
       console.error('Health check failed:', error);
+      setIsHealthy(false);
       return false;
     }
   };
 
   useEffect(() => {
     const runHealthCheck = async () => {
-      const health = await checkHealth();
-      setIsHealthy(health);
+      await checkHealth();
     };
-    runHealthCheck();
-  }, [publicClient]);
+
+    if (isConnected) {
+      runHealthCheck();}
+  }, [isConnected]);
 
   const getChainName = (id: number) => {
     switch (id) {
       case 1:
         return 'Ethereum Mainnet';
-      case 4:
-        return 'Rinkeby';
+      case 11155111:
+        return 'Sepolia';
       case 5:
         return 'Goerli';
       default:
         return 'Unknown Network';
     }
+  };
+
+  const formatGasPrice = (price: bigint | null) => {
+    if (!price) return 'Unknown';
+    return `${alchemyService.utils.formatUnits(price, 'gwei')} Gwei`;
   };
 
   const cardProps = {
@@ -77,6 +96,26 @@ const HealthChecker: React.FC = () => {
               {isHealthy ? 'Healthy' : 'Unhealthy'}
             </span>
           </div>
+          <div className="flex justify-between items-center">
+            <span className="text-[var(--color-text-muted)]">Latest Block:</span>
+            <span className={blockNumber ? 'text-green-400' : 'text-red-400'}>
+              {blockNumber || 'Unknown'}
+            </span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-[var(--color-text-muted)]">Gas Price:</span>
+            <span className={gasPrice ? 'text-green-400' : 'text-red-400'}>
+              {formatGasPrice(gasPrice)}
+            </span>
+          </div>
+          {address && (
+            <div className="flex justify-between items-center">
+              <span className="text-[var(--color-text-muted)]">Connected Address:</span>
+              <span className="text-green-400 text-sm">
+                {`${address.slice(0, 6)}...${address.slice(-4)}`}
+              </span>
+            </div>
+          )}
         </div>
       </div>
     ),

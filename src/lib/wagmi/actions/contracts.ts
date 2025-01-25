@@ -1,11 +1,11 @@
 import type { Address } from 'viem'
+import { ethers } from 'ethers';
 import { erc20ABI } from '@src/lib/config/abi/erc20.json'
 import { erc721ABI } from '@src/lib/config/abi/erc721.json'
 import { stakingABI } from '@src/lib/config/abi/staking.json'
 import { tribeABI } from '@src/lib/config/abi/tribe.json'
 import { EthRegistrarSubdomainRegistrarABI } from '@src/lib/config/abi/EthRegistrarSubdomainRegistrar.json'
-import { alchemy } from '@src/lib/config/alchemy'
-import { encodeAbiParameters } from 'viem'
+import { alchemyService } from '@src/lib/config/alchemy'
 
 // Contract type mapping
 export type ContractName = 
@@ -31,17 +31,39 @@ export async function readContract(
   args: unknown[]
 ) {
   try {
-    const data = await alchemy.core.call({
-      to: address,
-      data: encodeAbiParameters(
-        abiMap[contractName],
-        functionName,
-        args
-      )
-    });
-    return data;
+    const provider = await alchemyService.provider.getProvider();
+    const contract = new ethers.Contract(
+      address,
+      abiMap[contractName],
+      provider
+    );
+    
+    return await contract[functionName](...args);
   } catch (error) {
     console.error('Contract read error:', error);
+    throw error;
+  }
+}
+
+export async function writeContract(
+  address: Address,
+  contractName: ContractName,
+  functionName: string,
+  args: unknown[]
+) {
+  try {
+    const provider = await alchemyService.provider.getProvider();
+    const signer = await alchemyService.provider.getSigner();
+    const contract = new ethers.Contract(
+      address,
+      abiMap[contractName],
+      provider
+    ).connect(signer);
+    
+    const tx = await contract[functionName as keyof typeof contract](...args);
+    return await tx.wait();
+  } catch (error) {
+    console.error('Contract write error:', error);
     throw error;
   }
 }

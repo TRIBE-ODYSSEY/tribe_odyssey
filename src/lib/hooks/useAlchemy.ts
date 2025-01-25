@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { alchemyService } from '@src/lib/config/alchemy';
+import { alchemy, alchemyService } from '@src/lib/config/alchemy';
 import type { Address } from 'viem';
 import type { 
   OwnedNftsResponse,
@@ -25,7 +25,7 @@ export function useAlchemy() {
     setIsLoading(true);
     setError(null);
     try {
-      return await alchemyService.nft.getNftsForOwner(address, options);
+      return await alchemy.nft.getNftsForOwner(address, options);
     } catch (err) {
       setError(err as Error);
       throw err;
