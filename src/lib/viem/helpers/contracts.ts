@@ -1,7 +1,7 @@
 import contracts, { isValidChainId, CONTRACT_NAMES, CHAIN_IDS } from '../contracts';
-import { stakingABI } from '@src/lib/config/abi/staking.json';
-import { tribeABI } from '@src/lib/config/abi/tribe.json';
-import { multiCallABI } from '@src/lib/config/abi/MultiCall.json';
+import stakingABI from '@src/lib/config/abi/staking.json';
+import tribeABI from '@src/lib/config/abi/tribe.json';
+import multiCallABI from '@src/lib/config/abi/MultiCall.json';
 import type { Address } from 'viem';
 
 type ChainId = typeof CHAIN_IDS[keyof typeof CHAIN_IDS];

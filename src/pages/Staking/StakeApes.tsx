@@ -3,16 +3,15 @@ import PageTitle from '@src/components/common/PageTitle';
 import StakingStats from '@src/components/Staking/StakingStats';
 import StakingTabs from '@src/components/Staking/StakingTabs';
 import PageLayout from '@src/components/common/layout/PageLayout';
-import { useAlchemy } from '@src/lib/hooks';
-import { alchemy, alchemyService } from '@src/lib/config/alchemy';
+import { alchemyService } from '@src/lib/config/alchemy';
 import { toast } from 'react-toastify';
 import { getStakingContract } from '@src/lib/viem/helpers/contracts';
 import { CHAIN_IDS } from '@src/lib/viem/contracts';
+import { ethers } from 'ethers';
 
 const StakeApes: React.FC = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [waiting, setWaiting] = useState(false);
-  const { getNFTs } = useAlchemy();
   
   const stakingContract = getStakingContract(CHAIN_IDS.MAINNET);
 
@@ -24,15 +23,19 @@ const StakeApes: React.FC = () => {
 
     setWaiting(true);
     try {
-      const transaction = await alchemy.transact.sendTransaction({
-        to: stakingContract.address as `0x${string}`,
-        data: encodeAbiParameters(
-          stakingContract.abi,
-          'joinMany',
-          [BigInt(0), selectedNFTs.map(id => BigInt(id))]
-        )
-      });
+      const signer = await alchemyService.provider.getSigner();
+      const contract = new ethers.Contract(
+        stakingContract.address,
+        stakingContract.abi,
+        signer
+      );
+
+      const tx = await contract.joinMany(
+        0, // pool id
+        selectedNFTs.map(id => BigInt(id))
+      );
       
+      await tx.wait();
       toast.success(`Successfully staked ${selectedNFTs.length} NFT(s)`);
       setRefreshTrigger(prev => prev + 1);
     } catch (error) {
@@ -51,15 +54,19 @@ const StakeApes: React.FC = () => {
 
     setWaiting(true);
     try {
-      const transaction = await alchemy.transact.sendTransaction({
-        to: stakingContract.address as `0x${string}`,
-        data: encodeAbiParameters(
-          stakingContract.abi,
-          'leaveMany',
-          [BigInt(0), selectedNFTs.map(id => BigInt(id))]
-        )
-      });
+      const signer = await alchemyService.provider.getSigner();
+      const contract = new ethers.Contract(
+        stakingContract.address,
+        stakingContract.abi,
+        signer
+      );
+
+      const tx = await contract.leaveMany(
+        0, // pool id
+        selectedNFTs.map(id => BigInt(id))
+      );
       
+      await tx.wait();
       toast.success(`Successfully unstaked ${selectedNFTs.length} NFT(s)`);
       setRefreshTrigger(prev => prev + 1);
     } catch (error) {

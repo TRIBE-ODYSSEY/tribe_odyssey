@@ -1,6 +1,6 @@
-import { stakingABI } from '@src/lib/config/abi/staking.json';
-import { tribeABI } from '@src/lib/config/abi/tribe.json';
-import { multiCallABI } from '@src/lib/config/abi/MultiCall.json';
+import stakingABI from '@src/lib/config/abi/staking.json';
+import tribeABI from '@src/lib/config/abi/tribe.json';
+import multiCallABI from '@src/lib/config/abi/MultiCall.json';
 import type { Address } from 'viem';
 
 export const CHAIN_IDS = {

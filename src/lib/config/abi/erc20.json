@@ -1,10 +1,9 @@
-{
-  "erc20ABI": [
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "name",
-      "outputs": [
+[
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "name",
+    "outputs": [
       {
         "name": "",
         "type": "string"
@@ -217,8 +216,7 @@
         "type": "uint256"
       }
     ],
-      "name": "Transfer",
-      "type": "event"
-    }
-  ]
-}
+    "name": "Transfer",
+    "type": "event"
+  }
+]

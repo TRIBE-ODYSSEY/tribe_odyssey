@@ -1,10 +1,10 @@
 import type { Address } from 'viem'
 import { ethers } from 'ethers';
-import { erc20ABI } from '@src/lib/config/abi/erc20.json'
-import { erc721ABI } from '@src/lib/config/abi/erc721.json'
-import { stakingABI } from '@src/lib/config/abi/staking.json'
-import { tribeABI } from '@src/lib/config/abi/tribe.json'
-import { EthRegistrarSubdomainRegistrarABI } from '@src/lib/config/abi/EthRegistrarSubdomainRegistrar.json'
+import erc20ABI from '@src/lib/config/abi/erc20.json'
+import erc721ABI from '@src/lib/config/abi/erc721.json'
+import stakingABI from '@src/lib/config/abi/staking.json'
+import tribeABI from '@src/lib/config/abi/tribe.json'
+import EthRegistrarSubdomainRegistrarABI from '@src/lib/config/abi/EthRegistrarSubdomainRegistrar.json'
 import { alchemyService } from '@src/lib/config/alchemy'
 
 // Contract type mapping
