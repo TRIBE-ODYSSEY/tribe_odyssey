@@ -29,7 +29,7 @@ const ENSPage: React.FC = () => {
   const [isRegistering, setIsRegistering] = useState(false);
   const { address } = useAuth();
   const { 
-    getNFTs,
+    getUserStakedNFTs,
     isLoading,
     alchemy
   } = useAlchemy();
@@ -43,10 +43,8 @@ const ENSPage: React.FC = () => {
       if (!address) return;
       
       try {
-        const nfts = await getNFTs(address as Address);
-        const hasTribeOdysseyNFT = nfts.ownedNfts.some(
-          nft => nft.contract.address.toLowerCase() === TRIBE_ODYSSEY_CONTRACT.toLowerCase()
-        );
+        const nfts = await getUserStakedNFTs(TRIBE_ODYSSEY_CONTRACT);
+        const hasTribeOdysseyNFT = nfts.some((nft) => nft);
         setOwnsNFT(hasTribeOdysseyNFT);
       } catch (error) {
         console.error('Error checking NFT ownership:', error);
@@ -55,7 +53,7 @@ const ENSPage: React.FC = () => {
     };
 
     checkNFTOwnership();
-  }, [address, getNFTs]);
+  }, [address, getUserStakedNFTs]);
 
   const handleRegister = async () => {
     if (!address || !domainName) {

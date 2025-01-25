@@ -1,12 +1,9 @@
 import { Spinner } from 'flowbite-react';
 import React, { Suspense } from 'react';
 import AppRoutes from './AppRoutes';
-import { useNavigate } from 'react-router-dom';
 import { AlchemyProvider } from './lib/context/AlchemyContext';
 
 const App: React.FC = () => {
-  const navigate = useNavigate();
-
   return (
     <AlchemyProvider>
       <div className="min-h-screen bg-gradient-to-b from-[var(--color-tertiary)] to-[var(--color-background)]">
