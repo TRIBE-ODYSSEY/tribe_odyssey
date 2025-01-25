@@ -1,89 +1,42 @@
-import axios from 'axios';
+import { alchemy } from '@src/lib/config/alchemy';
 import { useAuthStore } from '../store/authStore';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
-
-class AuthenticationError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'AuthenticationError';
-  }
-}
-
 export const authService = {
-  getNonce: async () => {
+  async signIn(): Promise<void> {
     try {
-      const { data: nonce } = await axios.get(`${API_BASE}/auth/nonce`);
-      localStorage.setItem('auth_nonce', nonce);
-      return nonce;
-    } catch (error) {
-      throw new AuthenticationError('Failed to generate nonce');
-    }
-  },
-
-  verify: async (message: { address: string, chainId: number }, signature: string) => {
-    const store = useAuthStore.getState();
-    store.setLoading(true);
-    
-    try {
-      const nonce = localStorage.getItem('auth_nonce') || undefined;
+      const provider = await alchemy.config.getProvider();
+      const signer = await provider.getSigner();
+      const address = await signer.getAddress();
+      const message = `Sign in to Tribe Odyssey\nNonce: ${Date.now()}`;
+      const signature = await signer.signMessage(message);
       
-      const { data } = await axios.post(`${API_BASE}/auth/verify`, {
-        address: message.address,
-        chainId: message.chainId,
+      // Store auth data in your state management
+      useAuthStore.getState().setAuth({
+        address,
         signature,
-        nonce
+        isAuthenticated: true
       });
 
-      if (data.success) {
-        localStorage.removeItem('auth_nonce');
-        store.setAuth(data.address, data.chainId);
-        store.incrementLoginCount();
-        return true;
-      }
+      // Store in localStorage for persistence
+      localStorage.setItem('auth_token', signature);
+      localStorage.setItem('wallet_address', address);
+    } catch (error) {
+      console.error('Authentication error:', error);
+      throw error;
+    }
+  },
+
+  async signOut(): Promise<void> {
+    try {
+      // Clear auth state
+      useAuthStore.getState().clearAuth();
       
-      throw new AuthenticationError('Verification failed');
+      // Clear localStorage
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('wallet_address');
     } catch (error) {
-      store.setError(error instanceof Error ? error.message : 'Unknown error');
-      return false;
-    } finally {
-      store.setLoading(false);
-    }
-  },
-
-  logout: async () => {
-    const store = useAuthStore.getState();
-    store.setLoading(true);
-    
-    try {
-      await axios.post(`${API_BASE}/auth/logout`);
-      store.clearAuth();
-      localStorage.removeItem('auth_nonce');
-    } catch (error) {
-      store.setError('Logout failed');
-    } finally {
-      store.setLoading(false);
-    }
-  },
-
-  getAuthStatus: async () => {
-    try {
-      const { data } = await axios.get(`${API_BASE}/auth/status`);
-      return {
-        isAuthenticated: data.isAuthenticated,
-        address: data.address,
-        chainId: data.chainId,
-        lastLogin: data.lastLogin,
-        loginCount: data.loginCount
-      };
-    } catch (error) {
-      return {
-        isAuthenticated: false,
-        address: null,
-        chainId: null,
-        lastLogin: null,
-        loginCount: 0
-      };
+      console.error('Sign out error:', error);
+      throw error;
     }
   }
-}; 
+};

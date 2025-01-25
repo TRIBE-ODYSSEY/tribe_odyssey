@@ -1,10 +1,11 @@
-import { Account, type Address, type Hash } from 'viem'
-import { publicClient, walletClient } from '../../viem/clients'
+import type { Address } from 'viem'
 import { erc20ABI } from '@src/lib/config/abi/erc20.json'
 import { erc721ABI } from '@src/lib/config/abi/erc721.json'
 import { stakingABI } from '@src/lib/config/abi/staking.json'
 import { tribeABI } from '@src/lib/config/abi/tribe.json'
 import { EthRegistrarSubdomainRegistrarABI } from '@src/lib/config/abi/EthRegistrarSubdomainRegistrar.json'
+import { alchemy } from '@src/lib/config/alchemy'
+import { encodeAbiParameters } from 'viem'
 
 // Contract type mapping
 export type ContractName = 
@@ -29,27 +30,18 @@ export async function readContract(
   functionName: string,
   args: unknown[]
 ) {
-  const data = await publicClient.readContract({
-    address,
-    abi: abiMap[contractName],
-    functionName,
-    args,
-  })
-  return data
-}
-
-export async function writeContract(
-  address: Address,
-  contractName: ContractName,
-  functionName: string,
-  args: unknown[]
-): Promise<Hash> {
-  const hash = await walletClient.writeContract({
-    address,
-    abi: abiMap[contractName],
-    functionName,
-    args,
-    account: walletClient.account as unknown as Account,
-  })
-  return hash
+  try {
+    const data = await alchemy.core.call({
+      to: address,
+      data: encodeAbiParameters(
+        abiMap[contractName],
+        functionName,
+        args
+      )
+    });
+    return data;
+  } catch (error) {
+    console.error('Contract read error:', error);
+    throw error;
+  }
 }

@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PageTitle from '../../components/common/PageTitle';
 import PageLayout from '../../components/common/layout/PageLayout';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import Button from '../../components/common/Button';
 import { Popover } from '@headlessui/react';
-import { useWallet } from "@src/lib/hooks";
+import { useAlchemy } from "@src/lib/hooks/useAlchemy";
+import { useAuth } from "@src/lib/hooks/useAuth";
+import { toast } from "react-toastify";
 
 // The HtmlTooltip component is used to show tooltips with information
 // It's used with the InformationCircleIcon button below
@@ -25,18 +27,76 @@ export const HtmlTooltip: React.FC<{ content: React.ReactNode; children: React.R
 const ENSPage: React.FC = () => {
   const [domainName, setDomainName] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
-  const { selectedWallet, registerENS, loading } = useWallet();
+  const { address } = useAuth();
+  const { 
+    getNFTs,
+    isLoading,
+    alchemy
+  } = useAlchemy();
+
+  // Check if user owns a Tribe Odyssey NFT
+  const [ownsNFT, setOwnsNFT] = useState(false);
+  const TRIBE_ODYSSEY_CONTRACT = import.meta.env.VITE_TRIBE_CONTRACT_MAINNET;
+
+  useEffect(() => {
+    const checkNFTOwnership = async () => {
+      if (!address) return;
+      
+      try {
+        const nfts = await getNFTs(address as Address);
+        const hasTribeOdysseyNFT = nfts.ownedNfts.some(
+          nft => nft.contract.address.toLowerCase() === TRIBE_ODYSSEY_CONTRACT.toLowerCase()
+        );
+        setOwnsNFT(hasTribeOdysseyNFT);
+      } catch (error) {
+        console.error('Error checking NFT ownership:', error);
+        toast.error('Failed to verify NFT ownership');
+      }
+    };
+
+    checkNFTOwnership();
+  }, [address, getNFTs]);
 
   const handleRegister = async () => {
-    if (!selectedWallet || !domainName) return;
+    if (!address || !domainName) {
+      toast.error('Please connect your wallet and enter a domain name');
+      return;
+    }
+
+    if (!ownsNFT) {
+      toast.error('You must own a Tribe Odyssey NFT to register an ENS domain');
+      return;
+    }
     
     try {
       setIsRegistering(true);
-      await registerENS(domainName);
-      // Success notification could be added here
+      
+      // Get the ENS registrar contract
+      const registrarContract = {
+        address: import.meta.env.VITE_ENS_REGISTRAR_CONTRACT_MAINNET as `0x${string}`,
+        abi: ['function register(string calldata name) external']
+      };
+
+      // Create the transaction using alchemy instead of alchemyService
+      const transaction = {
+        to: registrarContract.address,
+        data: alchemy.utils.encodeFunction(
+          registrarContract.abi[0],
+          [domainName]
+        )
+      };
+
+      // Send the transaction
+      const response = await alchemy.transaction.sendTransaction(transaction);
+      
+      // Wait for confirmation
+      await alchemy.transaction.waitForTransaction(response.hash);
+      
+      toast.success('ENS domain registered successfully!');
+      setDomainName('');
     } catch (error) {
       console.error('ENS registration failed:', error);
-      // Error notification could be added here
+      toast.error('Failed to register ENS domain');
     } finally {
       setIsRegistering(false);
     }
@@ -112,12 +172,17 @@ const ENSPage: React.FC = () => {
               </div>
               <Button
                 onClick={handleRegister}
-                disabled={!selectedWallet || !domainName || isRegistering || loading}
+                disabled={!address || !domainName || isRegistering || isLoading || !ownsNFT}
                 className="btn-primary whitespace-nowrap"
               >
                 {isRegistering ? 'Registering...' : 'Register'}
               </Button>
             </div>
+            {!ownsNFT && address && (
+              <p className="mt-2 text-red-500 text-sm">
+                You must own a Tribe Odyssey NFT to register an ENS domain
+              </p>
+            )}
           </div>
 
           {/* Info Link */}

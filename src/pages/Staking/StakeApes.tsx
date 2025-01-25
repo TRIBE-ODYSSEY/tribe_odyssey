@@ -3,26 +3,20 @@ import PageTitle from '@src/components/common/PageTitle';
 import StakingStats from '@src/components/Staking/StakingStats';
 import StakingTabs from '@src/components/Staking/StakingTabs';
 import PageLayout from '@src/components/common/layout/PageLayout';
-import { useAccount } from 'wagmi';
-import { useWriteContract } from 'wagmi';
+import { useAlchemy } from '@src/lib/hooks';
+import { alchemy, alchemyService } from '@src/lib/config/alchemy';
+import { toast } from 'react-toastify';
 import { getStakingContract } from '@src/lib/viem/helpers/contracts';
 import { CHAIN_IDS } from '@src/lib/viem/contracts';
-import { toast } from 'react-toastify';
 
 const StakeApes: React.FC = () => {
-  const { address, isConnected } = useAccount();
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [waiting, setWaiting] = useState(false);
+  const { getNFTs } = useAlchemy();
   
-  const { writeContract } = useWriteContract();
   const stakingContract = getStakingContract(CHAIN_IDS.MAINNET);
 
   const handleStake = async (selectedNFTs: string[]) => {
-    if (!isConnected || !address) {
-      toast.error("Please connect your wallet");
-      return;
-    }
-
     if (selectedNFTs.length === 0) {
       toast.error("Please select NFTs to stake");
       return;
@@ -30,11 +24,13 @@ const StakeApes: React.FC = () => {
 
     setWaiting(true);
     try {
-      await writeContract({
-        address: stakingContract.address as `0x${string}`,
-        abi: stakingContract.abi,
-        functionName: 'joinMany',
-        args: [BigInt(0), selectedNFTs.map(id => BigInt(id))] as const,
+      const transaction = await alchemy.transact.sendTransaction({
+        to: stakingContract.address as `0x${string}`,
+        data: encodeAbiParameters(
+          stakingContract.abi,
+          'joinMany',
+          [BigInt(0), selectedNFTs.map(id => BigInt(id))]
+        )
       });
       
       toast.success(`Successfully staked ${selectedNFTs.length} NFT(s)`);
@@ -48,11 +44,6 @@ const StakeApes: React.FC = () => {
   };
 
   const handleUnstake = async (selectedNFTs: string[]) => {
-    if (!isConnected || !address) {
-      toast.error("Please connect your wallet");
-      return;
-    }
-
     if (selectedNFTs.length === 0) {
       toast.error("Please select NFTs to unstake");
       return;
@@ -60,11 +51,13 @@ const StakeApes: React.FC = () => {
 
     setWaiting(true);
     try {
-      await writeContract({
-        address: stakingContract.address as `0x${string}`,
-        abi: stakingContract.abi,
-        functionName: 'leaveMany',
-        args: [BigInt(0), selectedNFTs.map(id => BigInt(id))] as const,
+      const transaction = await alchemy.transact.sendTransaction({
+        to: stakingContract.address as `0x${string}`,
+        data: encodeAbiParameters(
+          stakingContract.abi,
+          'leaveMany',
+          [BigInt(0), selectedNFTs.map(id => BigInt(id))]
+        )
       });
       
       toast.success(`Successfully unstaked ${selectedNFTs.length} NFT(s)`);

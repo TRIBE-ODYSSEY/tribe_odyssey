@@ -1,20 +1,20 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
-interface WalletState {
+interface AuthState {
   address: string | null;
-  chainId: number | null;
+  signature: string | null;
   isAuthenticated: boolean;
   lastLogin: Date | null;
   loginCount: number;
   error: string | null;
   loading: boolean;
   nonce: string | null;
+  setAuth: (auth: { address: string; signature: string; isAuthenticated: boolean }) => void;
+  clearAuth: () => void;
 }
 
 interface WalletActions {
-  setAuth: (address: string, chainId: number) => void;
-  clearAuth: () => void;
   setError: (error: string | null) => void;
   setLoading: (loading: boolean) => void;
   incrementLoginCount: () => void;
@@ -22,14 +22,14 @@ interface WalletActions {
   clearNonce: () => void;
 }
 
-type AuthState = WalletState & WalletActions;
+type AuthStateWithActions = AuthState & WalletActions;
 
-export const useAuthStore = create<AuthState>()(
+export const useAuthStore = create<AuthStateWithActions>()(
   persist(
     (set) => ({
       // State
       address: null,
-      chainId: null,
+      signature: null,
       isAuthenticated: false,
       lastLogin: null,
       loginCount: 0,
@@ -38,24 +38,17 @@ export const useAuthStore = create<AuthState>()(
       nonce: null,
 
       // Actions
-      setAuth: (address, chainId) => 
-        set({ 
-          address, 
-          chainId, 
-          isAuthenticated: true,
-          lastLogin: new Date(),
-          error: null,
-          loading: false
-        }),
+      setAuth: (auth) => set({
+        address: auth.address,
+        signature: auth.signature,
+        isAuthenticated: auth.isAuthenticated
+      }),
 
-      clearAuth: () => 
-        set({ 
-          address: null, 
-          chainId: null, 
-          isAuthenticated: false,
-          error: null,
-          nonce: null
-        }),
+      clearAuth: () => set({
+        address: null,
+        signature: null,
+        isAuthenticated: false
+      }),
 
       setError: (error) => set({ error, loading: false }),
       
@@ -76,7 +69,7 @@ export const useAuthStore = create<AuthState>()(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         address: state.address,
-        chainId: state.chainId,
+        signature: state.signature,
         isAuthenticated: state.isAuthenticated,
         lastLogin: state.lastLogin,
         loginCount: state.loginCount,

@@ -1,7 +1,8 @@
+// @src/components/common/Navbar/index.tsx
 import useLazyLoading from '@src/lib/hooks/useLazyLoading';
 import React, { useEffect, useState } from 'react';
 import { FaBars, FaInstagram, FaDiscord, FaXTwitter } from 'react-icons/fa6';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { alchemyService } from '@src/lib/config/alchemy';
 import { menuConfig } from '@src/lib/config/menuConfig';
 import { Menu } from '@headlessui/react';
 import { Link, useLocation } from 'react-router-dom';
@@ -125,53 +126,35 @@ const WalletSection: React.FC = () => {
   const isRafflesPath = location.pathname.includes('/raffles');
   const isENSPage = location.pathname.includes('/ens');
 
+  const [account, setAccount] = useState<string | null>(null);
+
+  const handleConnect = async () => {
+    try {
+      // Use Alchemy's auth session or your preferred auth method
+      const response = await alchemyService.auth.signIn();
+      setAccount(response.address);
+    } catch (error) {
+      console.error('Connection error:', error);
+    } 
+  };
+
   return (
     <div className="flex items-center gap-2">
       {isStakingPath || isRafflesAdminPath || isRafflesPath || isENSPage ? (
-        <ConnectButton.Custom>
-          {({
-            account,
-            chain,
-            openAccountModal,
-            openConnectModal,
-            mounted,
-          }) => {
-            const ready = mounted;
-            const connected = ready && account && chain;
-
-            return (
-              <div
-                {...(!ready && {
-                  'aria-hidden': true,
-                  style: {
-                    opacity: 0,
-                    pointerEvents: 'none',
-                    userSelect: 'none',
-                  },
-                })}
-              >
-                {(() => {
-                  if (!connected) {
-                    return (
-                      <CustomButton onClick={openConnectModal}>
-                        Connect Wallet
-                      </CustomButton>
-                    );
-                  }
-
-                  return (
-                    <CustomButton 
-                      onClick={openAccountModal}
-                      isWalletConnected={true}
-                    >
-                      {account.displayName}
-                    </CustomButton>
-                  );
-                })()}
-              </div>
-            );
-          }}
-        </ConnectButton.Custom>
+        <div>
+          {account ? (
+            <CustomButton 
+              onClick={() => setAccount(null)}
+              isWalletConnected={true}
+            >
+              {`${account.slice(0, 6)}...${account.slice(-4)}`}
+            </CustomButton>
+          ) : (
+            <CustomButton onClick={handleConnect}>
+              Connect Wallet
+            </CustomButton>
+          )}
+        </div>
       ) : (
         <CustomButton
           onClick={() => window.open('https://discord.gg/T7Bv5JsFYd', '_blank')}

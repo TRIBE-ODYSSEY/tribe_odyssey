@@ -1,51 +1,21 @@
-import { type Hash, type Address } from 'viem'
-import { walletClient, publicClient } from '../../viem/clients'
-import { mainnet } from 'viem/chains'
-
-export async function sendTransaction(to: Address, value: bigint): Promise<Hash> {
-  const [account] = await walletClient.getAddresses()
-  
-  const hash = await walletClient.sendTransaction({
-    account,
-    chain: mainnet,
-    to,
-    value,
-  })
-  
-  return hash
-}
-
-export async function signMessage(message: string): Promise<Hash> {
-  const [account] = await walletClient.getAddresses()
-  
-  const signature = await walletClient.signMessage({
-    account,
-    message,
-  })
-  
-  return signature
-}
-
-export async function signTypedData(domain: any, types: any, value: any): Promise<Hash> {
-  const [account] = await walletClient.getAddresses()
-  
-  const signature = await walletClient.signTypedData({
-    account,
-    domain,
-    types,
-    primaryType: 'Mail',
-    message: value,
-  })
-  
-  return signature
-}
+import { alchemy } from '@src/lib/config/alchemy';
+import type { Address, Hash } from 'viem';
 
 export async function getBalance(address: Address): Promise<bigint> {
-  const balance = await publicClient.getBalance({ address })
-  return balance
+  const balance = await alchemy.core.getBalance(address);
+  return BigInt(balance.toString());
 }
 
 export async function getChainId(): Promise<number> {
-  const chainId = await walletClient.getChainId()
-  return chainId
+  const network = await alchemy.core.getNetwork();
+  return network.chainId;
+}
+
+// For transactions that require signing, we'll need to use Alchemy's Gasless Transactions
+export async function sendTransaction(to: Address, value: bigint): Promise<Hash> {
+  const response = await alchemy.transact.sendTransaction({
+    to,
+    value: value.toString(),
+  });
+  return response.hash as Hash;
 }

@@ -1,9 +1,11 @@
 import { create } from 'zustand';
+import { Network } from 'alchemy-sdk';
 
 interface ConfigState {
   apiUrl: string;
   chainId: number;
-  networkName: string;
+  networkName: Network;
+  alchemyApiKey: string;
   contractAddresses: {
     [key: string]: string;
   };
@@ -12,14 +14,15 @@ interface ConfigState {
 interface ConfigActions {
   setApiUrl: (url: string) => void;
   setChainId: (chainId: number) => void;
-  setNetworkName: (name: string) => void;
+  setNetworkName: (name: Network) => void;
   setContractAddress: (name: string, address: string) => void;
 }
 
 export const useConfigStore = create<ConfigState & ConfigActions>((set) => ({
   apiUrl: import.meta.env.VITE_API_URL || 'http://localhost:3000/api',
   chainId: Number(import.meta.env.VITE_CHAIN_ID) || 1,
-  networkName: import.meta.env.VITE_NETWORK_NAME || 'mainnet',
+  networkName: Network.ETH_MAINNET,
+  alchemyApiKey: import.meta.env.VITE_ALCHEMY_API_KEY,
   contractAddresses: {
     'tribe': import.meta.env.VITE_TRIBE_CONTRACT_ADDRESS || '',
     'staking': import.meta.env.VITE_STAKING_CONTRACT_ADDRESS || '',

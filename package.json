@@ -3,13 +3,10 @@
     "@fortawesome/fontawesome-free": "^6.7.2",
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
-    "@mui/icons-material": "^6.1.10",
-    "@paypal/react-paypal-js": "^8.7.0",
-    "@rainbow-me/rainbowkit": "^2.2.1",
-    "@rainbow-me/rainbowkit-siwe-next-auth": "^0.5.0",
     "@tanstack/react-query": "^5.63.0",
     "@types/lodash": "^4.17.13",
     "@types/react-router": "^5.1.20",
+    "alchemy-sdk": "^3.5.1",
     "axios": "^1.7.9",
     "boring-avatars": "^1.11.2",
     "date-and-time": "^3.6.0",
@@ -40,8 +37,7 @@
     "styled-components": "^6.1.14",
     "tailwind-scrollbar": "^3.1.0",
     "terser": "^5.37.0",
-    "viem": "2.x",
-    "wagmi": "^2.14.7"
+    "viem": "2.x"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",
