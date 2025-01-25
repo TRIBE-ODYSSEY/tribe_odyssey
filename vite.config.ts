@@ -11,25 +11,6 @@ export default defineConfig({
   plugins: [react()],
   define: {
     'import.meta.env': JSON.stringify(process.env),
-    'process.env': JSON.stringify(process.env),
-  },
-  test: {
-    globals: true,
-    environment: 'jsdom',
-    setupFiles: './src/test/setup.ts',
-    include: ['**/*.{test,spec}.{js,jsx,ts,tsx}'],
-    coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html'],
-      exclude: [
-        'node_modules/**',
-        'dist/**',
-        'src/test/**',
-        '**/*.d.ts',
-        '**/*.config.*',
-        '**/types/**'
-      ]
-    },
   },
   server: {
     host: '0.0.0.0',
@@ -70,7 +51,7 @@ export default defineConfig({
       '@services': path.resolve(__dirname, 'src/services'),
       '@pages': path.resolve(__dirname, 'src/pages'),
       '@maintenance': path.resolve(__dirname, 'src/pages/Maintenance'),
-      '@test': path.resolve(__dirname, 'src/test'),
+      '@types': path.resolve(__dirname, 'src/types'),
     },
   },
   assetsInclude: ['**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.svg', '**/*.gif'],

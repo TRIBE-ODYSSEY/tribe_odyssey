@@ -12,7 +12,7 @@
 
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "types": ["node", "vitest/globals", "@testing-library/jest-dom"],
+    "types": ["node"],
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
@@ -38,15 +38,13 @@
       "@services/*": ["services/*"],
       "@maintenance/*": ["pages/Maintenance/*"],
       "@util/*": ["utils/*"],
-      "@test/*": ["test/*"]
+      "@types/*": ["types/*"]
     }
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
-    "vite.config.ts",
-    "src/test/**/*.ts",
-    "src/test/**/*.tsx"
+    "vite.config.ts"
   ],
   "buildOptions": {
     "outDir": "./dist",
