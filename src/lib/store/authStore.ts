@@ -38,7 +38,7 @@ export const useAuthStore = create<AuthStateWithActions>()(
       nonce: null,
 
       // Actions
-      setAuth: (auth) => set({
+      setAuth: (auth: { address: string; signature: string; isAuthenticated: boolean }) => set({
         address: auth.address,
         signature: auth.signature,
         isAuthenticated: auth.isAuthenticated
