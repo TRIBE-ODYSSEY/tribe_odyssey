@@ -131,7 +131,7 @@ const WalletSection: React.FC = () => {
   const handleConnect = async () => {
     try {
       // Use Alchemy's auth session or your preferred auth method
-      const response = await alchemyService.auth.signIn();
+      const response = await alchemyService.auth.connect();
       setAccount(response.address);
     } catch (error) {
       console.error('Connection error:', error);

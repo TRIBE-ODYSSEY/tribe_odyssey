@@ -8,19 +8,24 @@ import type {
   TransactionResponse,
   Block,
   BigNumber,
-  Nft
+  Nft,
+  GetNftsForOwnerOptions
 } from 'alchemy-sdk';
+import type { PoolInfo, StakedToken } from '@src/lib/config/alchemy';
 
 export function useAlchemy() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
   // NFT Methods
-  const getNFTs = useCallback(async (address: Address): Promise<OwnedNftsResponse> => {
+  const getNFTsForOwner = useCallback(async (
+    address: Address, 
+    options?: GetNftsForOwnerOptions
+  ): Promise<OwnedNftsResponse> => {
     setIsLoading(true);
     setError(null);
     try {
-      return await alchemyService.nft.getNFTsForOwner(address);
+      return await alchemyService.nft.getNftsForOwner(address, options);
     } catch (err) {
       setError(err as Error);
       throw err;
@@ -36,7 +41,7 @@ export function useAlchemy() {
     setIsLoading(true);
     setError(null);
     try {
-      return await alchemyService.nft.getNFTMetadata(contractAddress, tokenId);
+      return await alchemyService.nft.getNftMetadata(contractAddress, tokenId);
     } catch (err) {
       setError(err as Error);
       throw err;
@@ -164,13 +169,59 @@ export function useAlchemy() {
     getAddress: alchemyService.utils.getAddress,
   };
 
+  // Add staking methods
+  const getUserStakedNFTs = useCallback(async (
+    contractAddress: Address
+  ): Promise<StakedToken[]> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      return await alchemyService.staking.getUserStakedNFTs(contractAddress);
+    } catch (err) {
+      setError(err as Error);
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const getPoolInfo = useCallback(async (
+    contractAddress: Address
+  ): Promise<PoolInfo> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      return await alchemyService.staking.getPoolInfo(contractAddress);
+    } catch (err) {
+      setError(err as Error);
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const isApprovedForAll = useCallback(async (
+    tokenAddress: Address,
+  ): Promise<boolean> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      return await alchemyService.staking.isApprovedForAll(tokenAddress);
+    } catch (err) {
+      setError(err as Error);
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   return {
     // State
     isLoading,
     error,
 
     // NFT Methods
-    getNFTs,
+    getNFTsForOwner,
     getNFTMetadata,
     getContractMetadata,
 
@@ -192,6 +243,11 @@ export function useAlchemy() {
     isContractAddress,
     ...utils,
 
+    // Add staking methods to return
+    getUserStakedNFTs,
+    getPoolInfo,
+    isApprovedForAll,
+
     // Direct access to alchemyService
     alchemy: alchemyService
   };
@@ -204,5 +260,8 @@ export type {
   TokenBalance,
   TransactionResponse,
   Block,
-  BigNumber
+  BigNumber,
+  PoolInfo,
+  StakedToken,
+  GetNftsForOwnerOptions
 }; 

@@ -4,11 +4,14 @@ import { BrowserRouter } from 'react-router-dom';
 import '../index.css';
 import App from './AppRoutes.tsx';
 import Layout from './components/common/layout/Layout';
-import ErrorBoundary from '@src/components/common/errors/ErrorBoundary.tsx';
+import ErrorBoundary from '@src/components/common/errors/ErrorBoundary';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useAuthStore } from '@src/lib/store/authStore';
 import { authService } from '@src/lib/services/authService';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
+// Initialize QueryClient
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -36,6 +39,18 @@ const MainApp = () => {
             <Layout>
               <App />
             </Layout>
+            <ToastContainer
+              position="top-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="dark"
+            />
           </ErrorBoundary>
         </QueryClientProvider>
       </BrowserRouter>

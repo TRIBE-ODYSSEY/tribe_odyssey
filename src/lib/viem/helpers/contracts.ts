@@ -1,28 +1,22 @@
 import contracts, { isValidChainId, CONTRACT_NAMES, CHAIN_IDS } from '../contracts';
-type ChainId = typeof CHAIN_IDS[keyof typeof CHAIN_IDS];
 import { stakingABI } from '@src/lib/config/abi/staking.json';
 import { tribeABI } from '@src/lib/config/abi/tribe.json';
 import { multiCallABI } from '@src/lib/config/abi/MultiCall.json';
+import type { Address } from 'viem';
+
+type ChainId = typeof CHAIN_IDS[keyof typeof CHAIN_IDS];
 
 // Define contract config type
 type ContractConfig = {
-  address: string;
+  address: Address;
   abi: any; // Replace 'any' with your specific ABI type if available
-};
-
-// Define supported contracts
-type SupportedContracts = {
-  staking: ContractConfig;
-  tribe: ContractConfig;
-  multiCall: ContractConfig;
 };
 
 /**
  * Gets contract configuration for all supported contracts
  * @param chainId - The chain ID to get contracts for
- * @throws Error if chain ID is invalid or contract not deployed
  */
-export const getContractConfig = (chainId: ChainId = 1): SupportedContracts => {
+export const getContractConfig = (chainId: ChainId = CHAIN_IDS.MAINNET) => {
   if (!isValidChainId(chainId)) {
     throw new Error(`Invalid chain ID: ${chainId}`);
   }
@@ -48,9 +42,8 @@ export const getContractConfig = (chainId: ChainId = 1): SupportedContracts => {
 
 /**
  * Gets staking contract configuration
- * @param chainId - The chain ID to get contract for
  */
-export const getStakingContract = (chainId: ChainId = 1): ContractConfig => {
+export const getStakingContract = (chainId: ChainId = CHAIN_IDS.MAINNET): ContractConfig => {
   if (!isValidChainId(chainId)) {
     throw new Error(`Invalid chain ID: ${chainId}`);
   }
@@ -64,9 +57,8 @@ export const getStakingContract = (chainId: ChainId = 1): ContractConfig => {
 
 /**
  * Gets tribe contract configuration
- * @param chainId - The chain ID to get contract for
  */
-export const getTribeContract = (chainId: ChainId = 1): ContractConfig => {
+export const getTribeContract = (chainId: ChainId = CHAIN_IDS.MAINNET): ContractConfig => {
   if (!isValidChainId(chainId)) {
     throw new Error(`Invalid chain ID: ${chainId}`);
   }
@@ -84,7 +76,7 @@ const throwError = (message: string): never => {
 };
 
 // Add utility functions for contract interactions
-export const getStakingFunctions = (chainId: ChainId = 1) => {
+export const getStakingFunctions = (chainId: ChainId = CHAIN_IDS.MAINNET) => {
   const contract = getStakingContract(chainId);
   
   return {

@@ -1,6 +1,21 @@
 import { Alchemy, Network, AlchemySettings } from 'alchemy-sdk';
 import { ethers } from 'ethers';
 import { toast } from 'react-toastify';
+import type { Address } from 'viem';
+import { BrowserProvider, JsonRpcSigner } from 'ethers';
+
+// Add staking related types
+export interface PoolInfo {
+  rewardRate: bigint;
+  lastRewardTime: bigint;
+  accRewardPerShare: bigint;
+  totalStaked: bigint;
+}
+
+export interface StakedToken {
+  tokenId: bigint;
+  stakedAt: bigint;
+}
 
 // Alchemy SDK settings
 const settings: AlchemySettings = {
@@ -14,11 +29,116 @@ export const alchemy = new Alchemy(settings);
 
 // Extended Alchemy service with custom functionality
 export const alchemyService = {
+  // Provider and Signer Management
+  provider: {
+    async getProvider(): Promise<BrowserProvider> {
+      if (typeof window === 'undefined' || !window.ethereum) {
+        throw new Error('No Web3 provider found. Please install MetaMask or another wallet.');
+      }
+      try {
+        // Use window.ethereum directly instead of Alchemy provider for wallet interactions
+        return new ethers.BrowserProvider(window.ethereum);
+      } catch (error) {
+        console.error('Provider error:', error);
+        throw new Error('Failed to initialize provider');
+      }
+    },
+
+    async getSigner(): Promise<JsonRpcSigner> {
+      try {
+        const provider = await this.getProvider();
+        const signer = await provider.getSigner();
+        if (!signer) throw new Error('No signer available');
+        return signer;
+      } catch (error) {
+        console.error('Signer error:', error);
+        throw new Error('Please connect your wallet first');
+      }
+    }
+  },
+
+  // Auth Methods
+  auth: {
+    async connect() {
+      if (typeof window === 'undefined' || !window.ethereum) {
+        throw new Error('No Web3 provider found. Please install MetaMask or another wallet.');
+      }
+
+      try {
+        const provider = await alchemyService.provider.getProvider();
+        
+        // Request account access
+        const accounts = await window.ethereum.request({ 
+          method: 'eth_requestAccounts' 
+        });
+
+        if (!accounts || accounts.length === 0) {
+          throw new Error('No accounts found');
+        }
+
+        const signer = await provider.getSigner();
+        const address = await signer.getAddress();
+        
+        // Verify network
+        const network = await provider.getNetwork();
+        const chainId = Number(network.chainId);
+        
+        if (chainId !== 1) { // Mainnet
+          await this.switchNetwork();
+        }
+
+        // Store connection state
+        localStorage.setItem('walletConnected', 'true');
+        
+        return { address, chainId };
+      } catch (error) {
+        console.error('Connection error:', error);
+        toast.error('Failed to connect wallet');
+        throw error;
+      }
+    },
+
+    async disconnect() {
+      try {
+        // Clear any local connection state
+        localStorage.removeItem('walletConnected');
+        // Emit disconnect event
+        window.dispatchEvent(new Event('wallet_disconnected'));
+        return true;
+      } catch (error) {
+        console.error('Disconnect error:', error);
+        toast.error('Failed to disconnect wallet');
+        throw error;
+      }
+    },
+
+    async getAddress(): Promise<string | null> {
+      try {
+        const provider = await alchemyService.provider.getProvider();
+        const accounts = await provider.send('eth_accounts', []);
+        return accounts[0] || null;
+      } catch {
+        return null;
+      }
+    },
+
+    async switchNetwork() {
+      try {
+        const provider = await alchemyService.provider.getProvider();
+        await provider.send('wallet_switchEthereumChain', [{ chainId: '0x1' }]); // Mainnet
+      } catch (error: any) {
+        console.error('Network switch error:', error);
+        toast.error('Failed to switch network');
+        throw error;
+      }
+    }
+  },
+
   // NFT Methods
   nft: {
-    async getNFTsForOwner(address: string) {
+    async getNftsForOwner(address: string, options?: any) {
       try {
-        const nfts = await alchemy.nft.getNftsForOwner(address);
+        const nfts = await alchemy.nft.getNftsForOwner(address, options);
         return nfts;
       } catch (error) {
         console.error('Error fetching NFTs:', error);
@@ -27,7 +147,7 @@ export const alchemyService = {
       }
     },
 
-    async getNFTMetadata(contractAddress: string, tokenId: string) {
+    async getNftMetadata(contractAddress: string, tokenId: string) {
       try {
         const metadata = await alchemy.nft.getNftMetadata(contractAddress, tokenId);
         return metadata;
@@ -201,24 +321,71 @@ export const alchemyService = {
     getAddress: ethers.getAddress,
   },
 
-  // Auth Methods
-  auth: {
-    async signIn() {
+  // Staking Methods
+  staking: {
+    async getUserStakedNFTs(contractAddress: Address): Promise<StakedToken[]> {
       try {
-        const provider = await alchemy.config.getProvider();
+        const provider = await alchemyService.provider.getProvider();
         const signer = await provider.getSigner();
+        const contract = new ethers.Contract(
+          contractAddress,
+          ['function getUserStakedNFTs(address) view returns (tuple(uint256 tokenId, uint256 stakedAt)[])'],
+          provider
+        );
         const address = await signer.getAddress();
-        return { address };
+        return await contract.getUserStakedNFTs(address);
       } catch (error) {
-        console.error('Error signing in:', error);
-        toast.error('Failed to sign in');
+        console.error('Error fetching staked NFTs:', error);
+        toast.error('Failed to fetch staked NFTs');
         throw error;
       }
     },
 
-    async signOut() {
-      // Implement your sign-out logic here
+    async getPoolInfo(contractAddress: Address): Promise<PoolInfo> {
+      try {
+        const provider = await alchemyService.provider.getProvider();
+        const contract = new ethers.Contract(
+          contractAddress,
+          ['function getPoolInfo() view returns (tuple(uint256 rewardRate, uint256 lastRewardTime, uint256 accRewardPerShare, uint256 totalStaked))'],
+          provider
+        );
+        return await contract.getPoolInfo();
+      } catch (error) {
+        console.error('Error fetching pool info:', error);
+        toast.error('Failed to fetch pool info');
+        throw error;
+      }
+    },
+
+    async isApprovedForAll(tokenAddress: Address): Promise<boolean> {
+      try {
+        const provider = await alchemyService.provider.getProvider();
+        const signer = await provider.getSigner();
+        const contract = new ethers.Contract(
+          tokenAddress,
+          ['function isApprovedForAll(address owner, address operator) view returns (bool)'],
+          provider
+        );
+        const address = await signer.getAddress();
+        const stakingAddress = import.meta.env.VITE_STAKING_CONTRACT_ADDRESS;
+        return await contract.isApprovedForAll(address, stakingAddress);
+      } catch (error) {
+        console.error('Error checking approval:', error);
+        toast.error('Failed to check approval status');
+        throw error;
+      }
     }
+  },
+
+  // Core functionality
+  core: {
+    getProvider: async () => await alchemy.config.getProvider(),
+    getSigner: async () => {
+      const provider = await alchemy.config.getProvider();
+      return provider.getSigner();
+    },
+    sendTransaction: alchemy.core.sendTransaction.bind(alchemy.core),
+    waitForTransaction: alchemy.core.waitForTransaction.bind(alchemy.core)
   },
 };
 
