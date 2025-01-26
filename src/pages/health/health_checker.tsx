@@ -1,29 +1,20 @@
 import Card from '@src/components/common/card/Card';
 import React, { useEffect, useState } from 'react';
 import { useAlchemyContext } from '@src/lib/context/AlchemyContext';
-import { alchemyService } from '@src/lib/config/alchemy';
+import { useAlchemy } from '@src/lib/hooks/useAlchemy';
 
 const HealthChecker: React.FC = () => {
   const { isConnected, address } = useAlchemyContext();
   const [isHealthy, setIsHealthy] = useState(false);
   const [chainId, setChainId] = useState<number | null>(null);
-  const [gasPrice, setGasPrice] = useState<bigint | null>(null);
-  const [blockNumber, setBlockNumber] = useState<number | null>(null);
+
 
   const checkHealth = async () => {
     try {
-      const provider = await alchemyService.provider.getProvider();
+      const provider = await useAlchemy().getProvider();
       const network = await provider.getNetwork();
       setChainId(Number(network.chainId));
 
-      // Check if we can fetch basic blockchain data
-      const [latestBlock, currentGasPrice] = await Promise.all([
-        alchemyService.blockchain.getLatestBlock(),
-        alchemyService.blockchain.getGasPrice()
-      ]);
-
-      setBlockNumber(Number(latestBlock.number));
-      setGasPrice(BigInt(currentGasPrice.toString()));
       setIsHealthy(true);
       return true;
     } catch (error) {
@@ -55,15 +46,11 @@ const HealthChecker: React.FC = () => {
     }
   };
 
-  const formatGasPrice = (price: bigint | null) => {
-    if (!price) return 'Unknown';
-    return `${alchemyService.utils.formatUnits(price, 'gwei')} Gwei`;
-  };
 
   const cardProps = {
     className: 'bg-[var(--color-overlay-dark)]/5 backdrop-blur-sm border border-[var(--color-text-primary)]/10',
     image: {
-      'data-src': '/images/health-check.png',
+      'data-src': '/images/ToxicIcon.png',
       alt: 'Health Check Status',
     },
     children: (
@@ -94,18 +81,6 @@ const HealthChecker: React.FC = () => {
             <span className="text-[var(--color-text-muted)]">Node Health:</span>
             <span className={isHealthy ? 'text-green-400' : 'text-red-400'}>
               {isHealthy ? 'Healthy' : 'Unhealthy'}
-            </span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-[var(--color-text-muted)]">Latest Block:</span>
-            <span className={blockNumber ? 'text-green-400' : 'text-red-400'}>
-              {blockNumber || 'Unknown'}
-            </span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-[var(--color-text-muted)]">Gas Price:</span>
-            <span className={gasPrice ? 'text-green-400' : 'text-red-400'}>
-              {formatGasPrice(gasPrice)}
             </span>
           </div>
           {address && (

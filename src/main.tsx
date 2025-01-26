@@ -10,6 +10,7 @@ import { useAuthStore } from '@src/lib/store/authStore';
 import { authService } from '@src/lib/services/authService';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { AlchemyProvider } from '@src/lib/context/AlchemyContext';
 
 // Initialize QueryClient
 const queryClient = new QueryClient({
@@ -36,21 +37,23 @@ const MainApp = () => {
       <BrowserRouter>
         <QueryClientProvider client={queryClient}>
           <ErrorBoundary>
-            <Layout>
-              <App />
-            </Layout>
-            <ToastContainer
-              position="top-right"
-              autoClose={5000}
-              hideProgressBar={false}
-              newestOnTop
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              theme="dark"
-            />
+            <AlchemyProvider>
+              <Layout>
+                <App />
+              </Layout>
+              <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+              />
+            </AlchemyProvider>
           </ErrorBoundary>
         </QueryClientProvider>
       </BrowserRouter>

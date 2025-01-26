@@ -2,13 +2,13 @@
 import useLazyLoading from '@src/lib/hooks/useLazyLoading';
 import React, { useEffect, useState } from 'react';
 import { FaBars, FaInstagram, FaDiscord, FaXTwitter } from 'react-icons/fa6';
-import { alchemyService } from '@src/lib/config/alchemy';
 import { menuConfig } from '@src/lib/config/menuConfig';
 import { Menu } from '@headlessui/react';
 import { Link, useLocation } from 'react-router-dom';
 import { RiArrowDropDownLine, RiArrowDropUpLine } from 'react-icons/ri';
 import CustomButton from './button';
 import { IoClose } from 'react-icons/io5';
+import { useAlchemy } from '@src/lib/hooks/useAlchemy';
 
 const MenuDropdown: React.FC<{ title: string; items: Array<{ name: string; path: string }> }> = ({ 
   title, 
@@ -126,13 +126,11 @@ const WalletSection: React.FC = () => {
   const isRafflesPath = location.pathname.includes('/raffles');
   const isENSPage = location.pathname.includes('/ens');
 
-  const [account, setAccount] = useState<string | null>(null);
+  const { address, connect } = useAlchemy();
 
   const handleConnect = async () => {
     try {
-      // Use Alchemy's auth session or your preferred auth method
-      const response = await alchemyService.auth.connect();
-      setAccount(response.address);
+      await connect(); // Default to MetaMask
     } catch (error) {
       console.error('Connection error:', error);
     } 
@@ -142,12 +140,13 @@ const WalletSection: React.FC = () => {
     <div className="flex items-center gap-2">
       {isStakingPath || isRafflesAdminPath || isRafflesPath || isENSPage ? (
         <div>
-          {account ? (
+          {address ? (
             <CustomButton 
-              onClick={() => setAccount(null)}
-              isWalletConnected={true}
+              onClick={() => {
+                // Implement the logic to disconnect the wallet
+              }}
             >
-              {`${account.slice(0, 6)}...${account.slice(-4)}`}
+              {`${address.slice(0, 6)}...${address.slice(-4)}`}
             </CustomButton>
           ) : (
             <CustomButton onClick={handleConnect}>

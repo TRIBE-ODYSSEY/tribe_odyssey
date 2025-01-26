@@ -47,10 +47,3 @@ services:
       minInstances: 1
       maxInstances: 3
       targetMemoryPercent: 80
-databases:
-  - name: tribe-odyssey-db
-    plan: starter
-    ipAllowList: []
-    backups:
-      enabled: true
-      retentionPeriodDays: 7

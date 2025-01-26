@@ -1,9 +1,9 @@
-import { alchemyService } from '@src/lib/config/alchemy';
+import { useAlchemy } from '@src/lib/hooks/useAlchemy';
 import type { Address, Hash } from 'viem';
 
 export async function getBalance(address: Address): Promise<bigint> {
   try {
-    const provider = await alchemyService.provider.getProvider();
+    const provider = await useAlchemy().getProvider();
     const balance = await provider.getBalance(address);
     return balance;
   } catch (error) {
@@ -14,7 +14,7 @@ export async function getBalance(address: Address): Promise<bigint> {
 
 export async function getChainId(): Promise<number> {
   try {
-    const provider = await alchemyService.provider.getProvider();
+    const provider = await useAlchemy().getProvider();
     const network = await provider.getNetwork();
     return Number(network.chainId);
   } catch (error) {
@@ -26,7 +26,7 @@ export async function getChainId(): Promise<number> {
 // For transactions that require signing, we'll need to use Alchemy's Gasless Transactions
 export async function sendTransaction(to: Address, value: bigint): Promise<Hash> {
   try {
-    const signer = await alchemyService.provider.getSigner();
+    const signer = await useAlchemy().getSigner();
     const tx = await signer.sendTransaction({
       to,
       value: value,
@@ -41,7 +41,7 @@ export async function sendTransaction(to: Address, value: bigint): Promise<Hash>
 
 export async function signMessage(message: string): Promise<string> {
   try {
-    const signer = await alchemyService.provider.getSigner();
+    const signer = await useAlchemy().getSigner();
     return await signer.signMessage(message);
   } catch (error) {
     console.error('Message signing error:', error);

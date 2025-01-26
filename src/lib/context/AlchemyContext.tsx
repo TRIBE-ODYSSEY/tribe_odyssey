@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { alchemyService } from '../config/alchemy';
+import { useAlchemy } from '../hooks/useAlchemy';
 import type { Address } from 'viem';
 import { toast } from 'react-toastify';
 
@@ -7,9 +7,10 @@ interface AlchemyContextType {
   address: Address | null;
   isConnecting: boolean;
   isConnected: boolean;
-  connect: () => Promise<void>;
+  connect: (walletType: string) => Promise<void>;
   disconnect: () => Promise<void>;
   error: Error | null;
+  walletType: string | null;
 }
 
 const AlchemyContext = createContext<AlchemyContextType | undefined>(undefined);
@@ -19,23 +20,27 @@ export const AlchemyProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [isConnecting, setIsConnecting] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const [walletType, setWalletType] = useState<string | null>(null);
 
   useEffect(() => {
     // Check if previously connected
     const wasConnected = localStorage.getItem('walletConnected') === 'true';
+    const savedWalletType = localStorage.getItem('walletType');
     
     const checkConnection = async () => {
       try {
-        if (wasConnected) {
-          const addr = await alchemyService.auth.getAddress();
+        if (wasConnected && savedWalletType) {
+          const addr = await useAlchemy().connect();
           if (addr) {
-            setAddress(addr as Address);
+            setAddress(addr.address as Address);
             setIsConnected(true);
+            setWalletType(savedWalletType);
           }
         }
       } catch (err) {
         console.error('Connection check error:', err);
         localStorage.removeItem('walletConnected');
+        localStorage.removeItem('walletType');
       }
     };
 
@@ -50,7 +55,9 @@ export const AlchemyProvider: React.FC<{ children: React.ReactNode }> = ({ child
         } else {
           setAddress(null);
           setIsConnected(false);
+          setWalletType(null);
           localStorage.removeItem('walletConnected');
+          localStorage.removeItem('walletType');
         }
       });
 
@@ -63,7 +70,9 @@ export const AlchemyProvider: React.FC<{ children: React.ReactNode }> = ({ child
       window.ethereum.on('disconnect', () => {
         setAddress(null);
         setIsConnected(false);
+        setWalletType(null);
         localStorage.removeItem('walletConnected');
+        localStorage.removeItem('walletType');
       });
     }
 
@@ -76,13 +85,27 @@ export const AlchemyProvider: React.FC<{ children: React.ReactNode }> = ({ child
     };
   }, []);
 
-  const connect = async () => {
+  const connect = async (walletType: string) => {
     setIsConnecting(true);
     setError(null);
     try {
-      const { address: addr } = await alchemyService.auth.connect();
+      // Check if the selected wallet is installed
+      if (walletType === 'metamask' && !window.ethereum?.isMetaMask) {
+        throw new Error('MetaMask is not installed');
+      } else if (walletType === 'coinbase' && !window.ethereum?.isCoinbaseWallet) {
+        throw new Error('Coinbase Wallet is not installed');
+      } else if (walletType === 'trust' && !window.ethereum?.isTrust) {
+        throw new Error('Trust Wallet is not installed');
+      } else if (walletType === 'brave' && !window.ethereum?.isBrave) {
+        throw new Error('Brave Wallet is not installed');
+      }
+
+      const { address: addr } = await useAlchemy().connect();
       setAddress(addr as Address);
       setIsConnected(true);
+      setWalletType(walletType);
+      localStorage.setItem('walletConnected', 'true');
+      localStorage.setItem('walletType', walletType);
       toast.success('Wallet connected successfully!');
     } catch (err) {
       const error = err as Error;
@@ -96,10 +119,12 @@ export const AlchemyProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const disconnect = async () => {
     try {
-      await alchemyService.auth.disconnect();
+      await useAlchemy().disconnect();
       setAddress(null);
       setIsConnected(false);
+      setWalletType(null);
       localStorage.removeItem('walletConnected');
+      localStorage.removeItem('walletType');
       toast.success('Wallet disconnected successfully!');
     } catch (err) {
       const error = err as Error;
@@ -117,7 +142,8 @@ export const AlchemyProvider: React.FC<{ children: React.ReactNode }> = ({ child
         isConnected,
         connect,
         disconnect,
-        error
+        error,
+        walletType
       }}
     >
       {children}

@@ -5,7 +5,7 @@ import erc721ABI from '@src/lib/config/abi/erc721.json'
 import stakingABI from '@src/lib/config/abi/staking.json'
 import tribeABI from '@src/lib/config/abi/tribe.json'
 import EthRegistrarSubdomainRegistrarABI from '@src/lib/config/abi/EthRegistrarSubdomainRegistrar.json'
-import { alchemyService } from '@src/lib/config/alchemy'
+import { useAlchemy } from '@src/lib/hooks/useAlchemy';
 
 // Contract type mapping
 export type ContractName = 
@@ -31,7 +31,7 @@ export async function readContract(
   args: unknown[]
 ) {
   try {
-    const provider = await alchemyService.provider.getProvider();
+    const provider = await useAlchemy().getProvider();
     const contract = new ethers.Contract(
       address,
       abiMap[contractName],
@@ -52,8 +52,8 @@ export async function writeContract(
   args: unknown[]
 ) {
   try {
-    const provider = await alchemyService.provider.getProvider();
-    const signer = await alchemyService.provider.getSigner();
+    const provider = await useAlchemy().getProvider();
+    const signer = await useAlchemy().getSigner();
     const contract = new ethers.Contract(
       address,
       abiMap[contractName],

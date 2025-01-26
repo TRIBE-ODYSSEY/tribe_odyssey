@@ -4,9 +4,11 @@ import PageLayout from '../../components/common/layout/PageLayout';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import Button from '../../components/common/Button';
 import { Popover } from '@headlessui/react';
-import { useAlchemy } from "@src/lib/hooks/useAlchemy";
-import { useAuth } from "@src/lib/hooks/useAuth";
+import { NftMetadata } from "@src/lib/hooks/useAlchemy";
 import { toast } from "react-toastify";
+import { useAlchemy as newUseAlchemy } from '@src/lib/hooks/useAlchemy';
+import { useAlchemyProvider } from '@src/lib/hooks/useAlchemyProvider';
+import { ethers } from 'ethers';
 
 // The HtmlTooltip component is used to show tooltips with information
 // It's used with the InformationCircleIcon button below
@@ -27,12 +29,7 @@ export const HtmlTooltip: React.FC<{ content: React.ReactNode; children: React.R
 const ENSPage: React.FC = () => {
   const [domainName, setDomainName] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
-  const { address } = useAuth();
-  const { 
-    getUserStakedNFTs,
-    isLoading,
-    alchemy
-  } = useAlchemy();
+  const { address, getUserStakedNFTs } = newUseAlchemy();
 
   // Check if user owns a Tribe Odyssey NFT
   const [ownsNFT, setOwnsNFT] = useState(false);
@@ -44,7 +41,7 @@ const ENSPage: React.FC = () => {
       
       try {
         const nfts = await getUserStakedNFTs(TRIBE_ODYSSEY_CONTRACT);
-        const hasTribeOdysseyNFT = nfts.some((nft) => nft);
+        const hasTribeOdysseyNFT = nfts.some((nft: NftMetadata) => nft);
         setOwnsNFT(hasTribeOdysseyNFT);
       } catch (error) {
         console.error('Error checking NFT ownership:', error);
@@ -75,20 +72,17 @@ const ENSPage: React.FC = () => {
         abi: ['function register(string calldata name) external']
       };
 
-      // Create the transaction using alchemy instead of alchemyService
-      const transaction = {
-        to: registrarContract.address,
-        data: alchemy.utils.encodeFunction(
-          registrarContract.abi[0],
-          [domainName]
-        )
-      };
+      // Create the transaction
+      const signer = await useAlchemyProvider().getSigner();
+      const contract = new ethers.Contract(
+        registrarContract.address,
+        registrarContract.abi,
+        signer
+      );
 
       // Send the transaction
-      const response = await alchemy.transaction.sendTransaction(transaction);
-      
-      // Wait for confirmation
-      await alchemy.transaction.waitForTransaction(response.hash);
+      const tx = await contract.register(domainName);
+      await tx.wait();
       
       toast.success('ENS domain registered successfully!');
       setDomainName('');
@@ -170,7 +164,7 @@ const ENSPage: React.FC = () => {
               </div>
               <Button
                 onClick={handleRegister}
-                disabled={!address || !domainName || isRegistering || isLoading || !ownsNFT}
+                disabled={!address || !domainName || isRegistering || !ownsNFT}
                 className="btn-primary whitespace-nowrap"
               >
                 {isRegistering ? 'Registering...' : 'Register'}
