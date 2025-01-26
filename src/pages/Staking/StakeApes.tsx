@@ -6,7 +6,7 @@ import PageLayout from '@src/components/common/layout/PageLayout';
 import { useAlchemy } from '@src/lib/hooks/useAlchemy';
 import { toast } from 'react-toastify';
 import { getContractConfig } from '@src/lib/viem/contracts';
-import { CHAIN_IDS, CONTRACT_NAMES } from '@src/lib/viem/contracts';
+import { CHAIN_IDS, CONTRACT_ADDRESSES } from '@src/lib/viem/contracts';
 import { ethers } from 'ethers';
 
 const StakeApes: React.FC = () => {
@@ -23,7 +23,7 @@ const StakeApes: React.FC = () => {
     setWaiting(true);
     try {
       const signer = await getSigner();
-      const { address, abi } = getContractConfig(CONTRACT_NAMES.STAKING, CHAIN_IDS.MAINNET);
+      const { address, abi } = getContractConfig(CONTRACT_ADDRESSES.STAKING, CHAIN_IDS.MAINNET);
       const contract = new ethers.Contract(address, abi, signer);
 
       if (!contract.joinMany) {
@@ -55,7 +55,7 @@ const StakeApes: React.FC = () => {
     setWaiting(true);
     try {
       const signer = await getSigner();
-      const { address, abi } = getContractConfig(CONTRACT_NAMES.STAKING, CHAIN_IDS.MAINNET);
+      const { address, abi } = getContractConfig(CONTRACT_ADDRESSES.STAKING, CHAIN_IDS.MAINNET);
       const contract = new ethers.Contract(address, abi, signer);
 
       if (!contract.leaveMany) {
