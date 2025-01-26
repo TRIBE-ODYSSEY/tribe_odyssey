@@ -9,7 +9,7 @@ export const CHAIN_IDS = {
   GOERLI: 5
 } as const;
 
-export const CONTRACT_NAMES = {
+export const CONTRACT_ADDRESSES = {
   MULTI_CALL: 'multiCall',
   TRIBE: 'tribe',
   APE: 'ape',
@@ -42,16 +42,19 @@ const contracts = {
 
 export const getContractConfig = (name: keyof typeof contracts, chainId: ChainId) => {
   const address = contracts[name]?.[CHAIN_IDS.MAINNET];
+  console.log(address);
+
+  
   if (!address) throw new Error(`Contract ${name} not deployed on chain ${chainId}`);
 
   const abi = {
-    [CONTRACT_NAMES.STAKING]: stakingABI,
-    [CONTRACT_NAMES.TRIBE]: tribeABI,
-    [CONTRACT_NAMES.MULTI_CALL]: multiCallABI,
-    [CONTRACT_NAMES.APE]: apeABI,
-    [CONTRACT_NAMES.ENS_REGISTRAR]: ensRegistrarABI,
+    [CONTRACT_ADDRESSES.STAKING]: stakingABI,
+    [CONTRACT_ADDRESSES.TRIBE]: tribeABI,
+    [CONTRACT_ADDRESSES.MULTI_CALL]: multiCallABI,
+    [CONTRACT_ADDRESSES.APE]: apeABI,
+    [CONTRACT_ADDRESSES.ENS_REGISTRAR]: ensRegistrarABI,
   }[name];
-
+  
   return { address, abi };
 };
 

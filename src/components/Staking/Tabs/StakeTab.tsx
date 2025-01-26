@@ -3,7 +3,7 @@ import NFTCard from '../NFTCard';
 import Button from '@src/components/common/Button';
 import { useAlchemy } from '@src/lib/hooks/useAlchemy';
 import { getContractConfig } from '@src/lib/viem/contracts';
-import { CHAIN_IDS, CONTRACT_NAMES } from '@src/lib/viem/contracts';
+import { CHAIN_IDS, CONTRACT_ADDRESSES } from '@src/lib/viem/contracts';
 import { toast } from 'react-toastify';
 import { ethers } from 'ethers';
 import type { Address } from 'viem';
@@ -30,11 +30,11 @@ const StakeTab: React.FC<StakeTabProps> = ({
 
       try {
         const signer = await getSigner();
-        const { address: stakingAddress, abi: stakingABI } = getContractConfig(CONTRACT_NAMES.STAKING, CHAIN_IDS.MAINNET);
-        const { address: tribeAddress, abi: tribeABI } = getContractConfig(CONTRACT_NAMES.TRIBE, CHAIN_IDS.MAINNET);
+        const { address: stakingAddress, abi: stakingABI } = getContractConfig(CONTRACT_ADDRESSES.STAKING, CHAIN_IDS.MAINNET);
+        const { address: tribeAddress } = getContractConfig(CONTRACT_ADDRESSES.TRIBE, CHAIN_IDS.MAINNET);
         
         const stakingContract = new ethers.Contract(stakingAddress, stakingABI, signer);
-        const tribeContract = new ethers.Contract(tribeAddress, tribeABI, signer);
+
 
         // Check approval
         const approved = await isApprovedForAll(tribeAddress as Address);
@@ -137,7 +137,7 @@ const StakeTab: React.FC<StakeTabProps> = ({
                 <NFTCard
                   key={tokenId}
                   tokenId={tokenId}
-                  contract={getContractConfig(CONTRACT_NAMES.TRIBE, CHAIN_IDS.MAINNET).address as Address}
+                  contract={getContractConfig(CONTRACT_ADDRESSES.TRIBE, CHAIN_IDS.MAINNET).address as Address}
                   isStaked={false}
                   isSelected={selectedNFTs.includes(tokenId)}
                   onClick={() => toggleNFT(tokenId)}

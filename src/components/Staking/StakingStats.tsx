@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Card from '@src/components/common/card/Card';
 import { useAlchemy } from '@src/lib/hooks/useAlchemy';
 import { getContractConfig } from '@src/lib/viem/contracts';
-import { CHAIN_IDS, CONTRACT_NAMES } from '@src/lib/viem/contracts';
+import { CHAIN_IDS, CONTRACT_ADDRESSES } from '@src/lib/viem/contracts';
 import { ethers } from 'ethers';
 
 const StakingStats: React.FC = () => {
@@ -20,8 +20,8 @@ const StakingStats: React.FC = () => {
 
       try {
         const signer = await getSigner();
-        const { address: stakingAddress, abi: stakingABI } = getContractConfig(CONTRACT_NAMES.STAKING, CHAIN_IDS.MAINNET);
-        const { address: tribeAddress, abi: tribeABI } = getContractConfig(CONTRACT_NAMES.TRIBE, CHAIN_IDS.MAINNET);
+        const { address: stakingAddress, abi: stakingABI } = getContractConfig(CONTRACT_ADDRESSES.STAKING, CHAIN_IDS.MAINNET);
+        const { address: tribeAddress, abi: tribeABI } = getContractConfig(CONTRACT_ADDRESSES.TRIBE, CHAIN_IDS.MAINNET);
         
         const stakingContract = new ethers.Contract(stakingAddress, stakingABI, signer);
         const tribeContract = new ethers.Contract(tribeAddress, tribeABI, signer);
