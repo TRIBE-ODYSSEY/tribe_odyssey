@@ -63,6 +63,7 @@ export interface RaffleDetails {
   admin_address: string;
   winner_address?: string;
   winner?: Winner;
+  nonce?: string;
 }
 
 export interface Participant {

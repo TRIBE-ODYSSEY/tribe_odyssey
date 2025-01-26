@@ -27,9 +27,9 @@ export const useMediumPosts = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const extractFirstImage = (content: string): string => {
+    const extractFirstImage = (content: string): string => {  
       const imgMatch = content.match(/<img[^>]+src="([^">]+)"/);
-      return imgMatch ? imgMatch[1] : '';
+      return imgMatch?.[1] ?? '';
     };
 
     const fetchPosts = async () => {

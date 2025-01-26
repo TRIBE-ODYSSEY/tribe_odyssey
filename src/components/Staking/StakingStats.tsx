@@ -7,7 +7,7 @@ import { CHAIN_IDS } from '@src/lib/viem/contracts';
 
 const StakingStats: React.FC = () => {
   const { address } = useAuth();
-  const { getUserStakedNFTs, getPoolInfo, getNFTsForOwner } = useAlchemy();
+  const { getUserStakedNFTs, getPoolInfo, getNftsForOwner } = useAlchemy();
   const [stats, setStats] = useState({
     totalStaked: 0,
     userTotalNFTs: 0,
@@ -27,7 +27,7 @@ const StakingStats: React.FC = () => {
         const stakedNFTs = await getUserStakedNFTs(stakingContract.address);
         
         // Get total NFT balance
-        const nftBalance = await getNFTsForOwner(address as Address, {
+        const nftBalance = await getNftsForOwner(address as Address, {
           contractAddresses: [tribeContract.address]
         });
 
@@ -54,7 +54,7 @@ const StakingStats: React.FC = () => {
     };
 
     fetchStats();
-  }, [address, getUserStakedNFTs, getPoolInfo, getNFTsForOwner, stakingContract.address, tribeContract.address]);
+  }, [address, getUserStakedNFTs, getPoolInfo, getNftsForOwner, stakingContract.address, tribeContract.address]);
 
   const statsConfig = [
     { 

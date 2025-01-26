@@ -69,19 +69,19 @@ const TribeFightersSection: React.FC = () => {
               </p>
 
               <h3 className="text-4xl font-bold text-gray-100/80 mb-4">
-                {fighters[currentFighter].name}
+                {fighters[currentFighter]?.name}
               </h3>
 
               <div className="space-y-2 mb-8">
-                <p className="text-gray-300/80">{fighters[currentFighter].record}</p>
-                <p className="text-gray-300/80">{fighters[currentFighter].weight}</p>
+                <p className="text-gray-300/80">{fighters[currentFighter]?.record}</p>
+                <p className="text-gray-300/80">{fighters[currentFighter]?.weight}</p>
               </div>
 
               <div className="w-48">
                 <Card
                   image={{
-                    'data-src': fighters[currentFighter].nft,
-                    alt: `${fighters[currentFighter].name} NFT`,
+                    'data-src': fighters[currentFighter]?.nft || '',
+                    alt: `${fighters[currentFighter]?.name} NFT`,
                   }}
                   className="rounded-2xl shadow-lg"
                 />
@@ -102,8 +102,8 @@ const TribeFightersSection: React.FC = () => {
                 >
                   <Card
                     image={{
-                      'data-src': fighters[currentFighter].image,
-                      alt: fighters[currentFighter].name,
+                      'data-src': fighters[currentFighter]?.image || '',
+                      alt: fighters[currentFighter]?.name || '',
                     }}
                     className="rounded-3xl shadow-2xl w-full h-full object-cover"
                   />

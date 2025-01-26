@@ -63,8 +63,8 @@ const TribeAllianceSection: React.FC = () => {
                 >
                   <Card
                     image={{
-                      'data-src': allianceImages[currentImage].image,
-                      alt: allianceImages[currentImage].name,
+                      'data-src': allianceImages[currentImage]?.image || '',
+                      alt: allianceImages[currentImage]?.name || '',
                     }}
                     className="rounded-3xl shadow-2xl w-full h-full object-cover"
                   />
@@ -168,14 +168,14 @@ const TribeAllianceSection: React.FC = () => {
               </a>
 
               <h3 className="text-4xl font-bold text-gray-100/80 mb-8">
-                {allianceImages[currentImage].name}
+                {allianceImages[currentImage]?.name || ''}
               </h3>
 
               <div className="w-48">
                 <Card
                   image={{
-                    'data-src': allianceImages[currentImage].nft,
-                    alt: `${allianceImages[currentImage].name} NFT`,
+                    'data-src': allianceImages[currentImage]?.nft || '',
+                    alt: `${allianceImages[currentImage]?.name || ''} NFT`,
                   }}
                   className="rounded-2xl shadow-lg"
                 />

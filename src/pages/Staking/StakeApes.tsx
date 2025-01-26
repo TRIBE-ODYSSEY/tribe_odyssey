@@ -3,17 +3,16 @@ import PageTitle from '@src/components/common/PageTitle';
 import StakingStats from '@src/components/Staking/StakingStats';
 import StakingTabs from '@src/components/Staking/StakingTabs';
 import PageLayout from '@src/components/common/layout/PageLayout';
-import { alchemyService } from '@src/lib/config/alchemy';
+import { useAlchemy } from '@src/lib/hooks/useAlchemy';
 import { toast } from 'react-toastify';
-import { getStakingContract } from '@src/lib/viem/helpers/contracts';
-import { CHAIN_IDS } from '@src/lib/viem/contracts';
+import { getContractConfig } from '@src/lib/viem/contracts';
+import { CHAIN_IDS, CONTRACT_NAMES } from '@src/lib/viem/contracts';
 import { ethers } from 'ethers';
 
 const StakeApes: React.FC = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [waiting, setWaiting] = useState(false);
-  
-  const stakingContract = getStakingContract(CHAIN_IDS.MAINNET);
+  const { getSigner } = useAlchemy();
 
   const handleStake = async (selectedNFTs: string[]) => {
     if (selectedNFTs.length === 0) {
@@ -23,13 +22,14 @@ const StakeApes: React.FC = () => {
 
     setWaiting(true);
     try {
-      const signer = await alchemyService.provider.getSigner();
-      const contract = new ethers.Contract(
-        stakingContract.address,
-        stakingContract.abi,
-        signer
-      );
+      const signer = await getSigner();
+      const { address, abi } = getContractConfig(CONTRACT_NAMES.STAKING, CHAIN_IDS.MAINNET);
+      const contract = new ethers.Contract(address, abi, signer);
 
+      if (!contract.joinMany) {
+        throw new Error('Contract method not found');
+      }
+      
       const tx = await contract.joinMany(
         0, // pool id
         selectedNFTs.map(id => BigInt(id))
@@ -54,13 +54,14 @@ const StakeApes: React.FC = () => {
 
     setWaiting(true);
     try {
-      const signer = await alchemyService.provider.getSigner();
-      const contract = new ethers.Contract(
-        stakingContract.address,
-        stakingContract.abi,
-        signer
-      );
+      const signer = await getSigner();
+      const { address, abi } = getContractConfig(CONTRACT_NAMES.STAKING, CHAIN_IDS.MAINNET);
+      const contract = new ethers.Contract(address, abi, signer);
 
+      if (!contract.leaveMany) {
+        throw new Error('Contract method not found');
+      }
+      
       const tx = await contract.leaveMany(
         0, // pool id
         selectedNFTs.map(id => BigInt(id))

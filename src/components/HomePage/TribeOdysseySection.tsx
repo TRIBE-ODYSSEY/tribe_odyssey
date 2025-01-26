@@ -10,12 +10,12 @@ const sideImages = [
 ];
 
 // Main Image Component
-const MainImage = ({ selectedImage }: { selectedImage: typeof sideImages[0] }) => (
+const MainImage = ({ selectedImage }: { selectedImage: typeof sideImages[0] | undefined }) => (
   <div className="relative w-[85%] lg:w-[80%]">
     <Card
       image={{
-        'data-src': selectedImage.src,
-        alt: selectedImage.alt,
+        'data-src': selectedImage?.src || '',
+        alt: selectedImage?.alt || '',
       }}
       className="rounded-3xl shadow-2xl w-full aspect-square overflow-hidden 
                hover:scale-[1.02] transition-transform duration-500
@@ -130,7 +130,7 @@ const TribeOdysseySection: React.FC = () => {
   const handleImageClick = (image: typeof sideImages[0]) => {
     setSelectedImage(image);
   };
-  const sideImagesToShow = sideImages.filter(img => img.src !== selectedImage.src);
+  const sideImagesToShow = sideImages.filter(img => img.src !== selectedImage?.src);
 
   return (
     <section className="container mx-auto px-4 py-16 md:py-24 relative">
@@ -138,7 +138,7 @@ const TribeOdysseySection: React.FC = () => {
         <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
           <div className="w-full lg:w-[50%] xl:w-[55%] relative">
             <div className="flex justify-center lg:justify-start">
-              <MainImage selectedImage={selectedImage} />
+              <MainImage selectedImage={selectedImage || sideImages[0]} />
             </div>
             
             <SideImages 

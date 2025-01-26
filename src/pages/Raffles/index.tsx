@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
-import { useAccount } from 'wagmi';
+import { useAlchemy } from '@src/lib/hooks/useAlchemy';
 import PageLayout from '@src/components/common/layout/PageLayout';
 
 // Components
@@ -18,7 +18,7 @@ const ADMIN_ADDRESSES = [
 
 const Raffles: React.FC = () => {
   const location = useLocation();
-  const { address } = useAccount();
+  const { address } = useAlchemy();
   const isAdmin = address && ADMIN_ADDRESSES.includes(address.toLowerCase());
 
   const ProtectedRoute: React.FC<{ element: JSX.Element }> = ({ element }) => {

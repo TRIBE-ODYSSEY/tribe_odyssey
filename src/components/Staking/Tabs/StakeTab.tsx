@@ -19,7 +19,7 @@ const StakeTab: React.FC<StakeTabProps> = ({
   refreshTrigger
 }) => {
   const { address } = useAuth();
-  const { alchemy, isApprovedForAll, getUserStakedNFTs, getNFTsForOwner } = useAlchemy();
+  const { isApprovedForAll, getUserStakedNFTs, getNftsForOwner } = useAlchemy();
   const [selectedNFTs, setSelectedNFTs] = useState<string[]>([]);
   const [ownedTokens, setOwnedTokens] = useState<string[]>([]);
   const [isApproved, setIsApproved] = useState(false);
@@ -38,18 +38,18 @@ const StakeTab: React.FC<StakeTabProps> = ({
         setIsApproved(approved);
 
         // Get owned tokens
-        const nfts = await getNFTsForOwner(address as Address, {
+        const nfts = await getNftsForOwner(address as Address, {
           contractAddresses: [tribeContract.address]
         });
 
         // Get staked tokens to filter out
         const stakedNFTs = await getUserStakedNFTs(stakingContract.address);
-        const stakedIds = new Set(stakedNFTs.map(nft => nft.tokenId.toString()));
+        const stakedIds = new Set(stakedNFTs.map((nft: any) => nft.tokenId.toString()));
 
         // Filter out staked tokens
         const unstaked = nfts.ownedNfts
-          .map(nft => nft.tokenId)
-          .filter(id => !stakedIds.has(id));
+          .map((nft: any) => nft.tokenId)
+          .filter((id: string) => !stakedIds.has(id));
 
         setOwnedTokens(unstaked);
       } catch (error) {
@@ -59,7 +59,7 @@ const StakeTab: React.FC<StakeTabProps> = ({
     };
 
     fetchData();
-  }, [address, alchemy, isApprovedForAll, getUserStakedNFTs, getNFTsForOwner, refreshTrigger]);
+  }, [address, isApprovedForAll, getUserStakedNFTs, getNftsForOwner, refreshTrigger]);
 
   const handleStake = async () => {
     if (!address || selectedNFTs.length === 0) return;

@@ -82,15 +82,15 @@ const GoldApesSection = () => {
               const ape = goldApes[index];
               return (
                 <div
-                  key={ape.id}
+                  key={ape?.id}
                   className={styles.container}
                   onClick={() => setCurrentIndex(index)}
                 >
                   <div className="flex flex-col items-center">
                     <Card
                       image={{
-                        'data-src': ape.image,
-                        alt: ape.alt
+                        'data-src': ape?.image || '',
+                        alt: ape?.alt || ''
                       }}
                       className={styles.card}
                     />
@@ -98,10 +98,10 @@ const GoldApesSection = () => {
                       i === Math.floor(displayIndices.length / 2) ? 'opacity-100' : 'opacity-0'
                     }`}>
                       <h3 className="text-lg font-semibold text-[var(--color-text-primary)] mb-2">
-                        {ape.name}
+                        {ape?.name || ''}
                       </h3>
                       <a
-                        href={ape.twitter}
+                        href={ape?.twitter || ''}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 text-[var(--color-text-muted)] 
@@ -143,17 +143,17 @@ const GoldApesSection = () => {
         <div className="flex sm:hidden flex-col items-center">
           <Card
             image={{
-              'data-src': goldApes[currentIndex].image,
-              alt: goldApes[currentIndex].alt,
+              'data-src': goldApes[currentIndex]?.image || '',
+              alt: goldApes[currentIndex]?.alt || '',
             }}
             className="w-full rounded-3xl shadow-2xl ring-2 ring-[var(--color-button-primary)]/50 mb-4"
           />
           <div className="text-center mb-4">
             <h3 className="text-lg font-semibold text-[var(--color-text-primary)] mb-2">
-              {goldApes[currentIndex].name}
+              {goldApes[currentIndex]?.name || ''}
             </h3>
             <a
-              href={goldApes[currentIndex].twitter}
+              href={goldApes[currentIndex]?.twitter || ''}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-[var(--color-text-muted)] 
@@ -165,7 +165,7 @@ const GoldApesSection = () => {
           <div className="flex justify-center gap-3 w-full overflow-x-auto pb-4">
             {goldApes.map((ape, index) => (
               <div
-                key={ape.id}
+                key={ape?.id}
                 className={`w-14 h-14 rounded-lg overflow-hidden cursor-pointer transition-all duration-300 
                           ${index === currentIndex 
                             ? 'ring-2 ring-[var(--color-button-primary)]/50' 
@@ -173,8 +173,8 @@ const GoldApesSection = () => {
                 onClick={() => setCurrentIndex(index)}
               >
                 <img 
-                  src={ape.image} 
-                  alt={ape.alt}
+                  src={ape?.image || ''} 
+                  alt={ape?.alt || ''}
                   className="w-full h-full object-cover"
                 />
               </div>

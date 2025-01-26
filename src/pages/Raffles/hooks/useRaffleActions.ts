@@ -1,12 +1,12 @@
 // hooks/useRaffleActions.ts
-import { useAccount, useSignMessage } from 'wagmi';
+import { useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { useRaffleContext } from '../context/RaffleContext';
 import { raffleService } from '@src/services/RaffleService';
+import { useAlchemy } from '@src/lib/hooks/useAlchemy';
 
 export const useRaffleActions = () => {
-  const { address } = useAccount();
-  const { signMessageAsync } = useSignMessage();
+  const { address, getSigner } = useAlchemy();
   const { refreshRaffles } = useRaffleContext();
 
   const generateNonce = () => {
@@ -17,18 +17,15 @@ export const useRaffleActions = () => {
     return `Enter Raffle\n\nRaffle ID: ${raffleId}\nPoints: ${points}\nNonce: ${nonce}\nAddress: ${address}`;
   };
 
-  const enterRaffle = async (raffleId: string, points: number) => {
+  const enterRaffle = useCallback(async (raffleId: string, points: number) => {
     try {
       if (!address) throw new Error('Wallet not connected');
 
-      // Generate nonce and create message
+      const signer = await getSigner();
       const nonce = generateNonce();
       const message = createSignatureMessage(raffleId, points, nonce);
+      const signature = await signer.signMessage(message);
 
-      // Get user signature
-      const signature = await signMessageAsync({ message });
-
-      // Submit entry with signature
       await raffleService.enterRaffle(raffleId, {
         address,
         entry: points,
@@ -47,7 +44,7 @@ export const useRaffleActions = () => {
       }
       return false;
     }
-  };
+  }, [address, getSigner, refreshRaffles]);
 
   return { enterRaffle };
 };

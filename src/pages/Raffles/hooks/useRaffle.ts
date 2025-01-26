@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import { RaffleDetails, Participant, Winner } from '../types/Raffle.types';
 import { raffleService } from '@src/services/RaffleService';
+import { useAlchemy } from '@src/lib/hooks/useAlchemy';
+import { toast } from 'react-toastify';
 
 const useRaffle = (id: string, trigger: number) => {
+  const { address } = useAlchemy();
   const [raffle, setRaffle] = useState<RaffleDetails | null>(null);
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [activities, setActivities] = useState<Participant[]>([]);
@@ -30,9 +33,10 @@ const useRaffle = (id: string, trigger: number) => {
         }
         
         setError(null);
-      } catch (err) {
+      } catch (err: any) {
         console.error('Error fetching raffle data:', err);
-        setError("Failed to fetch raffle details");
+        setError(err.message || "Failed to fetch raffle details");
+        toast.error(err.message || "Failed to fetch raffle details");
       } finally {
         setLoading(false);
       }
@@ -41,9 +45,16 @@ const useRaffle = (id: string, trigger: number) => {
     if (id) {
       fetchRaffleData();
     }
-  }, [id, trigger]);
+  }, [id, trigger, address]);
 
-  return { raffle, participants, activities, winner, loading, error };
+  return { 
+    raffle, 
+    participants, 
+    activities, 
+    winner, 
+    loading, 
+    error 
+  };
 };
 
 export default useRaffle;

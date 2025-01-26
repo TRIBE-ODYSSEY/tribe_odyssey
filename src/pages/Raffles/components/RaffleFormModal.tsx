@@ -2,10 +2,10 @@ import React, { useState, FormEvent, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RaffleDetails, RaffleInput, RaffleCondition } from '../types/Raffle.types';
 import Button from '@src/components/common/Button';
-import { useAccount, useSignMessage } from 'wagmi';
-import { raffleService } from '@src/services/RaffleService';
-import { useRaffleContext } from '../context/RaffleContext';
 import { toast } from 'react-toastify';
+import { useAlchemy } from '@src/lib/hooks/useAlchemy';
+import { useRaffleContext } from '../context/RaffleContext';
+import { raffleService } from '@src/services/RaffleService';
 
 interface RaffleFormModalProps {
   isOpen: boolean;
@@ -22,8 +22,7 @@ const RaffleFormModal: React.FC<RaffleFormModalProps> = ({
   initialData,
   mode
 }) => {
-  const { address } = useAccount();
-  const { signMessageAsync } = useSignMessage();
+  const { address, getSigner } = useAlchemy();
   const { refreshRaffles } = useRaffleContext();
   
   const [formData, setFormData] = useState<RaffleInput>(() => ({
@@ -83,6 +82,7 @@ const RaffleFormModal: React.FC<RaffleFormModalProps> = ({
 
     setIsSubmitting(true);
     try {
+      const signer = await getSigner();
       const nonce = await raffleService.getNonce(address);
       const message = raffleService.createAdminSignatureMessage(
         mode === 'create' ? 'Create Raffle' : 'Edit Raffle',
@@ -90,7 +90,7 @@ const RaffleFormModal: React.FC<RaffleFormModalProps> = ({
         nonce
       );
       
-      const signature = await signMessageAsync({ message });
+      const signature = await signer.signMessage(message);
 
       await onSubmit({
         ...formData,
@@ -125,7 +125,12 @@ const RaffleFormModal: React.FC<RaffleFormModalProps> = ({
 
   const updateCondition = (index: number, field: keyof RaffleCondition, value: number) => {
     const newConditions = [...formData.conditions];
-    newConditions[index] = { ...newConditions[index], [field]: value };
+    if (newConditions[index]) {
+      newConditions[index] = { 
+        ...newConditions[index]!, 
+        [field]: value 
+      } as RaffleCondition;
+    }
     setFormData({ ...formData, conditions: newConditions });
   };
 
