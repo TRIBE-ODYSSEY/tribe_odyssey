@@ -19,7 +19,7 @@ const NFTCard: React.FC<NFTCardProps> = ({
   onClick,
 }) => {
   // Determine image URL based on contract address
-  const imageUrl = contract.toLowerCase() === TRIBE_CONTRACT_ADDRESS[1]
+  const imageUrl = contract.toLowerCase() === TRIBE_CONTRACT_ADDRESS.tribe[1]
     ? `https://cdn.0xworld.io/tribe-images/${tokenId}.png`
     : `https://cdn.0xworld.io/0xworld-ape-images/${tokenId}.png`;
 

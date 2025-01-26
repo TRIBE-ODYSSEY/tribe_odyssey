@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import NFTCard from '../NFTCard';
 import Button from '@src/components/common/Button';
 import { useAlchemy } from '@src/lib/hooks/useAlchemy';
-import { useAuth } from '@src/lib/hooks/useAuth';
-import { getStakingContract } from '@src/lib/viem/helpers/contracts';
-import { CHAIN_IDS } from '@src/lib/viem/contracts';
+import { getContractConfig } from '@src/lib/viem/contracts';
+import { CHAIN_IDS, CONTRACT_NAMES } from '@src/lib/viem/contracts';
 import { toast } from 'react-toastify';
+import { ethers } from 'ethers';
 import type { Address } from 'viem';
 import type { StakedToken } from '@src/lib/config/alchemy';
 
@@ -20,19 +20,24 @@ const UnstakeTab: React.FC<UnstakeTabProps> = ({
   isWaiting,
   refreshTrigger
 }) => {
-  const { address } = useAuth();
-  const { getUserStakedNFTs } = useAlchemy();
+  const { address, getSigner } = useAlchemy();
   const [selectedNFTs, setSelectedNFTs] = useState<string[]>([]);
   const [stakedNFTs, setStakedNFTs] = useState<StakedToken[]>([]);
-  const stakingContract = getStakingContract(CHAIN_IDS.MAINNET);
 
-  // Get user's staked NFTs
   useEffect(() => {
     const fetchStakedNFTs = async () => {
       if (!address) return;
       
       try {
-        const nfts = await getUserStakedNFTs(stakingContract.address);
+        const signer = await getSigner();
+        const { address: stakingAddress, abi: stakingABI } = getContractConfig(CONTRACT_NAMES.STAKING, CHAIN_IDS.MAINNET);
+        const contract = new ethers.Contract(stakingAddress, stakingABI, signer);
+
+        if (!contract.getUserStakedNFTs) {
+          throw new Error('Contract method not found');
+        }
+
+        const nfts = await contract.getUserStakedNFTs(address);
         setStakedNFTs(nfts);
       } catch (error) {
         console.error('Error fetching staked NFTs:', error);
@@ -41,7 +46,7 @@ const UnstakeTab: React.FC<UnstakeTabProps> = ({
     };
 
     fetchStakedNFTs();
-  }, [address, getUserStakedNFTs, stakingContract.address, refreshTrigger]);
+  }, [address, getSigner, refreshTrigger]);
 
   const handleUnstake = async () => {
     if (!address || selectedNFTs.length === 0) return;
@@ -96,7 +101,7 @@ const UnstakeTab: React.FC<UnstakeTabProps> = ({
             <NFTCard
               key={nft.tokenId.toString()}
               tokenId={nft.tokenId.toString()}
-              contract={stakingContract.address as Address}
+              contract={getContractConfig(CONTRACT_NAMES.STAKING, CHAIN_IDS.MAINNET).address as Address}
               isStaked={true}
               isSelected={selectedNFTs.includes(nft.tokenId.toString())}
               onClick={() => toggleNFT(nft.tokenId.toString())}
