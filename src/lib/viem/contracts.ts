@@ -9,7 +9,7 @@ export const CHAIN_IDS = {
   GOERLI: 5
 } as const;
 
-export const CONTRACT_ADDRESSES = {
+export const CONTRACT_NAMES = {
   MULTI_CALL: 'multiCall',
   TRIBE: 'tribe',
   APE: 'ape',
@@ -18,42 +18,41 @@ export const CONTRACT_ADDRESSES = {
 } as const;
 
 type ChainId = typeof CHAIN_IDS[keyof typeof CHAIN_IDS];
+type ContractName = typeof CONTRACT_NAMES[keyof typeof CONTRACT_NAMES];
 
-const contracts = {
+const contracts: Record<ContractName, { [key in ChainId]?: Address }> = {
   multiCall: {
-    [CHAIN_IDS.MAINNET]: "0xeefba1e63905ef1d7acba5a8513c70307c1ce441",
+    [CHAIN_IDS.MAINNET]: import.meta.env.VITE_MULTICALL_CONTRACT_MAINNET as Address,
   },
   tribe: {
-    [CHAIN_IDS.MAINNET]: "0x77F649385cA963859693C3d3299D36dfC7324EB9",
-    [CHAIN_IDS.GOERLI]: "0x13a0BD6EB5124AC16fE5fA2851a5C49Dc1E8BEcF",
-  },
-  ape: {
-    [CHAIN_IDS.MAINNET]: "0x22c08c358f62f35b742d023bf2faf67e30e5376e",
-
-  },
-  ensRegistrar: {
-    [CHAIN_IDS.MAINNET]: "0x6Bb87da9Ea7E1B636dBccB1b664239BC38a46fbB",
+    [CHAIN_IDS.MAINNET]: import.meta.env.VITE_TRIBE_CONTRACT_MAINNET as Address,
   },
   staking: {
-    [CHAIN_IDS.MAINNET]: "0x220224422F2C2A9781F3EB5A0aA36F661DA9aA8F",
-    [CHAIN_IDS.GOERLI]: "0xbE93Aa1C070563DC9827eb7Dc65211dE28A822BB",
+    [CHAIN_IDS.MAINNET]: import.meta.env.VITE_STAKING_CONTRACT_MAINNET as Address,
+  },
+  ape: {
+    [CHAIN_IDS.MAINNET]: import.meta.env.VITE_APE_CONTRACT_MAINNET as Address,
+  },
+  ensRegistrar: {
+    [CHAIN_IDS.MAINNET]: import.meta.env.VITE_ENS_REGISTRAR_CONTRACT_MAINNET as Address,
   },
 };
 
-export const getContractConfig = (name: keyof typeof contracts, chainId: ChainId) => {
-  const address = contracts[name]?.[CHAIN_IDS.MAINNET];
+
+export const getContractConfig = (Name: ContractName, chainId: ChainId) => {
+const address = contracts[Name]?.[CHAIN_IDS.MAINNET];
   console.log(address);
 
   
-  if (!address) throw new Error(`Contract ${name} not deployed on chain ${chainId}`);
+  if (!address) throw new Error(`Contract ${Name} not deployed on chain ${chainId}`);
 
   const abi = {
-    [CONTRACT_ADDRESSES.STAKING]: stakingABI,
-    [CONTRACT_ADDRESSES.TRIBE]: tribeABI,
-    [CONTRACT_ADDRESSES.MULTI_CALL]: multiCallABI,
-    [CONTRACT_ADDRESSES.APE]: apeABI,
-    [CONTRACT_ADDRESSES.ENS_REGISTRAR]: ensRegistrarABI,
-  }[name];
+    [CONTRACT_NAMES.STAKING]: stakingABI,
+    [CONTRACT_NAMES.TRIBE]: tribeABI,
+    [CONTRACT_NAMES.MULTI_CALL]: multiCallABI,
+    [CONTRACT_NAMES.APE]: apeABI,
+    [CONTRACT_NAMES.ENS_REGISTRAR]: ensRegistrarABI,
+  };
   
   return { address, abi };
 };

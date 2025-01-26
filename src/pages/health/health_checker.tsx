@@ -5,7 +5,7 @@ import PageLayout from '@src/components/common/layout/PageLayout';
 import { useAlchemyContext } from '@src/lib/context/AlchemyContext';
 import { useAlchemy } from '@src/lib/hooks/useAlchemy';
 import { getContractConfig } from '@src/lib/viem/contracts';
-import { CHAIN_IDS, CONTRACT_ADDRESSES } from '@src/lib/viem/contracts';
+import { CHAIN_IDS, CONTRACT_NAMES } from '@src/lib/viem/contracts';
 
 interface HealthStatus {
   isConnected: boolean;
@@ -50,9 +50,9 @@ const HealthChecker: React.FC = () => {
 
       try {
         const contracts = [
-          CONTRACT_ADDRESSES.STAKING,
-          CONTRACT_ADDRESSES.TRIBE,
-          CONTRACT_ADDRESSES.MULTI_CALL,
+          CONTRACT_NAMES.STAKING,
+          CONTRACT_NAMES.TRIBE,
+          CONTRACT_NAMES.MULTI_CALL,
         ];
 
         await Promise.all(

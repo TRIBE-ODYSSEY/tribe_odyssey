@@ -5,9 +5,10 @@ import StakingTabs from '@src/components/Staking/StakingTabs';
 import PageLayout from '@src/components/common/layout/PageLayout';
 import { useAlchemy } from '@src/lib/hooks/useAlchemy';
 import { toast } from 'react-toastify';
-import { getContractConfig } from '@src/lib/viem/contracts';
-import { CHAIN_IDS, CONTRACT_ADDRESSES } from '@src/lib/viem/contracts';
+import { CONTRACT_NAMES, getContractConfig } from '@src/lib/viem/contracts';
+import { CHAIN_IDS } from '@src/lib/viem/contracts';
 import { ethers } from 'ethers';
+import stakingABI from '@src/lib/config/abi/staking.json';
 
 const StakeApes: React.FC = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -23,8 +24,8 @@ const StakeApes: React.FC = () => {
     setWaiting(true);
     try {
       const signer = await getSigner();
-      const { address, abi } = getContractConfig(CONTRACT_ADDRESSES.STAKING, CHAIN_IDS.MAINNET);
-      const contract = new ethers.Contract(address, abi, signer);
+      const { address } = getContractConfig(CONTRACT_NAMES.STAKING, CHAIN_IDS.MAINNET);
+      const contract = new ethers.Contract(address, stakingABI, signer);
 
       if (!contract.joinMany) {
         throw new Error('Contract method not found');
@@ -55,8 +56,8 @@ const StakeApes: React.FC = () => {
     setWaiting(true);
     try {
       const signer = await getSigner();
-      const { address, abi } = getContractConfig(CONTRACT_ADDRESSES.STAKING, CHAIN_IDS.MAINNET);
-      const contract = new ethers.Contract(address, abi, signer);
+      const { address } = getContractConfig(CONTRACT_NAMES.STAKING, CHAIN_IDS.MAINNET);
+      const contract = new ethers.Contract(address, stakingABI, signer);
 
       if (!contract.leaveMany) {
         throw new Error('Contract method not found');

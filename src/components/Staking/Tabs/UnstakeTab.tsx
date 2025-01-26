@@ -3,11 +3,12 @@ import NFTCard from '../NFTCard';
 import Button from '@src/components/common/Button';
 import { useAlchemy } from '@src/lib/hooks/useAlchemy';
 import { getContractConfig } from '@src/lib/viem/contracts';
-import { CHAIN_IDS, CONTRACT_ADDRESSES } from '@src/lib/viem/contracts';
+import { CHAIN_IDS, CONTRACT_NAMES } from '@src/lib/viem/contracts';
 import { toast } from 'react-toastify';
 import { ethers } from 'ethers';
 import type { Address } from 'viem';
 import type { StakedToken } from '@src/lib/config/alchemy';
+import stakingABI from '@src/lib/config/abi/staking.json';
 
 interface UnstakeTabProps {
   onUnstake: (selectedNFTs: string[]) => Promise<void>;
@@ -30,7 +31,7 @@ const UnstakeTab: React.FC<UnstakeTabProps> = ({
       
       try {
         const signer = await getSigner();
-        const { address: stakingAddress, abi: stakingABI } = getContractConfig(CONTRACT_ADDRESSES.STAKING, CHAIN_IDS.MAINNET);
+        const { address: stakingAddress } = getContractConfig(CONTRACT_NAMES.STAKING, CHAIN_IDS.MAINNET);
         const contract = new ethers.Contract(stakingAddress, stakingABI, signer);
 
         if (!contract.getUserStakedNFTs) {
@@ -101,7 +102,7 @@ const UnstakeTab: React.FC<UnstakeTabProps> = ({
             <NFTCard
               key={nft.tokenId.toString()}
               tokenId={nft.tokenId.toString()}
-              contract={getContractConfig(CONTRACT_ADDRESSES.STAKING, CHAIN_IDS.MAINNET).address as Address}
+              contract={getContractConfig(CONTRACT_NAMES.STAKING, CHAIN_IDS.MAINNET).address as Address}
               isStaked={true}
               isSelected={selectedNFTs.includes(nft.tokenId.toString())}
               onClick={() => toggleNFT(nft.tokenId.toString())}
