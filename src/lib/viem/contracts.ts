@@ -57,7 +57,7 @@ export const getContractAddress = (name: keyof typeof contracts, chainId: ChainI
     throw new Error(`Invalid chain ID: ${chainId}`);
   }
   
-  const address = contracts[name][chainId];
+  const address = contracts[name]?.[chainId];
   if (!address) {
     throw new Error(`Contract ${name} not deployed on chain ${chainId}`);
   }

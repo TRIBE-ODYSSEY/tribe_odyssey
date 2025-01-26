@@ -32,43 +32,39 @@ export function useAlchemy() {
   };
 
   // Staking Methods
-  const getUserStakedNFTs = useCallback(async (
-    contractAddress: Address
-  ) => {
+  const getUserStakedNFTs = useCallback(async (contractAddress: Address) => {
     const signer = await getSigner();
     const contract = new ethers.Contract(
       contractAddress,
       ['function getUserStakedNFTs(address) view returns (tuple(uint256 tokenId, uint256 stakedAt)[])'],
       signer
     );
-    return await contract.getUserStakedNFTs(await signer.getAddress());
+    const userAddress = await signer.getAddress();
+    if (!contract.getUserStakedNFTs) throw new Error('Contract method not found');
+    return await contract.getUserStakedNFTs(userAddress);
   }, [getSigner]);
 
-  const getPoolInfo = useCallback(async (
-    contractAddress: Address
-  ) => {
+  const getPoolInfo = useCallback(async (contractAddress: Address) => {
     const signer = await getSigner();
     const contract = new ethers.Contract(
       contractAddress,
       ['function getPoolInfo() view returns (tuple(uint256 rewardRate, uint256 lastRewardTime, uint256 accRewardPerShare, uint256 totalStaked))'],
       signer
     );
+    if (!contract.getPoolInfo) throw new Error('Contract method not found');
     return await contract.getPoolInfo();
   }, [getSigner]);
 
-  const isApprovedForAll = useCallback(async (
-    tokenAddress: Address
-  ) => {
+  const isApprovedForAll = useCallback(async (tokenAddress: Address) => {
     const signer = await getSigner();
     const contract = new ethers.Contract(
       tokenAddress,
       ['function isApprovedForAll(address owner, address operator) view returns (bool)'],
       signer
     );
-    return await contract.isApprovedForAll(
-      await signer.getAddress(),
-      tokenAddress
-    );
+    const userAddress = await signer.getAddress();
+    if (!contract.isApprovedForAll) throw new Error('Contract method not found');
+    return await contract.isApprovedForAll(userAddress, tokenAddress);
   }, [getSigner]);
 
   return {

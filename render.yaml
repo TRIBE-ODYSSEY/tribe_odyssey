@@ -1,16 +1,16 @@
 services:
   - type: web
     name: tribe-odyssey
+    env: node
     buildCommand: yarn install && yarn build
-    staticPublishPath: ./dist
-    maintenance:
-      path: /maintenance
-      enabled: true
+    startCommand: yarn preview
     envVars:
       - key: NODE_VERSION
         value: 18.17.0
       - key: NODE_ENV
         value: production
+      - key: PORT
+        value: 5172
     headers:
       - path: /*
         name: Cache-Control

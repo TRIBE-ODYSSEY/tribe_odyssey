@@ -38,7 +38,7 @@ export async function readContract(
       provider
     );
     
-    return await contract[functionName](...args);
+    return await contract?.[functionName as keyof typeof contract](...args);
   } catch (error) {
     console.error('Contract read error:', error);
     throw error;

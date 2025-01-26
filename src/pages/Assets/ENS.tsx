@@ -81,7 +81,7 @@ const ENSPage: React.FC = () => {
       );
 
       // Send the transaction
-      const tx = await contract.register(domainName);
+      const tx = await contract?.register?.(domainName);
       await tx.wait();
       
       toast.success('ENS domain registered successfully!');
