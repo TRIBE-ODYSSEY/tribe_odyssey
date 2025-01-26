@@ -30,6 +30,7 @@ export default defineConfig(({ mode }) => {
     preview: {
       host: '0.0.0.0',
       port: parseInt(process.env.PORT || '5172'),
+      allowedHosts: ['tribe-odyssey-web.onrender.com', 'localhost', '127.0.0.1', '0.0.0.0', 'tribeodyssey.com', 'tribeodyssey.net']
     },
     resolve: {
       alias: {
