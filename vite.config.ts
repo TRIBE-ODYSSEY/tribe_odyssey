@@ -26,12 +26,12 @@ export default defineConfig(({ mode }) => {
           secure: false,
         }
       },
-      allowedHosts: ['tribe-odyssey-web.onrender.com', 'tribeodyssey.net']
+      allowedHosts: ['tribe-odyssey-web.onrender.com', 'www.tribeodyssey.net']
     },
     preview: {
       host: '0.0.0.0',
       port: parseInt(process.env.PORT || '5172'),
-      allowedHosts: ['tribe-odyssey-web.onrender.com', 'tribeodyssey.net']
+      allowedHosts: ['tribe-odyssey-web.onrender.com', 'www.tribeodyssey.net']
     },
     resolve: {
       alias: {
