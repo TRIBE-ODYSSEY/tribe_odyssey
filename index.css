@@ -14,13 +14,13 @@
   /* Core colors from the selection */
   --color-primary: #FF0008;
   --color-secondary: #181818;
-  --color-tertiary: #0B081C;
+  --color-tertiary: #2b0c07fa;
   --color-accent: #ECECEC;
   
   /* UI Element colors */
   --color-background: #181818;
   --color-text-primary: #FFFFFF;
-  --color-text-secondary: #ECECEC;
+  --color-text-secondary: #9c9292;
   --color-text-muted: #c4c4c4;
   
   /* Text colors for overlays */
@@ -148,7 +148,7 @@
   );
 }
 .custom-gradient {
-  background: linear-gradient(to top, transparent, white 50%);
+  background: linear-gradient(to top, transparent, rgb(63, 61, 61) 50%);
 }
 
 /* Logo Slider Styles */

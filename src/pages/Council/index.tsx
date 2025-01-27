@@ -28,14 +28,13 @@ const CouncilPage: React.FC = () => {
     <PageLayout>
       <div className="relative z-10 space-y-24 pt-32">
         <div className="container mx-auto px-4">
-          <div className="max-w-[1200px] mx-auto bg-[var(--color-overlay-dark)]/5 
-                       backdrop-blur-sm rounded-2xl overflow-hidden">
+          <div className="max-w-[1200px] mx-auto rounded-2xl overflow-hidden">
             <div className="relative">
               {/* Background gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-b 
+              {/* <div className="absolute inset-0 bg-gradient-to-b 
                            from-[var(--color-overlay-dark)]/20 
                            to-[var(--color-overlay-dark)]/5 
-                           pointer-events-none" />
+                           pointer-events-none" /> */}
               
               {/* Content */}
               <div className="relative z-10">
