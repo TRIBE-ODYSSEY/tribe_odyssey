@@ -10,6 +10,7 @@ interface ImportMetaEnv {
 	readonly VITE_APP_DESCRIPTION: string
 	readonly VITE_API_URL: string
 	readonly VITE_TEST_PORT: string
+	
 	// Web3 Configuration
 	readonly VITE_WALLET_CONNECT_PROJECT_ID: string
 	readonly VITE_CHAIN_ID: number
@@ -48,6 +49,10 @@ interface ImportMetaEnv {
 
 	// Maintenance Mode
 	readonly VITE_MAINTENANCE_MODE: 'true' | 'false'
+
+	// Reown Configuration
+	readonly VITE_REOWN_APP_ID: string
+	readonly VITE_REOWN_ENVIRONMENT: string
 }
 
 interface ImportMeta {

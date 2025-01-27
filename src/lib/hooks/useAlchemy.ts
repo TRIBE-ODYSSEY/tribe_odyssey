@@ -17,7 +17,7 @@ import type {
 
 export function useAlchemy() {
   const { getProvider, getSigner } = useAlchemyProvider();
-  const { connect, disconnect, switchNetwork, isConnected, address } = useAlchemyAuth();
+  const { connect, disconnect, isConnected, address, provider } = useAlchemyAuth();
   const { getNftsForOwner, getNftMetadata } = useAlchemyNFT();
   const { getContractEvents, isContractAddress } = useAlchemyContract();
 
@@ -75,9 +75,9 @@ export function useAlchemy() {
     // Auth Methods
     connect,
     disconnect,
-    switchNetwork,
     isConnected,
     address,
+    provider,
 
     // NFT Methods
     getNftsForOwner,

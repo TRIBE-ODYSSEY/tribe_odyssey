@@ -1,38 +1,26 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useAlchemyProvider } from './useAlchemyProvider';
 import { toast } from 'react-toastify';
+import { BrowserProvider } from 'ethers';
 
 export const useAlchemyAuth = () => {
   const { getProvider } = useAlchemyProvider();
   const [isConnected, setIsConnected] = useState(false);
   const [address, setAddress] = useState<string | null>(null);
+  const [provider, setProvider] = useState<BrowserProvider | null>(null);
 
-  const connect = useCallback(async (walletType?: string) => {
+  const connect = useCallback(async () => {
     try {
       const provider = await getProvider();
-      const accounts = await provider.send('eth_requestAccounts', []);
-      
-      if (!accounts || accounts.length === 0) {
-        throw new Error('No accounts found');
-      }
-
       const signer = await provider.getSigner();
-      const userAddress = await signer.getAddress();
+      const address = await signer.getAddress();
       
-      // Verify network
-      const network = await provider.getNetwork();
-      const chainId = Number(network.chainId);
-      
-      if (chainId !== 1) { // Mainnet
-        await switchNetwork();
-      }
-
-      setAddress(userAddress);
+      setProvider(provider);
+      setAddress(address);
       setIsConnected(true);
       localStorage.setItem('walletConnected', 'true');
-      localStorage.setItem('walletType', walletType || 'metamask');
       
-      return { address: userAddress, chainId };
+      return { address, provider, signer };
     } catch (error) {
       console.error('Connection error:', error);
       toast.error('Failed to connect wallet');
@@ -42,10 +30,10 @@ export const useAlchemyAuth = () => {
 
   const disconnect = useCallback(async () => {
     try {
-      localStorage.removeItem('walletConnected');
-      localStorage.removeItem('walletType');
+      setProvider(null);
       setAddress(null);
       setIsConnected(false);
+      localStorage.removeItem('walletConnected');
       window.dispatchEvent(new Event('wallet_disconnected'));
       return true;
     } catch (error) {
@@ -57,14 +45,32 @@ export const useAlchemyAuth = () => {
 
   const switchNetwork = useCallback(async () => {
     try {
-      const provider = await getProvider();
+      if (!provider) {
+        throw new Error('Provider not initialized');
+      }
+
       await provider.send('wallet_switchEthereumChain', [{ chainId: '0x1' }]);
     } catch (error) {
       console.error('Network switch error:', error);
       toast.error('Failed to switch network');
       throw error;
     }
-  }, [getProvider]);
+  }, [provider]);
 
-  return { connect, disconnect, switchNetwork, isConnected, address };
+  // Auto-reconnect on mount if previously connected
+  useEffect(() => {
+    const wasConnected = localStorage.getItem('walletConnected') === 'true';
+    if (wasConnected) {
+      connect().catch(console.error);
+    }
+  }, [connect]);
+
+  return { 
+    connect, 
+    disconnect, 
+    switchNetwork, 
+    isConnected, 
+    address,
+    provider 
+  };
 }; 
