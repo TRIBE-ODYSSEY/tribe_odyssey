@@ -1,10 +1,9 @@
 /* eslint-disable */
-import { FC, useState, useEffect, useRef, useMemo, useContext } from "react";
+import { FC, useState, useRef, useMemo, useContext } from "react";
 import Button from "@src/components/common/Button";
 import styled from "styled-components";
 import Modal from "react-modal";
 import useOwnTribes from "@src/lib/hooks/useOwnTribes";
-import { useWindowSize } from "@uidotdev/usehooks";
 import { toast } from "react-toastify";
 import { ClockLoader } from "react-spinners";
 import axios from "axios";
@@ -165,40 +164,8 @@ const StakingPage: FC<ClaimPageProps> = () => {
   };
 
   const stakeref = useRef(null);
-  const { width: onlyWidth } = useWindowSize();
-  const [apebxwidth, setApebxwidth] = useState(0);
-
-  useEffect(() => {
-    // Update the document title using the browser API
-    // document.title = `You clicked ${count} times`;
-    // console.log(onlyWidth)
-    if (stakeref.current) {
-      const current = stakeref!.current as HTMLCanvasElement;
-      if (current) {
-        const stakwwidth =
-          current.clientWidth -
-          parseFloat(getComputedStyle(current).paddingLeft) -
-          parseFloat(getComputedStyle(current).paddingRight);
-        let tempwidth;
-        if (onlyWidth && onlyWidth >= 1200) {
-          tempwidth = stakwwidth / 8 - 2;
-          setApebxwidth(tempwidth);
-        } else if (onlyWidth && onlyWidth >= 800) {
-          tempwidth = stakwwidth / 6 - 2;
-          setApebxwidth(tempwidth);
-        } else if (onlyWidth && onlyWidth >= 400) {
-          tempwidth = stakwwidth / 4 - 2;
-          setApebxwidth(tempwidth);
-        } else {
-          tempwidth = stakwwidth / 2 - 2;
-          setApebxwidth(tempwidth);
-        }
-      }
-    }
-  }, [stakeref.current, onlyWidth]);
-
   return (
-    <>
+    <div className="min-h-screen bg-[var(--color-background)]">
       <StakeWrapper>
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="flex-grow">
@@ -253,13 +220,12 @@ const StakingPage: FC<ClaimPageProps> = () => {
                           ref={stakeref}
                         >
                           {tribes.map(({ tokenId, contract, id, is_staked }: any) => (
-                            <ApeboxWrapperPool
+                            <ApeboxWrapper
                               className={`${
                                 selectedapes.length > 0 && selectedapes.includes(id)
                                   ? "selected"
                                   : ""
                               }`}
-                              bxwidth={apebxwidth}
                               onClick={() => {
                                 toggleApeSelector(id);
                               }}
@@ -293,7 +259,7 @@ const StakingPage: FC<ClaimPageProps> = () => {
                               >
                                 {selectedapes.includes(id) ? <GradIcon /> : null}
                               </div>
-                            </ApeboxWrapperPool>
+                            </ApeboxWrapper>
                           ))}
                         </div>
                       </>
@@ -398,7 +364,7 @@ const StakingPage: FC<ClaimPageProps> = () => {
           </div>
         </div>
       </Modal>
-    </>
+    </div>
   );
 };
 
@@ -410,16 +376,8 @@ const ApeboxWrapper = styled.div`
     @apply w-full h-full rounded-xl object-cover;
   }
 
-  .gradbg {
-    @apply absolute inset-1 rounded-xl bg-black/30 flex items-center justify-center;
-    
-    &.blackbg {
-      @apply bg-black/70;
-    }
-  }
-
   &.selected {
-    background: var(--color-button-primary);
+    background-color: var(--color-button-primary);
   }
 
   .lockOuter {
@@ -427,19 +385,7 @@ const ApeboxWrapper = styled.div`
            flex items-center justify-center;
     width: 24px;
     height: 24px;
-
-    &.green {
-      @apply border border-green-500;
-    }
-    &.red {
-      @apply border border-red-500;
-    }
   }
-`;
-
-const ApeboxWrapperPool = styled(ApeboxWrapper)<{ bxwidth: number }>`
-  width: ${props => props.bxwidth}px;
-  height: ${props => props.bxwidth}px;
 `;
 
 const StakeWrapper = styled.div`
