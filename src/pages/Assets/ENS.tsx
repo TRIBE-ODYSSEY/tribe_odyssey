@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import PageTitle from '../../components/common/PageTitle';
-import PageLayout from '../../components/common/layout/PageLayout';
+import PageTitle from '@src/components/common/PageTitle';
+import PageLayout from '@src/components/common/layout/PageLayout';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
-import Button from '../../components/common/Button';
+import Button from '@src/components/common/Button';
 import { Popover } from '@headlessui/react';
 import { toast } from "react-toastify";
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
