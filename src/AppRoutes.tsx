@@ -55,6 +55,7 @@ const AppRoutes: React.FC = () => {
         {/* Other Routes */}
         <Route path="/staking" element={<StakingApesPage />} />
         <Route path="/account" element={<ProfilePage />} />
+
         
         {/* 404 Route */}
         <Route path="*" element={<NetworkErrors />} />
