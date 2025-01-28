@@ -233,7 +233,7 @@ const StakingPage: FC<ClaimPageProps> = () => {
                             >
                               <img
                                 src={
-                                  contract === import.meta.env.VITE_TRIBE_CONTRACT
+                                  contract === import.meta.env.VITE_STAKING_CONTRACT_MAINNET
                                     ? `https://cdn.0xworld.io/tribe-images/${
                                         tokenId || 0
                                       }.png`
