@@ -22,7 +22,7 @@ const ProfilePage = lazy(() => import('@src/pages/Profile'));
 const NetworkErrors = lazy(() => import('@src/components/common/errors/network/NetworkErrors'));
 const MaintenancePage = lazy(() => import('@src/pages/Maintenance'));
 const ThreadsPage = lazy(() => import('@src/pages/Threads'));
-const WinnersPage = lazy(() => import('@src/pages/Winners/winners'));
+const WinnersPage = lazy(() => import('@src/pages/Winners'));
 
 const MAINTENANCE_MODE = import.meta.env.VITE_MAINTENANCE_MODE === 'true';
 
