@@ -3,8 +3,8 @@ import Card from '@src/components/common/card/Card';
 import PageTitle from '@src/components/common/PageTitle';
 import PageLayout from '@src/components/common/layout/PageLayout';
 import { useAccount, useChainId, usePublicClient } from 'wagmi';
-import { getContractConfig } from '@src/lib/viem/contracts';
-import { CONTRACT_NAMES } from '@src/lib/viem/contracts';
+import { getContractConfig } from '@src/lib/config/constants/contracts';
+import { CONTRACT_NAMES } from '@src/lib/config/constants/contracts';
 import { mainnet } from 'wagmi/chains';
 
 interface HealthStatus {

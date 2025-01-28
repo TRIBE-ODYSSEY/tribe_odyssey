@@ -113,7 +113,7 @@ const ProfilePage: FC = () => {
                 setLoading(false);
               });
           })
-          .catch((e) => {
+          .catch(() => {
             toast.error("Failed to Sign Message!");
             setLoading(false);
           });
@@ -189,7 +189,7 @@ const ProfilePage: FC = () => {
                 placeholder="Enter Eth Address"
                 value={address || ""}
                 readOnly
-                onChange={(e) => {}}
+                onChange={() => {}}
               />
               <div className="text-theme-grey text-[12px]">
                 Btc Ordinals Address
