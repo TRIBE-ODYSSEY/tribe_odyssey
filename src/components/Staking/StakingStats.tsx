@@ -4,7 +4,7 @@ import { getStakingAddress, getTribeAddress } from '@src/utils/address';
 import stakingABI from '@src/lib/config/abi/staking.json';
 import tribeABI from '@src/lib/config/abi/tribe.json';
 import { useAccount, useReadContracts } from 'wagmi';
-import { StakedToken } from '@src/lib/config/alchemy';
+
 
 const StakingStats: React.FC = () => {
   const { address } = useAccount();
@@ -38,18 +38,17 @@ const StakingStats: React.FC = () => {
     }
   });
 
-  const [poolInfo, stakedNFTs, balance] = (data?.map(d => d.result) || []) as [
+  const [poolInfo, stakedNFTs] = (data?.map(d => d.result) || []) as [
     [bigint, bigint, bigint, boolean, boolean, bigint[]],
-    StakedToken[],
-    bigint
+    bigint[],
   ];
   const dailyRewardsPerNFT = 10; // This should come from contract or config
 
   const stats = {
     totalStaked: poolInfo ? Number(poolInfo[2]) : 0,
-    userTotalNFTs: balance ? Number(balance) : 0,
-    userStakedCount: stakedNFTs ? stakedNFTs.length : 0,
-    userDailyRewards: (stakedNFTs ? stakedNFTs.length : 0) * dailyRewardsPerNFT
+    userTotalNFTs: stakedNFTs ? Number(stakedNFTs) : 0,
+    userStakedCount: stakedNFTs ? Number(stakedNFTs) : 0,
+    userDailyRewards: (stakedNFTs ? Number(stakedNFTs) : 0) * dailyRewardsPerNFT
   };
 
   const statsConfig = [

@@ -24,8 +24,8 @@ export const menuConfig: MenuConfig = {
   ],
   Staking: [
     { name: 'Stake Apes', path: '/staking' },
-    { name: 'Raffles', path: '/raffles' },
-    { name: 'Winners', path: '/raffles/winners' },
+    { name: 'Raffles', path: '/maintenance' },
+    { name: 'Winners', path: '/maintenance' },
   ],
   Council: '/council',
   Threads: '/threads'

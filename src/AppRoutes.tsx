@@ -2,9 +2,7 @@
 import useLazyLoading from '@hooks/useLazyLoading';
 import React, { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { RaffleProvider } from './pages/Raffles/context/RaffleContext';
 import LoadingSpinner from '@src/components/common/LoadingSpinner';
-import { ProtectedRoute } from '@src/components/common/ProtectedRoute';
 
 // Lazy loaded pages
 const HomePage = lazy(() => import('@src/pages/HomePage'));
@@ -15,8 +13,7 @@ const MoltenPage = lazy(() => import('@src/pages/Assets/Molten'));
 const TribalBeatsPage = lazy(() => import('@src/pages/Assets/TribalBeats'));
 const Tribal19CheckerPage = lazy(() => import('@src/pages/Assets/Tribal19Checker'));
 const CouncilPage = lazy(() => import('@src/pages/Council'));
-const RafflesPage = lazy(() => import('@src/pages/Raffles'));
-const RaffleAdminPage = lazy(() => import('@src/pages/Raffles/admin'));
+//const RafflesPage = lazy(() => import('@src/pages/Raffles'));
 const StakingApesPage = lazy(() => import('@src/pages/Staking/StakeApes'));
 const DropsPage = lazy(() => import('@src/pages/Element19/Drops'));
 const CollectionPage = lazy(() => import('@src/pages/Element19/Collection'));
@@ -51,26 +48,10 @@ const AppRoutes: React.FC = () => {
         <Route path="/wallpapers" element={<WallpapersPage />} />
         <Route path="/ens" element={<ENSPage />} />
         <Route path="/threads" element={<ThreadsPage />} />
+
+        {/* Other Routes */}
         <Route path="/staking" element={<StakingApesPage />} />
-        <Route path="/raffles" element={
-          <RaffleProvider>
-            <Routes>
-              <Route path="/" element={<RafflesPage />} />
-              <Route path="/admin/*" element={
-                <ProtectedRoute>
-                  <RaffleAdminPage />
-                </ProtectedRoute>
-              } />
-            </Routes>
-          </RaffleProvider>
-        } />
-        
-        {/* Protected Routes */}
-        <Route path="/account" element={
-          <ProtectedRoute>
-            <ProfilePage />
-          </ProtectedRoute>
-        } />
+        <Route path="/account" element={<ProfilePage />} />
         
         {/* 404 Route */}
         <Route path="*" element={<NetworkErrors />} />
