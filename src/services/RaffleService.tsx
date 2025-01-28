@@ -20,7 +20,7 @@ class RaffleService {
   });
 
   private readonly provider = new JsonRpcProvider(
-    import.meta.env.VITE_RPC_URL || 'https://eth-mainnet.g.alchemy.com/v2/gqqtUwI2JkpruEZDNdTi4XJltOUyj4K1'
+    import.meta.env.VITE_RPC_URL || 'https://eth-mainnet.g.alchemy.com/v2/XNjZopE65PystCHvjtoD--2rfGvm8gss'
   );
 
   private async generateRandomSeed(raffleId: string): Promise<string> {

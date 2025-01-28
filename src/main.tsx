@@ -9,7 +9,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-// Initialize QueryClient
+// Configure QueryClient with proper options
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -22,8 +22,8 @@ const queryClient = new QueryClient({
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
         <ErrorBoundary>
           <Layout>
             <App />
@@ -41,7 +41,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             theme="dark"
           />
         </ErrorBoundary>
-      </QueryClientProvider>
-    </BrowserRouter>
+      </BrowserRouter>
+    </QueryClientProvider>
   </React.StrictMode>
 );

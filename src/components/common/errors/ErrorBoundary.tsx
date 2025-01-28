@@ -1,4 +1,4 @@
-import { Component, ErrorInfo, ReactNode } from 'react';
+import { Component, ErrorInfo, ReactNode, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 interface Props {
@@ -10,50 +10,48 @@ interface State {
   error?: Error;
 }
 
-class ErrorBoundary extends Component<Props, State> {
-  public state: State = {
-    hasError: false,
-  };
+const ErrorBoundary: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [hasError, setHasError] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
 
-  public static getDerivedStateFromError(error: Error): State {
-    return { hasError: true, error };
-  }
+  useEffect(() => {
+    const handleError = (error: Error) => {
+      console.error('Global error:', error);
+      setError(error);
+      setHasError(true);
+    };
 
-  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Error details:', {
-      error,
-      errorInfo,
-      location: window.location.href,
-      timestamp: new Date().toISOString(),
-    });
-  }
+    window.addEventListener('error', (event) => handleError(event.error));
+    window.addEventListener('unhandledrejection', (event) => handleError(event.reason));
 
-  public render() {
-    if (this.state.hasError) {
-      return (
-        <div className="min-h-screen bg-[var(--color-background)] flex items-center justify-center p-4">
-          <div className="max-w-md w-full text-center space-y-4">
-            <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">
-              Oops! Something went wrong
-            </h1>
-            <p className="text-[var(--color-text-muted)]">
-              {this.state.error?.message || 'An unexpected error occurred'}
-            </p>
-            <Link 
-              to="/"
-              className="inline-block px-6 py-2 bg-[var(--color-button-primary)] 
-                       text-[var(--color-text-on-primary)] rounded-lg 
-                       hover:bg-[var(--color-button-hover)] transition-colors duration-200"
-            >
-              Return Home
-            </Link>
-          </div>
+    return () => {
+      window.removeEventListener('error', (event) => handleError(event.error));
+      window.removeEventListener('unhandledrejection', (event) => handleError(event.reason));
+    };
+  }, []);
+
+  if (hasError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[var(--color-background)]">
+        <div className="text-center p-8">
+          <h1 className="text-2xl font-bold text-[var(--color-text-primary)] mb-4">
+            Something went wrong
+          </h1>
+          <p className="text-[var(--color-text-secondary)] mb-4">
+            {error?.message || 'An unexpected error occurred'}
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="btn-primary"
+          >
+            Reload Page
+          </button>
         </div>
-      );
-    }
-
-    return this.props.children;
+      </div>
+    );
   }
-}
+
+  return <>{children}</>;
+};
 
 export default ErrorBoundary;
