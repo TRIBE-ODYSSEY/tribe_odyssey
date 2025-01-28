@@ -10,6 +10,8 @@ import CustomButton from './button';
 import { IoClose } from 'react-icons/io5';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import '@rainbow-me/rainbowkit/styles.css';
+import ProfileDropdown from '@src/components/ProfileDropdwon';
+import { useAccount } from 'wagmi';
 
 const MenuDropdown: React.FC<{ title: string; items: Array<{ name: string; path: string }> }> = ({ 
   title, 
@@ -122,6 +124,7 @@ const NavMenu: React.FC<{ isMobile?: boolean; onClose?: () => void }> = ({ isMob
 
 const WalletSection: React.FC = () => {
   const location = useLocation();
+  const { address } = useAccount();
   
   const isWalletPage = location.pathname.includes('/staking') || 
                        location.pathname.includes('/raffles') ||
@@ -136,6 +139,10 @@ const WalletSection: React.FC = () => {
         Join Discord
       </CustomButton>
     );
+  }
+
+  if (address) {
+    return <ProfileDropdown />;
   }
 
   return (

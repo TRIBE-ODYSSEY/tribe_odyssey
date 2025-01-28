@@ -27,6 +27,6 @@
       "@types/*": ["types/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts", "src/lib/hooks/index.tsz"],
   "exclude": ["node_modules", "dist"]
 }
