@@ -1,14 +1,15 @@
 // @src/components/common/Navbar/index.tsx
 import useLazyLoading from '@src/lib/hooks/useLazyLoading';
 import React, { useEffect, useState } from 'react';
-import { FaBars, FaInstagram, FaDiscord, FaXTwitter } from 'react-icons/fa6';
+import { FaBars, FaInstagram, FaDiscord, FaXTwitter, FaWallet } from 'react-icons/fa6';
 import { menuConfig } from '@src/lib/config/menuConfig';
 import { Menu } from '@headlessui/react';
 import { Link, useLocation } from 'react-router-dom';
 import { RiArrowDropDownLine, RiArrowDropUpLine } from 'react-icons/ri';
 import CustomButton from './button';
 import { IoClose } from 'react-icons/io5';
-import { useAlchemy } from '@src/lib/hooks/useAlchemy';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import '@rainbow-me/rainbowkit/styles.css';
 
 const MenuDropdown: React.FC<{ title: string; items: Array<{ name: string; path: string }> }> = ({ 
   title, 
@@ -121,50 +122,82 @@ const NavMenu: React.FC<{ isMobile?: boolean; onClose?: () => void }> = ({ isMob
 
 const WalletSection: React.FC = () => {
   const location = useLocation();
-  const isStakingPath = location.pathname.includes('/staking');
-  const isRafflesAdminPath = location.pathname.includes('/raffles/admin');
-  const isRafflesPath = location.pathname.includes('/raffles');
-  const isENSPage = location.pathname.includes('/ens');
+  
+  const isWalletPage = location.pathname.includes('/staking') || 
+                       location.pathname.includes('/raffles') ||
+                       location.pathname.includes('/ens');
 
-  const { address, connect } = useAlchemy();
-
-  const handleConnect = async () => {
-    try {
-      await connect(); // Default to MetaMask
-    } catch (error) {
-      console.error('Connection error:', error);
-    } 
-  };
+  if (!isWalletPage) {
+    return (
+      <CustomButton
+        onClick={() => window.open('https://discord.gg/T7Bv5JsFYd', '_blank')}
+        leftIcon={<FaDiscord className="text-xl" />}
+      >
+        Join Discord
+      </CustomButton>
+    );
+  }
 
   return (
-    <div className="flex items-center gap-2">
-      {isStakingPath || isRafflesAdminPath || isRafflesPath || isENSPage ? (
-        <div>
-          {address ? (
-            <CustomButton 
-              onClick={() => {
-                // Implement the logic to disconnect the wallet
-              }}
-            >
-              {`${address.slice(0, 6)}...${address.slice(-4)}`}
-            </CustomButton>
-          ) : (
-            <CustomButton onClick={handleConnect}>
-              Connect Wallet
-            </CustomButton>
-          )}
-        </div>
-      ) : (
-        <CustomButton
-          onClick={() => window.open('https://discord.gg/T7Bv5JsFYd', '_blank')}
-        >
+    <ConnectButton.Custom>
+      {({
+        account,
+        chain,
+        openAccountModal,
+        openChainModal,
+        openConnectModal,
+        mounted,
+      }) => {
+        const ready = mounted;
+        if (!ready) return null;
+
+        return (
           <div className="flex items-center gap-2">
-            <FaDiscord className="text-xl" />
-            <span>Join Discord</span>
+            {(() => {
+              if (!account) {
+                return (
+                  <CustomButton
+                    onClick={openConnectModal}
+                    leftIcon={<FaWallet className="text-xl" />}
+                  >
+                    Connect Wallet
+                  </CustomButton>
+                );
+              }
+
+              if (chain?.unsupported) {
+                return (
+                  <CustomButton
+                    onClick={openChainModal}
+                    className="!bg-red-500 hover:!bg-red-600"
+                  >
+                    Wrong Network
+                  </CustomButton>
+                );
+              }
+
+              return (
+                <div className="flex items-center gap-2">
+                  <CustomButton
+                    onClick={openChainModal}
+                    size="sm"
+                    className="!min-w-0 !px-3"
+                  >
+                    {chain?.name}
+                  </CustomButton>
+                  <CustomButton
+                    onClick={openAccountModal}
+                    size="sm"
+                  >
+                    {account.displayName}
+                  </CustomButton>
+                </div>
+              );
+            })()}
           </div>
-        </CustomButton>
-      )}
-    </div>
+        );
+      }}
+    </ConnectButton.Custom>
   );
 };
 

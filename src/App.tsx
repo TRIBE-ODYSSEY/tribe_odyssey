@@ -1,11 +1,13 @@
 import { Spinner } from 'flowbite-react';
 import React, { Suspense } from 'react';
 import AppRoutes from './AppRoutes';
-import { AlchemyProvider } from './lib/context/AlchemyContext';
+import { WagmiProvider } from 'wagmi';
+import { rainbowKitConfig } from './lib/config/rainbowkit';
+
 
 const App: React.FC = () => {
   return (
-    <AlchemyProvider>
+    <WagmiProvider config={rainbowKitConfig}>
       <div className="min-h-screen bg-gradient-to-b from-[var(--color-tertiary)] to-[var(--color-background)]">
         <Suspense
           fallback={
@@ -21,7 +23,7 @@ const App: React.FC = () => {
           <AppRoutes />
         </Suspense>
       </div>
-    </AlchemyProvider>
+    </WagmiProvider>
   );
 };
 

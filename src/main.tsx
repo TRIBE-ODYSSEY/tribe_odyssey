@@ -8,8 +8,11 @@ import ErrorBoundary from '@src/components/common/errors/ErrorBoundary';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
+import { WagmiProvider } from 'wagmi';
+import { rainbowKitConfig } from './lib/config/rainbowkit';
 
-// Configure QueryClient with proper options
+// Initialize QueryClient
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -23,25 +26,32 @@ const queryClient = new QueryClient({
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <ErrorBoundary>
-          <Layout>
-            <App />
-          </Layout>
-          <ToastContainer
-            position="top-right"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="dark"
-          />
-        </ErrorBoundary>
-      </BrowserRouter>
+      <WagmiProvider config={rainbowKitConfig}>
+        <RainbowKitProvider theme={darkTheme({
+          accentColor: 'var(--color-button-primary)',
+          borderRadius: 'large'
+        })}>
+          <BrowserRouter>
+            <ErrorBoundary>
+              <Layout>
+                <App />
+              </Layout>
+              <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+              />
+            </ErrorBoundary>
+          </BrowserRouter>
+        </RainbowKitProvider>
+      </WagmiProvider>
     </QueryClientProvider>
   </React.StrictMode>
 );
