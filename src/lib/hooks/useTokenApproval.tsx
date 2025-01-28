@@ -9,30 +9,37 @@ const useTokenApproval = (token: Address) => {
   const { address: account } = useAccount();
   const publicClient = usePublicClient();
   const nftContractAddress = getTribeAddress();
-  const tokenContract = getContract({
+
+  const tokenContract = publicClient ? getContract({
     address: token,
-    abi: erc20ABI,
+    abi: erc20ABI as any,
     client: publicClient,
-  });
+  }) : null;
 
   const [approved, setApproved] = useState(false);
 
   useEffect(() => {
     const fetch = async () => {
-      const res = tokenContract
-        ? await tokenContract.allowance(account, nftContractAddress)
-        : BigInt(0);
-      setApproved(!res.isZero());
+      if (!tokenContract || !account) return;
+      
+      try {
+        const res = (await tokenContract?.read?.allowance?.([
+          account,
+          nftContractAddress
+        ]) ?? BigInt(0)) as bigint;
+        setApproved(res > BigInt(0));
+      } catch (error) {
+        console.error('Error checking allowance:', error);
+        setApproved(false);
+      }
     };
 
-    if (token == zeroAddress) {
+    if (token === zeroAddress) {
       setApproved(true);
-    } else {
-      if (token && account) {
-        fetch();
-      }
+    } else if (token && account) {
+      fetch();
     }
-  }, [token, account]);
+  }, [token, account, tokenContract, nftContractAddress]);
 
   return approved;
 };
