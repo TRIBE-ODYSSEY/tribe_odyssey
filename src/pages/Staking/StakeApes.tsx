@@ -56,10 +56,11 @@ const StakingPage: FC<ClaimPageProps> = () => {
   const context: any = useContext(GlobalContext);
   const setState = context.setState;
 
-  const { address: account } = useAccount();
+  const { address } = useAccount();
   const { openConnectModal } = useConnectModal();
   const { signMessageAsync } = useSignMessage();
-  const stakingAddress = getStakingAddress();
+  
+  const [stakingAddress, setStakingAddress] = useState("");
 
   const [selectedapes, setSelectedapes] = useState<any[]>([]);
   const [activetab, setActivetab] = useState(0);
@@ -95,14 +96,14 @@ const StakingPage: FC<ClaimPageProps> = () => {
       return;
     }
 
-    if (!account) {
+    if (!address) {
       toast.error("Please connect wallet to stake!!");
       return;
     }
 
     const msg = JSON.stringify({
       ids: selectedapes,
-      address: account.toLowerCase(),
+      address: address.toLowerCase(),
     });
 
     setWaiting(true);
@@ -111,7 +112,7 @@ const StakingPage: FC<ClaimPageProps> = () => {
     });
     axios
       .post("/staking/stake", {
-        address: account,
+        address: address,
         signature,
         ids: selectedapes,
       })
@@ -139,14 +140,14 @@ const StakingPage: FC<ClaimPageProps> = () => {
       toast.error("Please select Apes to unstake!!");
       return;
     }
-    if (!account) {
-      toast.error("Please connect wallet to stake!!");
+    if (!address) {
+      toast.error("Please connect wallet to unstake!!");
       return;
     }
 
     const msg = JSON.stringify({
       ids: selectedapes,
-      address: account.toLowerCase(),
+      address: address.toLowerCase(),
     });
 
     setWaiting(true);
@@ -155,7 +156,7 @@ const StakingPage: FC<ClaimPageProps> = () => {
     });
     axios
       .post("/staking/unstake", {
-        address: account,
+        address: address,
         signature,
         ids: selectedapes,
       })
@@ -182,10 +183,10 @@ const StakingPage: FC<ClaimPageProps> = () => {
 
   useEffect(() => {
     const loadTribeItems = async () => {
-      if (!account) return;
+      if (!address) return;
       
       try {
-        const items = await fetchTribeItems(account);
+        const items = await fetchTribeItems(address);
         if (Array.isArray(items)) {
           setTribes(items);
         } else {
@@ -199,7 +200,19 @@ const StakingPage: FC<ClaimPageProps> = () => {
     };
 
     loadTribeItems();
-  }, [account]);
+  }, [address]);
+
+  useEffect(() => {
+    if (address) {
+      try {
+        const addr = getStakingAddress();
+        setStakingAddress(addr);
+      } catch (error) {
+        console.error('Error getting staking address:', error);
+        setStakingAddress("");
+      }
+    }
+  }, [address]);
 
   return (
     <PageLayout>
@@ -215,7 +228,7 @@ const StakingPage: FC<ClaimPageProps> = () => {
                     <div className="flex flex-col items-center justify-center h-full">
                       <p className="mb-[40px]">Staking Live Soon</p>
                     </div>
-                  ) : account ? (
+                  ) : address ? (
                     <div className="h-full">
                       <div className="p-[20px]">
                         <h4 className="font-medium text-[20px] mb-6">
