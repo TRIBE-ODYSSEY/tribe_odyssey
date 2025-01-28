@@ -6,6 +6,8 @@ import "slick-carousel/slick/slick-theme.scss";
 import { useNavigate } from "react-router-dom";
 import useWinners from "@src/lib/hooks/useWinners";
 import Slider from "react-slick";
+import PageLayout from '@src/components/common/layout/PageLayout';
+import PageTitle from '@src/components/common/PageTitle';
 
 interface AboutPageProps {}
 
@@ -92,17 +94,15 @@ const WinnersPage: FC<AboutPageProps> = () => {
   };
 
   return (
-    <Layout>
-      <div className="text-white">
-        <div className="pt-15 max-w-[900px] mx-auto">
-          <div className="text-center">
-            <h2 className="text-center font-bold text-[20px] tracking-widest">
-              Winners
-            </h2>
-            <div className="mt-6 text-center text-theme-grey mx-auto">
-              <div className="">Past raffle winners. Winners are grinners!</div>
-            </div>
-          </div>
+    <PageLayout>
+      <div className="container mx-auto px-4 py-8">
+        <PageTitle>Winners</PageTitle>
+        
+        <div className="mt-6 text-center text-theme-grey mx-auto max-w-[600px]">
+          <p>Past raffle winners. Winners are grinners!</p>
+        </div>
+
+        <div className="mt-12 max-w-[900px] mx-auto">
           <Slider {...settings}>
             {(raffles || []).map((raffle: any) => (
               <div className="cardwrapper" key={raffle.id}>
@@ -152,7 +152,7 @@ const WinnersPage: FC<AboutPageProps> = () => {
           </Slider>
         </div>
       </div>
-    </Layout>
+    </PageLayout>
   );
 };
 
@@ -177,40 +177,6 @@ const Button = styled.button`
 
   &:hover {
     opacity: 0.7;
-  }
-`;
-
-const Layout = styled.div`
-  font-family: "Roboto Mono", monospace;
-  .slick-next:before {
-    display: none !important;
-  }
-  .slick-prev:before {
-    display: none !important;
-  }
-  .slick-arrow {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transform: Scale(1.6);
-    &:hover {
-      svg {
-        path {
-          fill: #fff !important;
-        }
-      }
-    }
-  }
-  .sliderOuter {
-    width: 100%;
-
-    .cardwrapper {
-      padding: 10px;
-      box-sizing:border-box .whitespace-nowrap {
-        white-space: nowrap;
-      }
-    }
   }
 `;
 
