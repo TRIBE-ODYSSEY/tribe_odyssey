@@ -13,7 +13,7 @@ const MoltenPage = lazy(() => import('@src/pages/Assets/Molten'));
 const TribalBeatsPage = lazy(() => import('@src/pages/Assets/TribalBeats'));
 const Tribal19CheckerPage = lazy(() => import('@src/pages/Assets/Tribal19Checker'));
 const CouncilPage = lazy(() => import('@src/pages/Council'));
-//const RafflesPage = lazy(() => import('@src/pages/Raffles'));
+const RafflesPage = lazy(() => import('@src/pages/Raffles/raffles'));
 const StakingApesPage = lazy(() => import('@src/pages/Staking/StakeApes'));
 const DropsPage = lazy(() => import('@src/pages/Element19/Drops'));
 const CollectionPage = lazy(() => import('@src/pages/Element19/Collection'));
@@ -22,6 +22,7 @@ const ProfilePage = lazy(() => import('@src/pages/Profile'));
 const NetworkErrors = lazy(() => import('@src/components/common/errors/network/NetworkErrors'));
 const MaintenancePage = lazy(() => import('@src/pages/Maintenance'));
 const ThreadsPage = lazy(() => import('@src/pages/Threads'));
+const WinnersPage = lazy(() => import('@src/pages/Winners/winners'));
 
 const MAINTENANCE_MODE = import.meta.env.VITE_MAINTENANCE_MODE === 'true';
 
@@ -43,11 +44,13 @@ const AppRoutes: React.FC = () => {
         <Route path="/tribalbeats" element={<TribalBeatsPage />} />
         <Route path="/checker" element={<Tribal19CheckerPage />} />
         <Route path="/council" element={<CouncilPage />} />
+        <Route path="/raffles" element={<RafflesPage />} />
         <Route path="/drops" element={<DropsPage />} />
         <Route path="/collection" element={<CollectionPage />} />
         <Route path="/wallpapers" element={<WallpapersPage />} />
         <Route path="/ens" element={<ENSPage />} />
         <Route path="/threads" element={<ThreadsPage />} />
+        <Route path="/winners" element={<WinnersPage />} />
 
         {/* Other Routes */}
         <Route path="/staking" element={<StakingApesPage />} />

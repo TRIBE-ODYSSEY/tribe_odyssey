@@ -41,6 +41,7 @@
     "react-slick": "^0.30.3",
     "react-spinners": "^0.15.0",
     "react-toastify": "^11.0.2",
+    "sass-embedded": "^1.83.4",
     "siwe": "^2.3.2",
     "slick-carousel": "^1.8.1",
     "styled-components": "^6.1.14",

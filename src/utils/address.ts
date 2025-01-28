@@ -30,6 +30,11 @@ export const shortenAddress = (address: string): string => {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }; 
 
+export const shortenBtcAddress = (address: string): string => {
+  if (!address) return '';
+  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+};
+
 export const getSubgraphEndpoint = () => {
   const chainId = "1";
   if (+chainId === 1) {
