@@ -2,9 +2,16 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
+interface TribeItem {
+  id: string;
+  contract: string;
+  tokenId: string;
+  is_staked: boolean;
+}
+
 const useOwnTribes = (trigger: number) => {
-  const [tribes, setTribes] = useState([]);
-  const [stakedTribes, setStakedTribes] = useState([]);
+  const [tribes, setTribes] = useState<TribeItem[]>([]);
+  const [stakedTribes, setStakedTribes] = useState<TribeItem[]>([]);
   const { address: account } = useAccount();
 
   useEffect(() => {

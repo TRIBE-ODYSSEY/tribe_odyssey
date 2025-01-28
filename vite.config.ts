@@ -24,6 +24,12 @@ export default defineConfig(({ mode }) => {
           target: process.env.VITE_API_URL || 'http://localhost:3000',
           changeOrigin: true,
           secure: false,
+          rewrite: (path) => path.replace(/^\/api/, '')
+        },
+        '/item': {
+          target: process.env.VITE_API_URL || 'http://localhost:3000',
+          changeOrigin: true,
+          secure: false
         }
       },
       allowedHosts: ['tribe-odyssey-web.onrender.com', 'www.tribeodyssey.net', 'www.tribeodyssey.com']
