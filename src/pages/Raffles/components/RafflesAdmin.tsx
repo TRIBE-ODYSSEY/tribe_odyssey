@@ -2,7 +2,7 @@ import { FC, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 import moment from 'moment';
-import { useAlchemy } from '@src/lib/hooks/useAlchemy';
+import { useAccount, useSignMessage } from 'wagmi';
 import { raffleService } from '@src/services/RaffleService';
 import PageTitle from '@src/components/common/PageTitle';
 import Button from '@src/components/common/Button';
@@ -11,7 +11,9 @@ import { RaffleDetails, RaffleInput } from '../types/Raffle.types';
 import NetworkErrors, { ErrorTypes } from '@src/components/common/errors/network/NetworkErrors';
 
 const RafflesAdmin: FC = () => {
-  const { address, getSigner } = useAlchemy();
+  const { address } = useAccount();
+  const { signMessageAsync } = useSignMessage();
+  
   if (!address) return null;
   
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,14 +30,13 @@ const RafflesAdmin: FC = () => {
   const fetchRaffles = async () => {
     try {
       setLoading(true);
-      const signer = await getSigner();
       const nonce = await raffleService.getNonce(address);
       const message = raffleService.createAdminSignatureMessage(
         'Fetch Raffles',
         { adminAddress: address },
         nonce
       );
-      const signature = await signer.signMessage(message);
+      const signature = await signMessageAsync({ message });
       
       const response = await raffleService.getAllRaffles(undefined, { signature, nonce });
       setRaffles(response);
@@ -50,14 +51,13 @@ const RafflesAdmin: FC = () => {
     if (!window.confirm('Are you sure you want to delete this raffle?')) return;
 
     try {
-      const signer = await getSigner();
       const nonce = await raffleService.getNonce(address);
       const message = raffleService.createAdminSignatureMessage(
         'Delete Raffle',
         { raffleId: id, adminAddress: address },
         nonce
       );
-      const signature = await signer.signMessage(message);
+      const signature = await signMessageAsync({ message });
 
       await raffleService.deleteRaffle(id, { signature, nonce, adminAddress: address });
       toast.success('Raffle deleted successfully');

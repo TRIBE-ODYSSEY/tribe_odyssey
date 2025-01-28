@@ -3,10 +3,11 @@ import { useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { useRaffleContext } from '../context/RaffleContext';
 import { raffleService } from '@src/services/RaffleService';
-import { useAlchemy } from '@src/lib/hooks/useAlchemy';
+import { useAccount, useSignMessage } from 'wagmi';
 
 export const useRaffleActions = () => {
-  const { address, getSigner } = useAlchemy();
+  const { address } = useAccount();
+  const { data: signature, signMessageAsync } = useSignMessage();
   const { refreshRaffles } = useRaffleContext();
 
   const generateNonce = () => {
@@ -21,10 +22,10 @@ export const useRaffleActions = () => {
     try {
       if (!address) throw new Error('Wallet not connected');
 
-      const signer = await getSigner();
       const nonce = generateNonce();
       const message = createSignatureMessage(raffleId, points, nonce);
-      const signature = await signer.signMessage(message);
+      
+      const signature = await signMessageAsync({ message });
 
       await raffleService.enterRaffle(raffleId, {
         address,
@@ -44,7 +45,7 @@ export const useRaffleActions = () => {
       }
       return false;
     }
-  }, [address, getSigner, refreshRaffles]);
+  }, [address, signMessageAsync, refreshRaffles]);
 
   return { enterRaffle };
 };

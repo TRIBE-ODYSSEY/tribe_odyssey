@@ -1,13 +1,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import TRIBE_CONTRACT_ADDRESS from '@src/lib/viem/contracts';
-import type { Address } from 'viem';
+import { Address } from 'viem';
+import { getTribeAddress } from '@src/utils/address';
 
 interface NFTCardProps {
   tokenId: string;
   contract: Address;
   isStaked: boolean;
   isSelected: boolean;
+  isDisabled?: boolean;
   onClick: () => void;
 }
 
@@ -16,26 +17,24 @@ const NFTCard: React.FC<NFTCardProps> = ({
   contract,
   isStaked,
   isSelected,
+  isDisabled = false,
   onClick,
 }) => {
   // Determine image URL based on contract address
-  const imageUrl = contract.toLowerCase() === TRIBE_CONTRACT_ADDRESS.tribe[1]
+  const imageUrl = contract.toLowerCase() === getTribeAddress()
     ? `https://cdn.0xworld.io/tribe-images/${tokenId}.png`
     : `https://cdn.0xworld.io/0xworld-ape-images/${tokenId}.png`;
 
   return (
     <motion.div
-      whileHover={{ scale: 1.02 }}
+      whileHover={{ scale: isDisabled ? 1 : 1.02 }}
       whileTap={{ scale: 0.98 }}
-      onClick={onClick}
       className={`
-        relative rounded-xl overflow-hidden cursor-pointer
-        ${isSelected 
-          ? 'ring-2 ring-[var(--color-button-primary)]' 
-          : 'ring-1 ring-[var(--color-text-primary)]/10'
-        }
-        transition-all duration-200 hover:ring-[var(--color-text-primary)]/20
+        relative rounded-xl overflow-hidden
+        ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+        ${isSelected ? 'ring-2 ring-[var(--color-button-primary)]' : ''}
       `}
+      onClick={!isDisabled ? onClick : undefined}
     >
       <div className="aspect-square relative">
         <img

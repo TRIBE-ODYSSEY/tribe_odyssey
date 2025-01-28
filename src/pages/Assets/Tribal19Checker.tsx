@@ -4,6 +4,7 @@ import debounce from 'lodash/debounce';
 import PageLayout from '@src/components/common/layout/PageLayout';
 import PageTitle from '@src/components/common/PageTitle';
 import CheckerPopup from '@src/components/common/CheckerPopup';
+import { useAccount } from 'wagmi';
 
 
 interface NFTTrait {
@@ -38,8 +39,7 @@ const TRIBE_SPECIES = [
 ];
 
 const Tribal19CheckerPage: React.FC = () => {
-  const [address, setAddress] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const { address } = useAccount();
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<CheckerResult | null>(null);
   const [isValidAddress, setIsValidAddress] = useState(false);
@@ -71,7 +71,6 @@ const Tribal19CheckerPage: React.FC = () => {
 
   const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.trim();
-    setAddress(value);
     validateAddress(value);
     setResult(null);
   };
@@ -99,7 +98,7 @@ const Tribal19CheckerPage: React.FC = () => {
       `https://api.opensea.io/api/v2/collections/tribe-odyssey/stats`,
       {
         headers: {
-          'x-api-key': OPENSEA_API_KEY,
+          'x-api-key': import.meta.env.VITE_OPENSEA_API_KEY,
         },
       }
     );
@@ -181,18 +180,15 @@ const Tribal19CheckerPage: React.FC = () => {
 
   const handleAnalyse = async () => {
     try {
-      setIsLoading(true);
       setError(null);
       setResult(null);
 
-      const result = await checkEligibility(address);
+      const result = await checkEligibility(address as string);
       setResult(result);
       setTimeout(() => setShowPopup(true), 800);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred while checking eligibility');
       console.error('Error:', err);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -221,7 +217,6 @@ const Tribal19CheckerPage: React.FC = () => {
                 placeholder="ETH ADDRESS/ENS"
                 value={address}
                 onChange={handleAddressChange}
-                disabled={isLoading}
               />
               <div className="absolute right-4 top-1/2 -translate-y-1/2">
                 <svg className="w-6 h-6 text-[var(--color-text-on-dark)]/60" 
@@ -238,9 +233,9 @@ const Tribal19CheckerPage: React.FC = () => {
             {/* Analyse Button */}
             <button
               onClick={handleAnalyse}
-              disabled={!isValidAddress || isLoading}
+              disabled={!isValidAddress}
               className={`w-full py-4 px-6 rounded-full transition-all duration-300
-                ${isValidAddress && !isLoading 
+                ${isValidAddress 
                   ? 'bg-[var(--color-button-primary)] hover:bg-[var(--color-button-hover)] transform hover:-translate-y-0.5' 
                   : 'bg-[var(--color-button-disabled)] cursor-not-allowed'
                 } text-[var(--color-text-on-primary)] font-medium`}

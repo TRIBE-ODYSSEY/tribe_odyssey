@@ -128,7 +128,7 @@ export interface ApiResponse<T> {
 // Proof and Verification Types
 export interface RaffleProof {
   seed: string;
-  blockNumber: number;
+  blockNumber: bigint;
   blockHash: string;
   timestamp: number;
   totalEntries: number;
@@ -137,6 +137,7 @@ export interface RaffleProof {
   winnerAddress: string;
   signature: string;
   nonce?: string;
+  entries: Participant[];
 }
 
 export interface RaffleResult {

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { RaffleDetails, RaffleInput, RaffleCondition } from '../types/Raffle.types';
 import Button from '@src/components/common/Button';
 import { toast } from 'react-toastify';
-import { useAlchemy } from '@src/lib/hooks/useAlchemy';
+import { useAccount, useSignMessage } from 'wagmi';
 import { useRaffleContext } from '../context/RaffleContext';
 import { raffleService } from '@src/services/RaffleService';
 
@@ -22,7 +22,8 @@ const RaffleFormModal: React.FC<RaffleFormModalProps> = ({
   initialData,
   mode
 }) => {
-  const { address, getSigner } = useAlchemy();
+  const { address } = useAccount();
+  const { signMessageAsync } = useSignMessage();
   const { refreshRaffles } = useRaffleContext();
   
   const [formData, setFormData] = useState<RaffleInput>(() => ({
@@ -82,7 +83,6 @@ const RaffleFormModal: React.FC<RaffleFormModalProps> = ({
 
     setIsSubmitting(true);
     try {
-      const signer = await getSigner();
       const nonce = await raffleService.getNonce(address);
       const message = raffleService.createAdminSignatureMessage(
         mode === 'create' ? 'Create Raffle' : 'Edit Raffle',
@@ -90,7 +90,7 @@ const RaffleFormModal: React.FC<RaffleFormModalProps> = ({
         nonce
       );
       
-      const signature = await signer.signMessage(message);
+      const signature = await signMessageAsync({ message });
 
       await onSubmit({
         ...formData,

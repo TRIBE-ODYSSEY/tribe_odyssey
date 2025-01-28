@@ -1,15 +1,15 @@
 import axios from 'axios';
-import { ethers, JsonRpcProvider } from 'ethers';
+import { solidityPacked } from 'ethers';
 import { 
   RaffleDetails, 
   Participant, 
   Winner, 
   RaffleProof, 
-  PointTransaction,
   ApiResponse,
   RaffleResult,
   RaffleInput
 } from '../pages/Raffles/types/Raffle.types';
+import { keccak256, toBytes } from 'viem';
 
 class RaffleService {
   private readonly api = axios.create({
@@ -19,110 +19,172 @@ class RaffleService {
     }
   });
 
-  private readonly provider = new JsonRpcProvider(
-    import.meta.env.VITE_RPC_URL || 'https://eth-mainnet.g.alchemy.com/v2/XNjZopE65PystCHvjtoD--2rfGvm8gss'
-  );
+  // Create signature message for admin actions
+  createAdminSignatureMessage(
+    action: string,
+    data: Record<string, any>,
+    nonce: string
+  ): string {
+    return `${action}\n\n${Object.entries(data)
+      .map(([key, value]) => `${key}: ${value}`)
+      .join('\n')}\nNonce: ${nonce}`;
+  }
 
-  private async generateRandomSeed(raffleId: string): Promise<string> {
+  // Get nonce for signing
+  async getNonce(address: string): Promise<string> {
+    const response = await this.api.get<{ nonce: string }>(`/nonce/${address}`);
+    return response.data.nonce;
+  }
+
+  // Enter raffle
+  async enterRaffle(raffleId: string, entry: {
+    address: string;
+    entry: number;
+    signature: string;
+    nonce: string;
+  }): Promise<Participant> {
     try {
-      const blockNumber = await this.provider.getBlockNumber();
-      const block = await this.provider.getBlock(blockNumber);
-      
-      if (!block || !block.hash) {
-        throw new Error('Failed to get block data');
-      }
-
-      const timestamp = Date.now();
-      
-      return ethers.keccak256(
-        ethers.solidityPacked(
-          ['string', 'uint256', 'bytes32', 'uint256'],
-          [raffleId, block.timestamp, block.hash, timestamp]
-        )
+      const response = await this.api.post<ApiResponse<Participant>>(
+        `/raffles/${raffleId}/entries`,
+        entry
       );
+      return response.data.data;
     } catch (error) {
-      console.error('Failed to generate random seed:', error);
-      throw new Error('Failed to generate random seed');
+      console.error('Failed to enter raffle:', error);
+      throw new Error('Failed to enter raffle');
     }
   }
 
-  async selectWinner(raffleId: string, entries: Participant[]): Promise<RaffleResult> {
+  // Credit points
+  async creditPoints(
+    adminAddress: string,
+    userAddress: string,
+    amount: number,
+    signature: string,
+    nonce: string
+  ): Promise<void> {
     try {
-      const seed = await this.generateRandomSeed(raffleId);
-      const totalPoints = entries.reduce((sum, entry) => sum + entry.entry, 0);
-      
-      if (totalPoints === 0) {
-        throw new Error('No entries in this raffle');
+      const response = await this.api.post('/points/credit', {
+        adminAddress,
+        userAddress,
+        amount,
+        signature,
+        nonce,
+        timestamp: Date.now()
+      });
+
+      if (!response.data.success) {
+        throw new Error(response.data.error || 'Failed to credit points');
       }
-
-      const blockNumber = await this.provider.getBlockNumber();
-      const block = await this.provider.getBlock(blockNumber);
-      
-      if (!block || !block.hash) {
-        throw new Error('Failed to get block data');
-      }
-
-      const randomNumber = BigInt(seed) % BigInt(totalPoints);
-      
-      let pointCount = 0;
-      for (const entry of entries) {
-        pointCount += entry.entry;
-        if (pointCount > Number(randomNumber)) {
-          const proof: RaffleProof = {
-            seed,
-            blockNumber,
-            blockHash: block.hash,
-            timestamp: block.timestamp,
-            totalEntries: entries.length,
-            totalPoints,
-            raffleId,
-            winnerAddress: entry.address,
-            signature: entry.signature
-          };
-
-          const winner: Winner = {
-            address: entry.address,
-            entry: entry.entry,
-            winning_entry: Math.floor(Math.random() * entry.entry) + 1,
-            won_at: new Date().toISOString(),
-            raffle_id: raffleId,
-            prize_claimed: false,
-            user: entry.user
-          };
-
-          return {
-            winner,
-            proof,
-            drawnAt: new Date().toISOString(),
-            verificationHash: ethers.keccak256(
-              ethers.solidityPacked(
-                ['bytes32', 'address', 'uint256'],
-                [seed, winner.address, winner.winning_entry]
-              )
-            )
-          };
-        }
-      }
-      
-      throw new Error('Failed to select winner');
     } catch (error) {
-      console.error('Error selecting winner:', error);
+      console.error('Failed to credit points:', error);
       throw error;
     }
   }
 
+  // Transfer points
+  async transferPoints(
+    adminAddress: string,
+    fromAddress: string,
+    toAddress: string,
+    amount: number,
+    signature: string,
+    nonce: string
+  ): Promise<void> {
+    try {
+      const response = await this.api.post('/points/transfer', {
+        adminAddress,
+        fromAddress,
+        toAddress,
+        amount,
+        signature,
+        nonce,
+        timestamp: Date.now()
+      });
+
+      if (!response.data.success) {
+        throw new Error(response.data.error || 'Failed to transfer points');
+      }
+    } catch (error) {
+      console.error('Failed to transfer points:', error);
+      throw error;
+    }
+  }
+
+  // Generate random seed for raffle
+  async generateRandomSeed(raffleId: string): Promise<string> {
+    const timestamp = Date.now();
+    return keccak256(
+      toBytes(`${raffleId}:${timestamp}:${Math.random()}`)
+    );
+  }
+
+  // Draw raffle
   async drawRaffle(raffleId: string): Promise<RaffleResult> {
     try {
       const entries = await this.getRaffleEntries(raffleId);
-      const result = await this.selectWinner(raffleId, entries);
+      const seed = await this.generateRandomSeed(raffleId);
+      const verificationHash = keccak256(toBytes(`${seed}:${Date.now()}`));
       
-      // Store the result
-      await this.api.post<ApiResponse<RaffleResult>>(`/raffles/${raffleId}/draw`, result);
-
+      const winner = this.selectWinner(entries, seed);
+      const result: RaffleResult = {
+        winner,
+        drawnAt: new Date().toISOString(),
+        proof: {
+          timestamp: Date.now(),
+          blockHash: seed,
+          raffleId,
+          seed,
+          blockNumber: 0n,
+          totalEntries: entries.length,
+          totalPoints: entries.reduce((sum, entry) => sum + entry.entry, 0),
+          entries,
+          winnerAddress: winner.address,
+          signature: '' // Add actual signature if needed
+        },
+        verificationHash
+      };
+      
+      await this.api.post(`/raffles/${raffleId}/draw`, result);
       return result;
     } catch (error) {
       console.error('Failed to draw raffle:', error);
       throw new Error('Failed to draw raffle');
+    }
+  }
+
+  // Helper method to select winner
+  private selectWinner(entries: Participant[], seed: string): Winner {
+    const totalPoints = entries.reduce((sum, entry) => sum + entry.entry, 0);
+    const randomNumber = BigInt(seed) % BigInt(totalPoints);
+    
+    let pointCount = 0;
+    for (const entry of entries) {
+      pointCount += entry.entry;
+      if (pointCount > Number(randomNumber)) {
+        return {
+          address: entry.address,
+          entry: entry.entry,
+          winning_entry: Math.floor(Math.random() * entry.entry) + 1,
+          won_at: new Date().toISOString(),
+          raffle_id: entry.raffle_id,
+          prize_claimed: false,
+          user: entry.user
+        };
+      }
+    }
+    
+    throw new Error('Failed to select winner');
+  }
+
+  // Get raffle entries
+  async getRaffleEntries(raffleId: string): Promise<Participant[]> {
+    try {
+      const response = await this.api.get(`/raffles/${raffleId}/entries`);
+      return response.data;
+    } catch (error) {
+      console.error('Failed to fetch raffle entries:', error);
+      throw new Error('Failed to fetch raffle entries');
     }
   }
 
@@ -198,38 +260,13 @@ class RaffleService {
     }
   }
 
-  async enterRaffle(raffleId: string, entry: {
-    address: string;
-    entry: number;
-    signature: string;
-    nonce: string;
-  }): Promise<Participant> {
-    try {
-      const response = await this.api.post(`/raffles/${raffleId}/entries`, entry);
-      return response.data;
-    } catch (error) {
-      console.error('Failed to enter raffle:', error);
-      throw new Error('Failed to enter raffle');
-    }
-  }
-
-  async getRaffleEntries(raffleId: string): Promise<Participant[]> {
-    try {
-      const response = await this.api.get(`/raffles/${raffleId}/entries`);
-      return response.data;
-    } catch (error) {
-      console.error('Failed to fetch raffle entries:', error);
-      throw new Error('Failed to fetch raffle entries');
-    }
-  }
-
   async verifyWinner(raffleId: string, winner: Winner, proof: RaffleProof): Promise<boolean> {
     try {
       const entries = await this.getRaffleEntries(raffleId);
       const totalPoints = entries.reduce((sum, entry) => sum + entry.entry, 0);
       
-      const seed = ethers.keccak256(
-        ethers.solidityPacked(
+      const seed = keccak256(
+        solidityPacked(
           ['string', 'uint256', 'bytes32', 'uint256'],
           [raffleId, proof.timestamp, proof.blockHash, proof.timestamp]
         )
@@ -249,99 +286,6 @@ class RaffleService {
     } catch (error) {
       console.error('Failed to verify winner:', error);
       throw new Error('Failed to verify winner');
-    }
-  }
-
-  // Admin point management methods
-  async creditPoints(adminAddress: string, userAddress: string, amount: number, signature: string, nonce: string): Promise<void> {
-    try {
-      const response = await this.api.post('/points/credit', {
-        adminAddress,
-        userAddress,
-        amount,
-        signature,
-        nonce,
-        timestamp: Date.now()
-      });
-
-      if (!response.data.success) {
-        throw new Error(response.data.error || 'Failed to credit points');
-      }
-    } catch (error) {
-      console.error('Failed to credit points:', error);
-      throw new Error('Failed to credit points');
-    }
-  }
-
-  async transferPoints(
-    adminAddress: string, 
-    fromAddress: string, 
-    toAddress: string, 
-    amount: number,
-    signature: string,
-    nonce: string
-  ): Promise<void> {
-    try {
-      const response = await this.api.post('/points/transfer', {
-        adminAddress,
-        fromAddress,
-        toAddress,
-        amount,
-        signature,
-        nonce,
-        timestamp: Date.now()
-      });
-
-      if (!response.data.success) {
-        throw new Error(response.data.error || 'Failed to transfer points');
-      }
-    } catch (error) {
-      console.error('Failed to transfer points:', error);
-      throw new Error('Failed to transfer points');
-    }
-  }
-
-  async getPointBalance(address: string): Promise<number> {
-    try {
-      const response = await this.api.get(`/points/balance/${address}`);
-      return response.data.balance;
-    } catch (error) {
-      console.error('Failed to get point balance:', error);
-      throw new Error('Failed to get point balance');
-    }
-  }
-
-  async getPointTransactions(address: string): Promise<PointTransaction[]> {
-    try {
-      const response = await this.api.get(`/points/transactions/${address}`);
-      return response.data.transactions;
-    } catch (error) {
-      console.error('Failed to get point transactions:', error);
-      throw new Error('Failed to get point transactions');
-    }
-  }
-
-  // Admin signature verification helper
-  createAdminSignatureMessage(action: string, params: Record<string, any>, nonce: string): string {
-    const timestamp = Date.now();
-    return JSON.stringify({
-      action,
-      params,
-      nonce,
-      timestamp,
-    });
-  }
-
-  // Nonce management
-  async getNonce(address: string): Promise<string> {
-    try {
-      const response = await this.api.get<ApiResponse<{ nonce: string }>>(
-        `/nonce/${address}`
-      );
-      return response.data.data.nonce;
-    } catch (error) {
-      console.error('Failed to get nonce:', error);
-      throw new Error('Failed to get nonce');
     }
   }
 

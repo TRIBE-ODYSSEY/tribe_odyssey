@@ -1,81 +1,85 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import PageTitle from '@src/components/common/PageTitle';
 import StakingStats from '@src/components/Staking/StakingStats';
 import StakingTabs from '@src/components/Staking/StakingTabs';
 import PageLayout from '@src/components/common/layout/PageLayout';
-import { useAlchemy } from '@src/lib/hooks/useAlchemy';
 import { toast } from 'react-toastify';
-import { CONTRACT_NAMES, getContractConfig } from '@src/lib/viem/contracts';
-import { CHAIN_IDS } from '@src/lib/viem/contracts';
-import { ethers } from 'ethers';
+import { getStakingAddress } from '@src/utils/address';
+import { useWriteContract, useAccount, useWaitForTransactionReceipt } from 'wagmi';
 import stakingABI from '@src/lib/config/abi/staking.json';
 
 const StakeApes: React.FC = () => {
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
-  const [waiting, setWaiting] = useState(false);
-  const { getSigner } = useAlchemy();
+  const { address } = useAccount();
+  
+  const { writeContract: writeStake, data: stakeHash } = useWriteContract();
+
+  const { writeContract: writeUnstake, data: unstakeHash } = useWriteContract();
+
+  const { data: receipt, isLoading: isStaking } = useWaitForTransactionReceipt({
+    hash: stakeHash,
+  });
+
+  useEffect(() => {
+    if (receipt) {
+      toast.success(`Successfully staked NFT(s)`);
+    }
+  }, [receipt]);
+
+  const { data: unstakeReceipt, isLoading: isUnstaking } = useWaitForTransactionReceipt({
+    hash: unstakeHash,
+  });
+
+  useEffect(() => {
+    if (unstakeReceipt) {
+      toast.success(`Successfully unstaked NFT(s)`);
+    }
+  }, [unstakeReceipt]);
 
   const handleStake = async (selectedNFTs: string[]) => {
+    if (!address) {
+      toast.error("Please connect your wallet");
+      return;
+    }
+    
     if (selectedNFTs.length === 0) {
       toast.error("Please select NFTs to stake");
       return;
     }
 
-    setWaiting(true);
     try {
-      const signer = await getSigner();
-      const { address } = getContractConfig(CONTRACT_NAMES.STAKING, CHAIN_IDS.MAINNET);
-      const contract = new ethers.Contract(address, stakingABI, signer);
-
-      if (!contract.joinMany) {
-        throw new Error('Contract method not found');
-      }
-      
-      const tx = await contract.joinMany(
-        0, // pool id
-        selectedNFTs.map(id => BigInt(id))
-      );
-      
-      await tx.wait();
-      toast.success(`Successfully staked ${selectedNFTs.length} NFT(s)`);
-      setRefreshTrigger(prev => prev + 1);
+      writeStake({
+        address: getStakingAddress().address,
+        abi: stakingABI,
+        functionName: 'joinMany',
+        args: [0n, selectedNFTs.map(id => BigInt(id))]
+      });
     } catch (error) {
       console.error('Staking error:', error);
       toast.error('Failed to stake NFTs');
-    } finally {
-      setWaiting(false);
     }
   };
 
   const handleUnstake = async (selectedNFTs: string[]) => {
+    if (!address) {
+      toast.error("Please connect your wallet");
+      return;
+    }
+    
     if (selectedNFTs.length === 0) {
       toast.error("Please select NFTs to unstake");
       return;
     }
 
-    setWaiting(true);
     try {
-      const signer = await getSigner();
-      const { address } = getContractConfig(CONTRACT_NAMES.STAKING, CHAIN_IDS.MAINNET);
-      const contract = new ethers.Contract(address, stakingABI, signer);
-
-      if (!contract.leaveMany) {
-        throw new Error('Contract method not found');
-      }
-      
-      const tx = await contract.leaveMany(
-        0, // pool id
-        selectedNFTs.map(id => BigInt(id))
-      );
-      
-      await tx.wait();
-      toast.success(`Successfully unstaked ${selectedNFTs.length} NFT(s)`);
-      setRefreshTrigger(prev => prev + 1);
+      writeUnstake({
+        address: getStakingAddress().address,
+        abi: stakingABI,
+        functionName: 'leaveMany',
+        args: [0n, selectedNFTs.map(id => BigInt(id))]
+      });
     } catch (error) {
       console.error('Unstaking error:', error);
       toast.error('Failed to unstake NFTs');
-    } finally {
-      setWaiting(false);
     }
   };
 
@@ -101,8 +105,7 @@ const StakeApes: React.FC = () => {
               <StakingTabs 
                 onStake={handleStake}
                 onUnstake={handleUnstake}
-                isWaiting={waiting}
-                refreshTrigger={refreshTrigger}
+                isWaiting={isStaking || isUnstaking}
               />
             </div>
           </div>

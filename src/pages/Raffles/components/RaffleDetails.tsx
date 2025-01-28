@@ -12,13 +12,13 @@ import ParticipantList from './common/ParticipantList';
 import ActivityFeed from './common/ActivityFeed';
 import WinnerCard from './common/WinnerCard';
 import { RaffleCondition, Activity } from '../types/Raffle.types';
-import { useAlchemy } from '@src/lib/hooks/useAlchemy';
+import { useAccount } from 'wagmi';
 import { toast } from 'react-toastify';
 import { useRaffleActions } from '../hooks/useRaffleActions';
 
 const RaffleDetails: FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { address } = useAlchemy();
+  const { address } = useAccount();
   const { setCurrentRaffle } = useRaffleContext();
   const { raffle, participants, activities, winner, loading, error } = useRaffle(id!, 0);
   const [selectedParticipant, setSelectedParticipant] = useState<string | null>(null);

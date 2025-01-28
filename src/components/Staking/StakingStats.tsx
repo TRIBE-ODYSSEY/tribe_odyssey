@@ -1,75 +1,56 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Card from '@src/components/common/card/Card';
-import { useAlchemy } from '@src/lib/hooks/useAlchemy';
-import { getContractConfig } from '@src/lib/viem/contracts';
-import { CHAIN_IDS, CONTRACT_NAMES } from '@src/lib/viem/contracts';
-import { ethers } from 'ethers';
+import { getStakingAddress, getTribeAddress } from '@src/utils/address';
 import stakingABI from '@src/lib/config/abi/staking.json';
 import tribeABI from '@src/lib/config/abi/tribe.json';
+import { useAccount, useReadContracts } from 'wagmi';
+import { StakedToken } from '@src/lib/config/alchemy';
 
 const StakingStats: React.FC = () => {
-  const { address, getSigner } = useAlchemy();
-  const [stats, setStats] = useState({
-    totalStaked: 0,
-    userTotalNFTs: 0,
-    userStakedCount: 0,
-    userDailyRewards: 0
+  const { address } = useAccount();
+  
+  const stakingConfig = getStakingAddress();
+  const tribeConfig = getTribeAddress();
+
+  const { data } = useReadContracts({
+    contracts: [
+      {
+        ...stakingConfig,
+        abi: stakingABI,
+        functionName: 'poolInfo',
+        args: [0n]
+      },
+      {
+        ...stakingConfig,
+        abi: stakingABI,
+        functionName: 'getUserStakedNFTs',
+        args: [address],
+      },
+      {
+        ...tribeConfig,
+        abi: tribeABI,
+        functionName: 'balanceOf',
+        args: [address],
+      }
+    ],
+    query: {
+      enabled: !!address,
+    }
   });
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      if (!address) return;
+  const [poolInfo, stakedNFTs, balance] = (data?.map(d => d.result) || []) as [
+    [bigint, bigint, bigint, boolean, boolean, bigint[]],
+    StakedToken[],
+    bigint
+  ];
+  const dailyRewardsPerNFT = 10; // This should come from contract or config
 
-      try {
-        const signer = await getSigner();
-        const { address: stakingAddress } = getContractConfig(CONTRACT_NAMES.STAKING, CHAIN_IDS.MAINNET);
-        const { address: tribeAddress } = getContractConfig(CONTRACT_NAMES.TRIBE, CHAIN_IDS.MAINNET);
-        
-        const stakingContract = new ethers.Contract(stakingAddress, stakingABI, signer);
-        const tribeContract = new ethers.Contract(tribeAddress, tribeABI, signer);
-
-        if (!stakingContract.getUserStakedNFTs) {
-          throw new Error('Contract method getUserStakedNFTs not found');
-        }
-
-        if (!tribeContract.balanceOf) {
-          throw new Error('Contract method balanceOf not found');
-        }
-
-        if (!stakingContract.getPoolInfo) {
-          throw new Error('Contract method getPoolInfo not found');
-        }
-        
-        // Get user's staked NFTs
-        const stakedNFTs = await stakingContract.getUserStakedNFTs(address);
-        
-        // Get total NFT balance
-        const nftBalance = await tribeContract.balanceOf(address);
-
-        // Get pool information
-        const poolInfo = await stakingContract.getPoolInfo(0);
-
-        // Calculate stats
-        const dailyRewardsPerNFT = 10; // This should come from contract or config
-        const totalStaked = poolInfo ? Number(poolInfo.totalStaked) : 0;
-        const userStakedCount = stakedNFTs.length;
-        const userDailyRewards = userStakedCount * dailyRewardsPerNFT;
-        const userTotalNFTs = Number(nftBalance);
-
-        setStats({
-          totalStaked,
-          userTotalNFTs,
-          userStakedCount,
-          userDailyRewards
-        });
-
-      } catch (error) {
-        console.error('Error fetching staking stats:', error);
-      }
-    };
-
-    fetchStats();
-  }, [address, getSigner]);
+  const stats = {
+    totalStaked: poolInfo ? Number(poolInfo[2]) : 0,
+    userTotalNFTs: balance ? Number(balance) : 0,
+    userStakedCount: stakedNFTs ? stakedNFTs.length : 0,
+    userDailyRewards: (stakedNFTs ? stakedNFTs.length : 0) * dailyRewardsPerNFT
+  };
 
   const statsConfig = [
     { 

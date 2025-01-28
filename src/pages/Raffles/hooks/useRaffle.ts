@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { RaffleDetails, Participant, Winner } from '../types/Raffle.types';
 import { raffleService } from '@src/services/RaffleService';
-import { useAlchemy } from '@src/lib/hooks/useAlchemy';
+import { useAccount } from 'wagmi';
 import { toast } from 'react-toastify';
 
 const useRaffle = (id: string, trigger: number) => {
-  const { address } = useAlchemy();
+  const { address } = useAccount();
   const [raffle, setRaffle] = useState<RaffleDetails | null>(null);
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [activities, setActivities] = useState<Participant[]>([]);

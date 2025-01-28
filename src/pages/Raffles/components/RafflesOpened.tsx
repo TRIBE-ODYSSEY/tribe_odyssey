@@ -6,7 +6,7 @@ import { useRaffleActions } from '../hooks/useRaffleActions';
 import useRaffles from '../hooks/useRaffles';
 import { useRaffleContext } from '../context/RaffleContext';
 import { RaffleDetails } from '../types/Raffle.types';
-import { useAlchemy } from '@src/lib/hooks/useAlchemy';
+import { useAccount } from 'wagmi';
 
 // Components
 import PageTitle from '@src/components/common/PageTitle';
@@ -16,7 +16,7 @@ import NetworkErrors, { ErrorTypes } from '@src/components/common/errors/network
 
 const RafflesOpened: React.FC = () => {
   const navigate = useNavigate();
-  const { address } = useAlchemy();
+  const { address } = useAccount();
   const { refreshTrigger } = useRaffleContext();
   const { raffles, loading, error } = useRaffles(true, refreshTrigger);
   const { enterRaffle } = useRaffleActions();

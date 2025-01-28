@@ -4,7 +4,8 @@ import PageTitle from '@src/components/common/PageTitle';
 import PageLayout from '@src/components/common/layout/PageLayout';
 import { useAccount, useChainId, usePublicClient } from 'wagmi';
 import { getContractConfig } from '@src/lib/viem/contracts';
-import { CHAIN_IDS, CONTRACT_NAMES } from '@src/lib/viem/contracts';
+import { CONTRACT_NAMES } from '@src/lib/viem/contracts';
+import { mainnet } from 'wagmi/chains';
 
 interface HealthStatus {
   isConnected: boolean;
@@ -57,7 +58,7 @@ const HealthChecker: React.FC = () => {
 
         await Promise.all(
           contracts.map(async (name) => {
-            const { address: contractAddress } = getContractConfig(name, CHAIN_IDS.MAINNET);
+            const { address: contractAddress } = getContractConfig(name, mainnet.id);
             const code = await publicClient?.getBytecode({ address: contractAddress });
             contractsAvailable[name as keyof typeof contractsAvailable] = code !== undefined;
           })

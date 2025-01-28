@@ -1,60 +1,74 @@
+import { Address } from 'viem';
+import { mainnet } from 'wagmi/chains';
+
+// Contract ABIs
 import stakingABI from '@src/lib/config/abi/staking.json';
 import tribeABI from '@src/lib/config/abi/tribe.json';
-import multiCallABI from '@src/lib/config/abi/MultiCall.json';
-import apeABI from '@src/lib/config/abi/erc721.json';
+import multiCallABI from '@src/lib/config/abi/Multicall.json';
+import erc20ABI from '@src/lib/config/abi/erc20.json';
 import ensRegistrarABI from '@src/lib/config/abi/EthRegistrarSubdomainRegistrar.json';
-
-export const CHAIN_IDS = {
-  MAINNET: 1,
-  GOERLI: 5
-} as const;
 
 export const CONTRACT_NAMES = {
   MULTI_CALL: 'multiCall',
   TRIBE: 'tribe',
-  APE: 'ape',
+  STAKING: 'staking',
   ENS_REGISTRAR: 'ensRegistrar',
-  STAKING: 'staking'
+  ERC20: 'erc20'
 } as const;
 
-type ChainId = typeof CHAIN_IDS[keyof typeof CHAIN_IDS];
 type ContractName = typeof CONTRACT_NAMES[keyof typeof CONTRACT_NAMES];
 
-const contracts: Record<ContractName, { [key in ChainId]?: Address }> = {
-  multiCall: {
-    [CHAIN_IDS.MAINNET]: import.meta.env.VITE_MULTICALL_CONTRACT_MAINNET as Address,
+interface ContractConfig {
+  address: Address;
+  abi: any;
+}
+
+// Contract addresses by chain
+const contracts: Record<ContractName, { [chainId: number]: Address }> = {
+  [CONTRACT_NAMES.MULTI_CALL]: {
+    [mainnet.id]: import.meta.env.VITE_MULTICALL_CONTRACT_MAINNET as Address,
   },
-  tribe: {
-    [CHAIN_IDS.MAINNET]: import.meta.env.VITE_TRIBE_CONTRACT_MAINNET as Address,
+  [CONTRACT_NAMES.TRIBE]: {
+    [mainnet.id]: import.meta.env.VITE_TRIBE_CONTRACT_MAINNET as Address,
   },
-  staking: {
-    [CHAIN_IDS.MAINNET]: import.meta.env.VITE_STAKING_CONTRACT_MAINNET as Address,
+  [CONTRACT_NAMES.STAKING]: {
+    [mainnet.id]: import.meta.env.VITE_STAKING_CONTRACT_MAINNET as Address,
   },
-  ape: {
-    [CHAIN_IDS.MAINNET]: import.meta.env.VITE_APE_CONTRACT_MAINNET as Address,
+  [CONTRACT_NAMES.ENS_REGISTRAR]: {
+    [mainnet.id]: import.meta.env.VITE_ENS_REGISTRAR_CONTRACT_MAINNET as Address,
   },
-  ensRegistrar: {
-    [CHAIN_IDS.MAINNET]: import.meta.env.VITE_ENS_REGISTRAR_CONTRACT_MAINNET as Address,
+  [CONTRACT_NAMES.ERC20]: {
+    [mainnet.id]: import.meta.env.VITE_ERC20_CONTRACT_MAINNET as Address,
   },
 };
 
+// Contract ABIs mapping
+const contractABIs = {
+  [CONTRACT_NAMES.MULTI_CALL]: multiCallABI,
+  [CONTRACT_NAMES.TRIBE]: tribeABI,
+  [CONTRACT_NAMES.STAKING]: stakingABI,
+  [CONTRACT_NAMES.ENS_REGISTRAR]: ensRegistrarABI,
+  [CONTRACT_NAMES.ERC20]: erc20ABI,
+};
 
-export const getContractConfig = (Name: ContractName, chainId: ChainId) => {
-const address = contracts[Name]?.[CHAIN_IDS.MAINNET];
-  console.log(address);
+// Get contract config for a specific chain
+export const getContractConfig = (name: ContractName, chainId: number = mainnet.id): ContractConfig => {
+  const address = contracts[name]?.[chainId];
+  if (!address) {
+    throw new Error(`Contract ${name} not configured for chain ${chainId}`);
+  }
 
-  
-  if (!address) throw new Error(`Contract ${Name} not deployed on chain ${chainId}`);
-
-  const abi = {
-    [CONTRACT_NAMES.STAKING]: stakingABI,
-    [CONTRACT_NAMES.TRIBE]: tribeABI,
-    [CONTRACT_NAMES.MULTI_CALL]: multiCallABI,
-    [CONTRACT_NAMES.APE]: apeABI,
-    [CONTRACT_NAMES.ENS_REGISTRAR]: ensRegistrarABI,
+  return {
+    address,
+    abi: contractABIs[name]
   };
-  
-  return { address, abi };
 };
+
+// Helper functions to get specific contract configs
+export const getMulticallConfig = (chainId?: number) => getContractConfig(CONTRACT_NAMES.MULTI_CALL, chainId);
+export const getTribeConfig = (chainId?: number) => getContractConfig(CONTRACT_NAMES.TRIBE, chainId);
+export const getStakingConfig = (chainId?: number) => getContractConfig(CONTRACT_NAMES.STAKING, chainId);
+export const getEnsRegistrarConfig = (chainId?: number) => getContractConfig(CONTRACT_NAMES.ENS_REGISTRAR, chainId);
+export const getErc20Config = (chainId?: number) => getContractConfig(CONTRACT_NAMES.ERC20, chainId);
 
 export default contracts;

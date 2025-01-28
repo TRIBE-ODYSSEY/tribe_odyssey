@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import PageTitle from '../../components/common/PageTitle';
 import PageLayout from '../../components/common/layout/PageLayout';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import Button from '../../components/common/Button';
 import { Popover } from '@headlessui/react';
-import { NftMetadata } from "@src/lib/hooks/useAlchemy";
 import { toast } from "react-toastify";
-import { useAlchemy as newUseAlchemy } from '@src/lib/hooks/useAlchemy';
-import { useAlchemyProvider } from '@src/lib/hooks/useAlchemyProvider';
-import { ethers } from 'ethers';
+import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { getEnsRegistrarAddress, getTribeAddress } from "@src/utils/address";
+import ensRegistrarABI from "@src/lib/config/abi/EthRegistrarSubdomainRegistrar.json";
+import tribeABI from "@src/lib/config/abi/tribe.json";
+import { keccak256, toBytes } from 'viem';
 
 // The HtmlTooltip component is used to show tooltips with information
 // It's used with the InformationCircleIcon button below
@@ -28,29 +29,47 @@ export const HtmlTooltip: React.FC<{ content: React.ReactNode; children: React.R
 
 const ENSPage: React.FC = () => {
   const [domainName, setDomainName] = useState('');
-  const [isRegistering, setIsRegistering] = useState(false);
-  const { address, getUserStakedNFTs } = newUseAlchemy();
+  const { address } = useAccount();
+  const { writeContract, data: hash } = useWriteContract();
+  
+  const ensConfig = getEnsRegistrarAddress();
+  const tribeConfig = getTribeAddress();
 
-  // Check if user owns a Tribe Odyssey NFT
-  const [ownsNFT, setOwnsNFT] = useState(false);
-  const TRIBE_ODYSSEY_CONTRACT = import.meta.env.VITE_TRIBE_CONTRACT_MAINNET;
+  // Check NFT ownership
+  const { data: nftBalance = 0n } = useReadContract({
+    ...tribeConfig,
+    abi: tribeABI,
+    functionName: 'balanceOf',
+    args: [address],
+    query: {
+      enabled: !!address
+    }
+  });
 
-  useEffect(() => {
-    const checkNFTOwnership = async () => {
-      if (!address) return;
-      
-      try {
-        const nfts = await getUserStakedNFTs(TRIBE_ODYSSEY_CONTRACT);
-        const hasTribeOdysseyNFT = nfts.some((nft: NftMetadata) => nft);
-        setOwnsNFT(hasTribeOdysseyNFT);
-      } catch (error) {
-        console.error('Error checking NFT ownership:', error);
-        toast.error('Failed to verify NFT ownership');
-      }
-    };
+  // Check if domain exists and if user is allowed to register
+  const { data: ensData } = useReadContract({
+    ...ensConfig,
+    abi: ensRegistrarABI,
+    functionName: 'query',
+    args: [keccak256(toBytes('tribeodyssey')), domainName],
+    query: {
+      enabled: !!address && !!domainName
+    }
+  });
 
-    checkNFTOwnership();
-  }, [address, getUserStakedNFTs]);
+  const { data: isAllowed } = useReadContract({
+    ...ensConfig,
+    abi: ensRegistrarABI,
+    functionName: 'allowedToRegister',
+    args: [address],
+    query: {
+      enabled: !!address
+    }
+  });
+
+  const { isLoading: isRegistering } = useWaitForTransactionReceipt({
+    hash,
+  });
 
   const handleRegister = async () => {
     if (!address || !domainName) {
@@ -58,39 +77,37 @@ const ENSPage: React.FC = () => {
       return;
     }
 
-    if (!ownsNFT) {
+    if (Number(nftBalance) <= 0) {
       toast.error('You must own a Tribe Odyssey NFT to register an ENS domain');
+      return;
+    }
+
+    if (!isAllowed) {
+      toast.error('You can register 1 ENS per wallet address');
+      return;
+    }
+
+    if (ensData !== 'tribeodyssey') {
+      toast.error('This subdomain is already registered');
       return;
     }
     
     try {
-      setIsRegistering(true);
+      writeContract({
+        ...ensConfig,
+        abi: ensRegistrarABI,
+        functionName: 'register',
+        args: [
+          keccak256(toBytes('tribeodyssey')),
+          domainName,
+          '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41' // ENS Resolver
+        ]
+      });
       
-      // Get the ENS registrar contract
-      const registrarContract = {
-        address: import.meta.env.VITE_ENS_REGISTRAR_CONTRACT_MAINNET as `0x${string}`,
-        abi: ['function register(string calldata name) external']
-      };
-
-      // Create the transaction
-      const signer = await useAlchemyProvider().getSigner();
-      const contract = new ethers.Contract(
-        registrarContract.address,
-        registrarContract.abi,
-        signer
-      );
-
-      // Send the transaction
-      const tx = await contract?.register?.(domainName);
-      await tx.wait();
-      
-      toast.success('ENS domain registered successfully!');
       setDomainName('');
     } catch (error) {
       console.error('ENS registration failed:', error);
       toast.error('Failed to register ENS domain');
-    } finally {
-      setIsRegistering(false);
     }
   };
 
@@ -164,13 +181,13 @@ const ENSPage: React.FC = () => {
               </div>
               <Button
                 onClick={handleRegister}
-                disabled={!address || !domainName || isRegistering || !ownsNFT}
+                disabled={!address || !domainName || isRegistering || Number(nftBalance) <= 0}
                 className="btn-primary whitespace-nowrap"
               >
                 {isRegistering ? 'Registering...' : 'Register'}
               </Button>
             </div>
-            {!ownsNFT && address && (
+            {Number(nftBalance) <= 0 && address && (
               <p className="mt-2 text-red-500 text-sm">
                 You must own a Tribe Odyssey NFT to register an ENS domain
               </p>

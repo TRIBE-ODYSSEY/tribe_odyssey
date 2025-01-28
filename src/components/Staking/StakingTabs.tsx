@@ -2,21 +2,48 @@ import React, { useState } from 'react';
 import { Tab } from '@headlessui/react';
 import StakeTab from '@src/components/Staking/Tabs/StakeTab';
 import UnstakeTab from '@src/components/Staking/Tabs/UnstakeTab';
+import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { getStakingAddress } from '@src/utils/address';
+import stakingABI from '@src/lib/config/abi/staking.json';
 
 interface StakingTabsProps {
   onStake: (selectedNFTs: string[]) => Promise<void>;
   onUnstake: (selectedNFTs: string[]) => Promise<void>;
   isWaiting: boolean;
-  refreshTrigger: number;
 }
 
 const StakingTabs: React.FC<StakingTabsProps> = ({
-  onStake,
-  onUnstake,
-  isWaiting,
-  refreshTrigger
 }) => {
   const [selectedTab, setSelectedTab] = useState(0);
+  const { writeContract: writeStake, data: stakeHash } = useWriteContract();
+  const { writeContract: writeUnstake, data: unstakeHash } = useWriteContract();
+  
+  const handleStake = async (selectedNFTs: string[]) => {
+    writeStake({
+      address: getStakingAddress().address,
+      abi: stakingABI,
+      functionName: 'joinMany',
+      args: [0n, selectedNFTs.map(id => BigInt(id))]
+    });
+  };
+
+  const handleUnstake = async (selectedNFTs: string[]) => {
+    writeUnstake({
+      address: getStakingAddress().address,
+      abi: stakingABI,
+      functionName: 'leaveMany',
+      args: [0n, selectedNFTs.map(id => BigInt(id))]
+    });
+  };
+
+  // Transaction receipts
+  const { isLoading: isStaking } = useWaitForTransactionReceipt({
+    hash: stakeHash,
+  });
+
+  const { isLoading: isUnstaking } = useWaitForTransactionReceipt({
+    hash: unstakeHash,
+  });
 
   return (
     <div className="bg-[var(--color-overlay-dark)]/5 backdrop-blur-sm rounded-xl 
@@ -41,16 +68,14 @@ const StakingTabs: React.FC<StakingTabsProps> = ({
         <Tab.Panels>
           <Tab.Panel>
             <StakeTab 
-              onStake={onStake}
-              isWaiting={isWaiting}
-              refreshTrigger={refreshTrigger}
+              onStake={handleStake}
+              isWaiting={isStaking}
             />
           </Tab.Panel>
           <Tab.Panel>
             <UnstakeTab 
-              onUnstake={onUnstake}
-              isWaiting={isWaiting}
-              refreshTrigger={refreshTrigger}
+              onUnstake={handleUnstake}
+              isWaiting={isUnstaking}
             />
           </Tab.Panel>
         </Tab.Panels>
