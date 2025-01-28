@@ -122,17 +122,20 @@ const ProfilePage: FC = () => {
 
   return (
     <PageLayout>
-      <div className="container mx-auto px-4 py-8">
-        <PageTitle>Profile</PageTitle>
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="text-center mb-8">
+          <PageTitle>Profile</PageTitle>
+        </div>
         
         {address ? (
-          <div className="text-center flex flex-col gap-[20px] max-w-[800px] mx-auto">
-            <div className="mx-auto group relative">
+          <div className="flex flex-col items-center space-y-8">
+            {/* Avatar Section */}
+            <div className="relative group">
               {imagePreview ? (
                 <img
                   src={imagePreview}
-                  alt=""
-                  className="w-[180px] h-[180px] rounded-full"
+                  alt="Profile"
+                  className="w-[180px] h-[180px] rounded-full object-cover"
                 />
               ) : (
                 <AddressAvatar 
@@ -142,10 +145,10 @@ const ProfilePage: FC = () => {
                 />
               )}
               <button
-                className="text-white hidden group-hover:flex absolute w-[180px] h-[180px] mt-[-180px]"
+                className="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center rounded-full"
                 onClick={() => hiddenFileInput.current?.click()}
               >
-                <PencilIcon className="m-auto" />
+                <PencilIcon className="w-8 h-8 text-white" />
               </button>
               <input
                 type="file"
@@ -155,64 +158,62 @@ const ProfilePage: FC = () => {
                 onChange={handleImageChange}
               />
             </div>
-            <p className="text-theme text-white font-bold text-[28px]">
-              {user?.name || (address ? shortenAddress(address) : "")}
-            </p>
-            <p className="text-theme-grey">{address}</p>
 
-            <div className="flex items-start gap-[10px] flex-col  border border-[#80839a80] rounded-lg p-[40px] ens-box-gradient mt-8 max-w-[600px] min-w-[400px]">
-              <p>Personal Information</p>
-              <input
-                className="h-[50px] rounded-lg border border-[#80839a80] w-full bg-transparent outline-none text-white px-4 hover:border-[#E5E5E5] focus:border-[#E5E5E5] ens-box-gradient"
-                type="text"
-                placeholder="Enter Your username"
-                value={username}
-                onChange={(e) => {
-                  setUsername(e.target.value);
-                }}
-              />
-              <p className="mt-4">Contact Information (Twitter, Discord etc)</p>
-              <input
-                className="h-[50px] rounded-lg border border-[#80839a80] w-full bg-transparent outline-none text-white px-4 hover:border-[#E5E5E5] focus:border-[#E5E5E5] ens-box-gradient"
-                type="text"
-                placeholder="Enter Your Twitter or Discord username"
-                value={twitter}
-                onChange={(e) => {
-                  setTwitter(e.target.value);
-                }}
-              />
-              <p className="mt-4">Wallet Information</p>
-              <div className="text-theme-grey text-[12px]">Eth Address</div>
-              <input
-                className="h-[50px] rounded-lg border border-[#80839a80] w-full bg-transparent outline-none text-white px-4 hover:border-[#E5E5E5] focus:border-[#E5E5E5] ens-box-gradient"
-                type="text"
-                placeholder="Enter Eth Address"
-                value={address || ""}
-                readOnly
-                onChange={() => {}}
-              />
-              <div className="text-theme-grey text-[12px]">
-                Btc Ordinals Address
+            {/* User Info */}
+            <div className="text-center space-y-2">
+              <h2 className="text-2xl font-bold text-white">
+                {user?.name || shortenAddress(address)}
+              </h2>
+              <p className="text-theme-grey">{address}</p>
+            </div>
+
+            {/* Profile Form */}
+            <div className="w-full max-w-xl space-y-6 bg-[#1a1b1f] rounded-lg p-8">
+              <h3 className="text-xl font-semibold mb-4">Personal Information</h3>
+              
+              <div className="space-y-4">
+                <input
+                  className="w-full h-12 px-4 rounded-lg border border-[#80839a80] bg-transparent outline-none text-white transition-colors hover:border-[#E5E5E5] focus:border-[#E5E5E5]"
+                  type="text"
+                  placeholder="Enter Your username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+
+                <input
+                  className="w-full h-12 px-4 rounded-lg border border-[#80839a80] bg-transparent outline-none text-white transition-colors hover:border-[#E5E5E5] focus:border-[#E5E5E5]"
+                  type="text"
+                  placeholder="Enter Your Twitter or Discord username"
+                  value={twitter}
+                  onChange={(e) => setTwitter(e.target.value)}
+                />
+
+                <div>
+                  <label className="text-sm text-theme-grey mb-2 block">ETH Address</label>
+                  <input
+                    className="w-full h-12 px-4 rounded-lg border border-[#80839a80] bg-transparent outline-none text-white transition-colors"
+                    type="text"
+                    value={address}
+                    readOnly
+                  />
+                </div>
+
+                <div>
+                  <label className="text-sm text-theme-grey mb-2 block">BTC Ordinals Address</label>
+                  <input
+                    className="w-full h-12 px-4 rounded-lg border border-[#80839a80] bg-transparent outline-none text-white transition-colors hover:border-[#E5E5E5] focus:border-[#E5E5E5]"
+                    type="text"
+                    placeholder="Enter BTC Ordinals Address"
+                    value={btcAddr}
+                    onChange={(e) => setBtcAddr(e.target.value)}
+                  />
+                </div>
               </div>
-              <input
-                className="h-[50px] rounded-lg border border-[#80839a80] w-full bg-transparent outline-none text-white px-4 hover:border-[#E5E5E5] focus:border-[#E5E5E5] ens-box-gradient"
-                type="text"
-                placeholder="Enter BTC Ordinals Address"
-                value={btcAddr}
-                onChange={(e) => {
-                  setBtcAddr(e.target.value);
-                }}
-              />
 
-              <div className="flex items-center w-full mt-4">
+              <div className="pt-4">
                 {loading ? (
                   <Button className="w-full">
-                    <ClockLoader
-                      color={"#ffffff"}
-                      loading={true}
-                      size={20}
-                      className="w-full"
-                    />
+                    <ClockLoader color="#ffffff" loading size={20} />
                   </Button>
                 ) : (
                   <Button
@@ -227,10 +228,10 @@ const ProfilePage: FC = () => {
             </div>
           </div>
         ) : (
-          <div className="text-center">
-            <p className="text-theme text-white font-bold text-[28px]">
+          <div className="text-center py-12">
+            <h2 className="text-2xl font-bold text-white">
               Please connect your wallet
-            </p>
+            </h2>
           </div>
         )}
       </div>
