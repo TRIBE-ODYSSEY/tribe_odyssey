@@ -1,9 +1,8 @@
 /* eslint-disable */
-import { FC, useState, useRef, useMemo, useContext } from "react";
+import { FC, useState, useRef, useContext, useEffect } from "react";
 import Button from "@src/components/common/Button";
 import styled from "styled-components";
 import Modal from "react-modal";
-import useOwnTribes from "@src/lib/hooks/useOwnTribes";
 import { toast } from "react-toastify";
 import { ClockLoader } from "react-spinners";
 import axios from "axios";
@@ -27,15 +26,37 @@ const customStyles = {
 
 interface ClaimPageProps {}
 
+interface TribeItem {
+  id: string;
+  tokenId: string;
+  contract: string;
+  is_staked: boolean;
+}
+
+const API_ENDPOINT = 'https://www.tribeodyssey.net';
+
+const fetchTribeItems = async (address: string): Promise<TribeItem[]> => {
+  try {
+    const response = await axios.get(`${API_ENDPOINT}/item`, {
+      params: {
+        owner: address,
+        limit: 1000
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching tribe items:', error);
+    return [];
+  }
+};
+
 const StakingPage: FC<ClaimPageProps> = () => {
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
   const context: any = useContext(GlobalContext);
   const setState = context.setState;
 
   const { address: account } = useAccount();
   const { openConnectModal } = useConnectModal();
   const { signMessageAsync } = useSignMessage();
-  const { tribes: ownTribes, stakedTribes } = useOwnTribes(refreshTrigger);
   const stakingAddress = getStakingAddress();
 
   const [selectedapes, setSelectedapes] = useState<any[]>([]);
@@ -46,13 +67,7 @@ const StakingPage: FC<ClaimPageProps> = () => {
 
   const [waiting, setWaiting] = useState(false);
 
-  const tribes = useMemo(() => {
-    if (activetab === 0) {
-      return ownTribes;
-    } else {
-      return stakedTribes;
-    }
-  }, [ownTribes, stakedTribes, activetab]);
+  const [tribes, setTribes] = useState<TribeItem[]>([]);
 
   const selectAll = () => {
     if (!allselected) {
@@ -110,7 +125,6 @@ const StakingPage: FC<ClaimPageProps> = () => {
         setWaiting(false);
         setConfirmmodal(false);
         setSelectedapes([]);
-        setRefreshTrigger((prev) => prev + 1);
         setState((prevState: any) => ({
           ...prevState,
           trigger: (prevState.trigger || 0) + 1,
@@ -155,7 +169,6 @@ const StakingPage: FC<ClaimPageProps> = () => {
         setWaiting(false);
         setUnstakemodal(false);
         setSelectedapes([]);
-        setRefreshTrigger((prev) => prev + 1);
         setState((prevState: any) => ({
           ...prevState,
           trigger: (prevState.trigger || 0) + 1,
@@ -164,6 +177,28 @@ const StakingPage: FC<ClaimPageProps> = () => {
   };
 
   const stakeref = useRef(null);
+
+  useEffect(() => {
+    const loadTribeItems = async () => {
+      if (!account) return;
+      
+      try {
+        const items = await fetchTribeItems(account);
+        if (Array.isArray(items)) {
+          setTribes(items);
+        } else {
+          console.error('Fetched items is not an array:', items);
+          setTribes([]);
+        }
+      } catch (error) {
+        console.error('Error loading tribe items:', error);
+        setTribes([]);
+      }
+    };
+
+    loadTribeItems();
+  }, [account]);
+
   return (
     <div className="min-h-screen bg-[var(--color-background)]">
       <StakeWrapper>
@@ -219,21 +254,15 @@ const StakingPage: FC<ClaimPageProps> = () => {
                           className="stakeboxwrapper inpool px-[20px]"
                           ref={stakeref}
                         >
-                          {tribes.map(({ tokenId, contract, id, is_staked }: any) => (
+                          {Array.isArray(tribes) && tribes.map(({ tokenId, contract, id, is_staked }: TribeItem) => (
                             <ApeboxWrapper
-                              className={`${
-                                selectedapes.length > 0 && selectedapes.includes(id)
-                                  ? "selected"
-                                  : ""
-                              }`}
-                              onClick={() => {
-                                toggleApeSelector(id);
-                              }}
                               key={id}
+                              className={`${selectedapes.includes(id) ? "selected" : ""}`}
+                              onClick={() => toggleApeSelector(parseInt(id))}
                             >
                               <img
                                 src={
-                                  contract === import.meta.env.VITE_STAKING_CONTRACT_MAINNET
+                                  contract === import.meta.env.VITE_TRIBE_CONTRACT_MAINNET || "0x77f649385ca963859693c3d3299d36dfc7324eb9"
                                     ? `https://cdn.0xworld.io/tribe-images/${
                                         tokenId || 0
                                       }.png`
