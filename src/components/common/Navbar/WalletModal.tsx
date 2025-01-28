@@ -9,9 +9,9 @@ interface WalletModalProps {
 }
 
 const wallets = [
-  { id: 'metabase', name: 'MetaMask', icon: <SiMetabase className="w-8 h-8" /> },
-  { id: 'coinbase', name: 'Coinbase', icon: <SiCoinbase className="w-8 h-8" /> },
-  { id: 'brave', name: 'Brave', icon: <SiBrave className="w-8 h-8" /> },
+  { id: 'metamask', name: 'MetaMask', icon: <SiMetabase className="w-8 h-8" />, connector: 'injected' },
+  { id: 'coinbase', name: 'Coinbase', icon: <SiCoinbase className="w-8 h-8" />, connector: 'coinbase' },
+  { id: 'brave', name: 'Brave', icon: <SiBrave className="w-8 h-8" />, connector: 'injected' }
 ];
 
 const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
@@ -19,9 +19,9 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
-  const handleWalletSelect = async (walletId: string) => {
+  const handleWalletSelect = async () => {
     try {
-      await connect(walletId);
+      await connect();
       onClose();
     } catch (error) {
       console.error('Wallet connection error:', error);
@@ -53,11 +53,11 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
           {wallets.map((wallet) => (
             <button
               key={wallet.id}
-              onClick={() => handleWalletSelect(wallet.id)}
+              onClick={handleWalletSelect}
               className="flex items-center gap-4 w-full p-4 rounded-lg
-                         bg-[var(--color-tertiary)] hover:bg-[var(--color-tertiary)]/80
-                         border border-[var(--color-text-primary)]/10
-                         text-[var(--color-text-primary)] transition-all"
+                       bg-[var(--color-tertiary)] hover:bg-[var(--color-tertiary)]/80
+                       border border-[var(--color-text-primary)]/10
+                       text-[var(--color-text-primary)] transition-all"
             >
               {wallet.icon}
               <span className="font-medium">{wallet.name}</span>

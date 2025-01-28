@@ -1,14 +1,4 @@
-import { Component, ErrorInfo, ReactNode, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-
-interface Props {
-  children: ReactNode;
-}
-
-interface State {
-  hasError: boolean;
-  error?: Error;
-}
+import { useState, useEffect } from 'react';
 
 const ErrorBoundary: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [hasError, setHasError] = useState(false);
