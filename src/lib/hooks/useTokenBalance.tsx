@@ -1,29 +1,42 @@
 import { useEffect, useState } from "react";
-import { useAccount } from "wagmi";
+import { useAccount, usePublicClient } from "wagmi";
 import { zeroAddress } from "../config/constants";
-import { getContract } from "@src/lib/viem/contracts";
+import { getContract } from "viem";
+import erc20ABI from "@src/lib/config/abi/erc20.json";
+import { Address } from "viem";
 
 const useTokenBalance = (token: Address) => {
   const { address } = useAccount();
-  const tokenContract = getContract(token, tokenABI, address );
-
+  const publicClient = usePublicClient();
   const [balance, setBalance] = useState(BigInt(0));
 
   useEffect(() => {
     const fetch = async () => {
+      if (!address) return;
+      
       let tempBalance = BigInt(0);
-      if (token === zeroAddress && signer && address) {
-        tempBalance = await signer.getBalance(address);
-      } else if (address && tokenContract) {
+      
+      try {
+        if (token === zeroAddress) {
+          tempBalance = await publicClient?.getBalance({ address }) ?? BigInt(0);
+        } else {
+          const contract = getContract({
+            address: token,
+            abi: erc20ABI,
+            client: publicClient,
+          });
+          
+          tempBalance = await contract.read.balanceOf([address]);
+        }
+        
+        setBalance(tempBalance);
+      } catch (error) {
+        console.error('Error fetching balance:', error);
       }
-
-      setBalance(tempBalance);
     };
 
-    if (token && address) {
-      fetch();
-    }
-  }, [token, address]);
+    fetch();
+  }, [token, address, publicClient]);
 
   return balance;
 };

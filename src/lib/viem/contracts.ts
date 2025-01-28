@@ -4,15 +4,15 @@ import { mainnet } from 'wagmi/chains';
 // Contract ABIs
 import stakingABI from '@src/lib/config/abi/staking.json';
 import tribeABI from '@src/lib/config/abi/tribe.json';
-import multiCallABI from '@src/lib/config/abi/Multicall.json';
+import multiCallABI from '@src/lib/config/abi/MultiCall.json';
 import erc20ABI from '@src/lib/config/abi/erc20.json';
-import ensRegistrarABI from '@src/lib/config/abi/EthRegistrarSubdomainRegistrar.json';
+import EthRegistrarSubdomainRegistrarABI from '@src/lib/config/abi/EthRegistrarSubdomainRegistrar.json';
 
 export const CONTRACT_NAMES = {
-  MULTI_CALL: 'multiCall',
+  MULTI_CALL: 'MultiCall',
   TRIBE: 'tribe',
   STAKING: 'staking',
-  ENS_REGISTRAR: 'ensRegistrar',
+  ENS_REGISTRAR: 'EthRegistrarSubdomainRegistrar',
   ERC20: 'erc20'
 } as const;
 
@@ -47,7 +47,7 @@ const contractABIs = {
   [CONTRACT_NAMES.MULTI_CALL]: multiCallABI,
   [CONTRACT_NAMES.TRIBE]: tribeABI,
   [CONTRACT_NAMES.STAKING]: stakingABI,
-  [CONTRACT_NAMES.ENS_REGISTRAR]: ensRegistrarABI,
+  [CONTRACT_NAMES.ENS_REGISTRAR]: EthRegistrarSubdomainRegistrarABI,
   [CONTRACT_NAMES.ERC20]: erc20ABI,
 };
 

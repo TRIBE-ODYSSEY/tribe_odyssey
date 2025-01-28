@@ -1,13 +1,19 @@
 import { useEffect, useState } from "react";
 import { getTribeAddress } from "@src/utils/address";
-import { getTokenContract } from "@src/lib/viem/contracts";
-
+import { getContract } from "viem";
+import erc20ABI from "@src/lib/config/abi/erc20.json";
 import { Address, zeroAddress } from "viem";
-import { useAccount } from "wagmi";
+import { useAccount, usePublicClient } from "wagmi";
+
 const useTokenApproval = (token: Address) => {
   const { address: account } = useAccount();
+  const publicClient = usePublicClient();
   const nftContractAddress = getTribeAddress();
-  const tokenContract = getTokenContract(token, provider);
+  const tokenContract = getContract({
+    address: token,
+    abi: erc20ABI,
+    client: publicClient,
+  });
 
   const [approved, setApproved] = useState(false);
 

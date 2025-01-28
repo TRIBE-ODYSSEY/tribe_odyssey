@@ -44,6 +44,7 @@ const Tribal19CheckerPage: React.FC = () => {
   const [result, setResult] = useState<CheckerResult | null>(null);
   const [isValidAddress, setIsValidAddress] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     document.title = "Tribe 19 Checker | Assets";
@@ -180,6 +181,7 @@ const Tribal19CheckerPage: React.FC = () => {
 
   const handleAnalyse = async () => {
     try {
+      setIsLoading(true);
       setError(null);
       setResult(null);
 
@@ -189,6 +191,8 @@ const Tribal19CheckerPage: React.FC = () => {
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred while checking eligibility');
       console.error('Error:', err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
