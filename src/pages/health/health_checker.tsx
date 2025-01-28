@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Card from '@src/components/common/card/Card';
 import PageTitle from '@src/components/common/PageTitle';
 import PageLayout from '@src/components/common/layout/PageLayout';
-import { useAlchemyContext } from '@src/lib/context/AlchemyContext';
-import { useAlchemy } from '@src/lib/hooks/useAlchemy';
+import { useAccount, useChainId, usePublicClient } from 'wagmi';
 import { getContractConfig } from '@src/lib/viem/contracts';
 import { CHAIN_IDS, CONTRACT_NAMES } from '@src/lib/viem/contracts';
 
@@ -20,8 +19,10 @@ interface HealthStatus {
 }
 
 const HealthChecker: React.FC = () => {
-  const { isConnected, address } = useAlchemyContext();
-  const { getProvider } = useAlchemy();
+  const { isConnected, address } = useAccount();
+  const chainId = useChainId();
+  const publicClient = usePublicClient();
+  
   const [health, setHealth] = useState<HealthStatus>({
     isConnected: false,
     chainId: null,
@@ -36,9 +37,8 @@ const HealthChecker: React.FC = () => {
 
   const checkHealth = async () => {
     try {
-      const provider = await getProvider();
       const startTime = Date.now();
-      const network = await provider.getNetwork();
+      const blockNumber = await publicClient?.getBlockNumber();
       const latency = Date.now() - startTime;
 
       // Check contract availability
@@ -57,9 +57,9 @@ const HealthChecker: React.FC = () => {
 
         await Promise.all(
           contracts.map(async (name) => {
-            const { address } = getContractConfig(name, CHAIN_IDS.MAINNET);
-            const code = await provider.getCode(address);
-            contractsAvailable[name as keyof typeof contractsAvailable] = code !== '0x';
+            const { address: contractAddress } = getContractConfig(name, CHAIN_IDS.MAINNET);
+            const code = await publicClient?.getBytecode({ address: contractAddress });
+            contractsAvailable[name as keyof typeof contractsAvailable] = code !== undefined;
           })
         );
       } catch (error) {
@@ -67,9 +67,9 @@ const HealthChecker: React.FC = () => {
       }
 
       setHealth({
-        isConnected: true,
-        chainId: Number(network.chainId),
-        isHealthy: true,
+        isConnected,
+        chainId: chainId ?? null,
+        isHealthy: Boolean(blockNumber),
         contractsAvailable,
         nodeLatency: latency,
       });
@@ -80,10 +80,10 @@ const HealthChecker: React.FC = () => {
   };
 
   useEffect(() => {
-    if (isConnected) {
+    if (isConnected && publicClient) {
       checkHealth();
     }
-  }, [isConnected]);
+  }, [isConnected, chainId, publicClient]);
 
   const getChainName = (id: number) => {
     switch (id) {

@@ -179,13 +179,6 @@ const WalletSection: React.FC = () => {
               return (
                 <div className="flex items-center gap-2">
                   <CustomButton
-                    onClick={openChainModal}
-                    size="sm"
-                    className="!min-w-0 !px-3"
-                  >
-                    {chain?.name}
-                  </CustomButton>
-                  <CustomButton
                     onClick={openAccountModal}
                     size="sm"
                   >
