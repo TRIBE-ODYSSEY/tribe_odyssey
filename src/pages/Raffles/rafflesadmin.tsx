@@ -50,7 +50,7 @@ const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
     }
   };
 
-  const onChangeData = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangeData = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const value = event.target.value;
     const name = event.target.name;
 
@@ -148,8 +148,8 @@ const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
     for (let i = 0; i < data.entry.length; i++) {
       if (data.entry[i] && data.points[i]) {
         entryPoints.push({
-          entry: data.entry[i],
-          points: data.points[i],
+          entry: data.entry[i] ?? 0,
+          points: data.points[i] ?? 0,
         });
       }
     }
@@ -187,10 +187,8 @@ const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
               : "/staking/create-raffle",
             formData
           )
-          .then((response) => {
-            toast.success(
-              `Successfully ${data.id === "" ? "created" : "updated"}!!`
-            );
+          .then(() => {
+            toast.success("Successfully created!!");
           })
           .catch((error) => {
             console.error(error);
@@ -220,7 +218,7 @@ const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
             signature,
             id,
           })
-          .then((response) => {
+          .then(() => {
             toast.success("Successfully finished!!");
           })
           .catch((error) => {
@@ -247,7 +245,7 @@ const RaffleAdminPage: FC<RaffleAdminPageProps> = () => {
             signature,
             id,
           })
-          .then((response) => {
+          .then(() => {
             toast.success("Successfully finished!!");
           })
           .catch((error) => {

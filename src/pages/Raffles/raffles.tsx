@@ -5,6 +5,7 @@ import "slick-carousel/slick/slick.scss";
 import "slick-carousel/slick/slick-theme.scss";
 import useRaffles from "@src/lib/hooks/useRaffles";
 import { useNavigate } from "react-router-dom";
+import Slider from "react-slick";
 
 interface AboutPageProps {}
 
@@ -92,7 +93,7 @@ const RafflePage: FC<AboutPageProps> = () => {
 
   return (
     <Layout>
-      <div className="text-white ">
+      <div className="text-white">
         <div className="pt-15 max-w-[900px] mx-auto">
           <div className="text-center">
             <h2 className="text-center font-bold text-[20px] tracking-widest">
@@ -106,7 +107,7 @@ const RafflePage: FC<AboutPageProps> = () => {
               <div className="">There are some awesome prizes to be won!</div>
             </div>
           </div>
-          <div className="mt-10 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4  gap-1 sliderOuter">
+          <Slider {...settings}>
             {(raffles || []).map((raffle) => (
               <div className="cardwrapper" key={raffle.id}>
                 <Card>
@@ -155,7 +156,7 @@ const RafflePage: FC<AboutPageProps> = () => {
                 </Card>
               </div>
             ))}
-          </div>
+          </Slider>
         </div>
       </div>
     </Layout>
