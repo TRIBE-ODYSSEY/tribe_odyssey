@@ -3,9 +3,7 @@ import Card from '@src/components/common/card/Card';
 import PageTitle from '@src/components/common/PageTitle';
 import PageLayout from '@src/components/common/layout/PageLayout';
 import { useAccount, useChainId, usePublicClient } from 'wagmi';
-import { getContractConfig } from '@src/lib/config/constants/contracts';
-import { CONTRACT_NAMES } from '@src/lib/config/constants/contracts';
-import { mainnet } from 'wagmi/chains';
+import { getStakingAddress, getTribeAddress, getMulticallAddress } from '@src/utils/address';
 
 interface HealthStatus {
   isConnected: boolean;
@@ -49,22 +47,24 @@ const HealthChecker: React.FC = () => {
         multiCall: false,
       };
 
-      try {
-        const contracts = [
-          CONTRACT_NAMES.STAKING,
-          CONTRACT_NAMES.TRIBE,
-          CONTRACT_NAMES.MULTI_CALL,
-        ];
+      if (publicClient) {
+        try {
+          const stakingAddress = getStakingAddress();
+          const tribeAddress = getTribeAddress();
+          const multicallAddress = getMulticallAddress();
 
-        await Promise.all(
-          contracts.map(async (name) => {
-            const { address: contractAddress } = getContractConfig(name, mainnet.id);
-            const code = await publicClient?.getBytecode({ address: contractAddress });
-            contractsAvailable[name as keyof typeof contractsAvailable] = code !== undefined;
-          })
-        );
-      } catch (error) {
-        console.error('Contract check failed:', error);
+          const [stakingCode, tribeCode, multicallCode] = await Promise.all([
+            publicClient.getBytecode({ address: stakingAddress as `0x${string}` }),
+            publicClient.getBytecode({ address: tribeAddress as `0x${string}` }),
+            publicClient.getBytecode({ address: multicallAddress as `0x${string}` }),
+          ]);
+
+          contractsAvailable.staking = stakingCode !== undefined && stakingCode !== '0x';
+          contractsAvailable.tribe = tribeCode !== undefined && tribeCode !== '0x';
+          contractsAvailable.multiCall = multicallCode !== undefined && multicallCode !== '0x';
+        } catch (error) {
+          console.error('Contract check failed:', error);
+        }
       }
 
       setHealth({

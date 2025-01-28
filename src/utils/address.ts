@@ -6,23 +6,23 @@ export const getAddress = (address: any) => {
 };
 
 export const getMulticallAddress = () => {
-  return getAddress(addresses.multiCall);
+  return getAddress(addresses.MULTI_CALL);
 };
 
 export const getTribeAddress = () => {
-  return getAddress(addresses.tribe);
+  return getAddress(addresses.TRIBE);
 };
 
 export const getApeAddress = () => {
-  return getAddress(addresses.ape);
+  return getAddress(addresses.APE);
 };
 
 export const getEnsRegistrarAddress = () => {
-  return getAddress(addresses.ensRegistrar);
+  return getAddress(addresses.ENS_REGISTRAR);
 };
 
 export const getStakingAddress = () => {
-  return getAddress(addresses.staking);
+  return getAddress(addresses.STAKING);
 };
 
 export const shortenAddress = (address: string): string => {
