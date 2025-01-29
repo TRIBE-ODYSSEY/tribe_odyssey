@@ -1,7 +1,6 @@
 import { IMAGES } from '@assets/index';
 import { ImageCategories } from '@assets/types';
 import React from 'react';
-import Card from '../common/card/Card';
 
 const WhispersOfLoresSection: React.FC = () => {
   const lores = [
@@ -46,10 +45,12 @@ const WhispersOfLoresSection: React.FC = () => {
                      transform transition-all duration-300 cursor-pointer hover:-translate-y-2"
           >
             <div className="relative h-48 sm:h-60 overflow-hidden">
-              <Card
-                image={{ 'data-src': lore.image, alt: lore.title }}
+              <img
+                src={lore.image}
+                alt={lore.title}
                 className="w-full h-full object-cover transition-transform duration-300 ease-out hover:scale-105"
               />
+
               <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-overlay-dark)] to-transparent"></div>
               <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r 
                             from-transparent via-[var(--color-text-primary)]/20 to-transparent"></div>

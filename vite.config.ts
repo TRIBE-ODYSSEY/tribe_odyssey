@@ -12,6 +12,7 @@ export default defineConfig(({ mode }) => {
   
   return {
     plugins: [react()],
+    
     define: {
       'process.env': env,
       'import.meta.env': JSON.stringify(process.env),
