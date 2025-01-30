@@ -5,39 +5,59 @@ export function useAxios() {
   const { token } = useAuthState();
   const dispatch = useAuthDispatch();
 
-  axios.interceptors.request.use((config) => {
-    // if(config.method === 'post') {
-    //     config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-    //     config.data = qs.stringify(config.data)
-    // }
-
-    if (
-      token &&
-      config.url &&
-      !config.url.includes("https://api.thegraph.com") &&
-      !config.url.includes("https://ipfs.io/")
+  // Remove any existing interceptors
+  const requestInterceptor = axios.interceptors.request.use((config) => {
+    // Set base URL
+    config.baseURL = import.meta.env.VITE_API_URL || 'https://localhost:5172';
+    
+    // Set headers
+    if (token && 
+        config.url && 
+        !config.url.includes("https://api.thegraph.com") && 
+        !config.url.includes("https://ipfs.io/")
     ) {
-      config!.headers!.common["Authorization"] = `Bearer ${token}`;
+      config.headers.Authorization = `Bearer ${token}`;
     }
 
-    config.baseURL = `${import.meta.env.VITE_API_URL}/api/`;
-    config.timeout = 300000;
+    config.headers['Content-Type'] = 'application/json';
+    config.headers['Accept'] = 'application/json';
+    
+    // Set timeout
+    config.timeout = 30000;
 
     return config;
+  }, (error) => {
+    return Promise.reject(error);
   });
 
-  axios.interceptors.response.use(
-    (response) => {
-      return Promise.resolve(response);
-    },
-    (error) => {
+  const responseInterceptor = axios.interceptors.response.use(
+    (response) => response,
+    async (error) => {
       if (error.response?.status === 401 || error.response?.status === 403) {
         logout(dispatch);
         console.log("Auth failed");
-        //window.location.reload();
       }
 
-      return Promise.reject(error);
+      // Retry logic
+      const config = error.config;
+      if (!config || !config.retries) {
+        return Promise.reject(error);
+      }
+      
+      config.retries -= 1;
+      if (config.retries === 0) {
+        return Promise.reject(error);
+      }
+
+      // Retry after delay
+      await new Promise(resolve => setTimeout(resolve, config.retryDelay));
+      return axios(config);
     }
   );
+
+  // Clean up interceptors when component unmounts
+  return () => {
+    axios.interceptors.request.eject(requestInterceptor);
+    axios.interceptors.response.eject(responseInterceptor);
+  };
 }
