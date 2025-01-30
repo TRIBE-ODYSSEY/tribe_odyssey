@@ -21,7 +21,15 @@ export default defineConfig(({ mode }) => {
     server: {
       host: '0.0.0.0',
       port: parseInt(process.env.PORT || '5172'),
-      allowedHosts: ['tribe-odyssey-web.onrender.com', 'www.tribeodyssey.net', 'www.tribeodyssey.com']
+      allowedHosts: ['tribe-odyssey-web.onrender.com', 'www.tribeodyssey.net', 'www.tribeodyssey.com'],
+      proxy: {
+        '/api': {
+          target: 'https://api.tribeodyssey.net',
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => path.replace(/^\/api/, '')
+        }
+      }
     },
     
     resolve: {
