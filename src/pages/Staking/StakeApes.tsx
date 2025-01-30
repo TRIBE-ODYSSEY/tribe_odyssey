@@ -25,6 +25,15 @@ const customStyles = {
   },
 };
 
+// Create axios instance with base URL and headers
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || 'https://api.tribeodyssey.net',
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+  }
+});
+
 const StakingPage: FC = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const context: any = useContext(GlobalContext);
@@ -82,39 +91,39 @@ const StakingPage: FC = () => {
       return;
     }
 
-    const msg = JSON.stringify({
-      ids: selectedapes,
-      address: account.toLowerCase(),
-    });
+    try {
+      setWaiting(true);
+      const msg = JSON.stringify({
+        ids: selectedapes,
+        address: account.toLowerCase(),
+      });
 
-    setWaiting(true);
-    const signature = await signMessageAsync({
-      message: msg,
-    });
-    axios
-      .post("/staking/stake", {
+      const signature = await signMessageAsync({
+        message: msg,
+      });
+
+      const response = await api.post("/staking/stake", {
         address: account,
         signature,
         ids: selectedapes,
-      })
-      .then((response) => {
-        toast.success(
-          `${response.data.staked.length} nft(s) have been staked successfully!!`
-        );
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => {
-        setWaiting(false);
-        setConfirmmodal(false);
-        setSelectedapes([]);
-        setState((prevState: any) => ({
-          ...prevState,
-          trigger: (prevState.trigger || 0) + 1,
-        }));
-        setRefreshTrigger(prev => prev + 1);
       });
+
+      toast.success(
+        `${response.data.staked.length} nft(s) have been staked successfully!!`
+      );
+    } catch (error) {
+      console.error('Staking error:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to stake NFTs');
+    } finally {
+      setWaiting(false);
+      setConfirmmodal(false);
+      setSelectedapes([]);
+      setState((prevState: any) => ({
+        ...prevState,
+        trigger: (prevState.trigger || 0) + 1,
+      }));
+      setRefreshTrigger(prev => prev + 1);
+    }
   };
 
   const onUnStake = async () => {
