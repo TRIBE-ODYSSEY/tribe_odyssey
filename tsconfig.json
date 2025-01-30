@@ -25,7 +25,11 @@
       "@services/*": ["services/*"],
       "@pages/*": ["pages/*"],
       "@types/*": ["types/*"]
-    }
+    },
+    "allowJs": true,
+    "checkJs": true,
+    "forceConsistentCasingInFileNames": true,
+    "incremental": true
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts", "src/lib/hooks/index.tsz"],
   "exclude": ["node_modules", "dist"]

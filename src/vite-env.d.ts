@@ -25,9 +25,10 @@ interface ImportMetaEnv {
 	readonly VITE_MULTICALL_CONTRACT_MAINNET: `0x${string}`
 	readonly VITE_ENS_REGISTRAR_CONTRACT_MAINNET: `0x${string}`
 	
-	// API Keys
-	readonly VITE_OPENSEA_API_KEY: string
-	readonly VITE_MORALIS_API_KEY: string
+	// CDN Configuration
+	readonly VITE_CDN_URL: string
+	readonly VITE_TRIBE_IMAGES_PATH: string
+	readonly VITE_APE_IMAGES_PATH: string
 	
 	// Feature Flags
 	readonly VITE_ENABLE_TESTNET: 'true' | 'false'
@@ -41,18 +42,22 @@ interface ImportMetaEnv {
 	
 	// Analytics
 	readonly VITE_GA_TRACKING_ID: string
-	
-	// Random Picker Configuration
-	readonly VITE_RANDOM_PICKER_BASE_URL: string
-	readonly VITE_RANDOM_PICKER_USERNAME: string
-	readonly VITE_RANDOM_PICKER_PASSWORD: string
 
 	// Maintenance Mode
 	readonly VITE_MAINTENANCE_MODE: 'true' | 'false'
 
-	// Reown Configuration
-	readonly VITE_REOWN_APP_ID: string
-	readonly VITE_REOWN_ENVIRONMENT: string
+	// Error tracking
+	readonly VITE_SENTRY_DSN: string
+	
+	// Rate limiting
+	readonly VITE_RATE_LIMIT_REQUESTS: number
+	readonly VITE_RATE_LIMIT_DURATION: number
+	
+	// API versioning
+	readonly VITE_API_VERSION: string
+	
+	// Fallback RPC URLs
+	readonly VITE_FALLBACK_RPC_URL: string
 }
 
 interface ImportMeta {

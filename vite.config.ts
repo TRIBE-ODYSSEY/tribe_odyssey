@@ -78,6 +78,16 @@ export default defineConfig(({ mode }) => {
     optimizeDeps: {
       include: ['react', 'react-dom', 'react-router-dom'],
       exclude: ['@web3modal/ethereum', '@web3modal/react']
+    },
+    security: {
+      headers: {
+        'Content-Security-Policy': "default-src 'self'",
+        'X-XSS-Protection': '1; mode=block'
+      }
+    },
+    test: {
+      globals: true,
+      environment: 'jsdom'
     }
   };
 });
