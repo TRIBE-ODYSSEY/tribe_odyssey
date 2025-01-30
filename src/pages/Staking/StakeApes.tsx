@@ -136,39 +136,39 @@ const StakingPage: FC = () => {
       return;
     }
 
-    const msg = JSON.stringify({
-      ids: selectedapes,
-      address: account.toLowerCase(),
-    });
+    try {
+      setWaiting(true);
+      const msg = JSON.stringify({
+        ids: selectedapes,
+        address: account.toLowerCase(),
+      });
 
-    setWaiting(true);
-    const signature = await signMessageAsync({
-      message: msg,
-    });
-    axios
-      .post("/staking/unstake", {
+      const signature = await signMessageAsync({
+        message: msg,
+      });
+
+      const response = await api.post("/staking/unstake", {
         address: account,
         signature,
         ids: selectedapes,
-      })
-      .then((response) => {
-        toast.success(
-          `${response.data.unstaked.length} nft(s) have been unstaked successfully!!`
-        );
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => {
-        setWaiting(false);
-        setUnstakemodal(false);
-        setSelectedapes([]);
-        setState((prevState: any) => ({
-          ...prevState,
-          trigger: (prevState.trigger || 0) + 1,
-        }));
-        setRefreshTrigger(prev => prev + 1);
       });
+
+      toast.success(
+        `${response.data.unstaked.length} nft(s) have been unstaked successfully!!`
+      );
+    } catch (error) {
+      console.error('Unstaking error:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to unstake NFTs');
+    } finally {
+      setWaiting(false);
+      setUnstakemodal(false);
+      setSelectedapes([]);
+      setState((prevState: any) => ({
+        ...prevState,
+        trigger: (prevState.trigger || 0) + 1,
+      }));
+      setRefreshTrigger(prev => prev + 1);
+    }
   };
 
   const stakeref = useRef(null);
@@ -271,7 +271,9 @@ const StakingPage: FC = () => {
                               <ApeboxWrapper
                                 key={id}
                                 className={`${selectedapes.includes(id) ? "selected" : ""}`}
-                                onClick={() => toggleApeSelector(id)}
+                                onClick={() => {
+                                  toggleApeSelector(id);
+                                }}
                               >
                                 <img
                                   src={
