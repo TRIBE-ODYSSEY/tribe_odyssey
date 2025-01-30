@@ -40,7 +40,7 @@ const StakingPage: FC = () => {
   
   const stakingAddress = getStakingAddress();
 
-  const [selectedapes, setSelectedapes] = useState<any[]>([]);
+  const [selectedapes, setSelectedapes] = useState<string[]>([]);
   const [activetab, setActivetab] = useState(0);
   const [allselected, setAllselected] = useState(false);
   const [confirmmodal, setConfirmmodal] = useState(false);
@@ -65,11 +65,11 @@ const StakingPage: FC = () => {
     }
   };
 
-  const toggleApeSelector = (id: number) => {
+  const toggleApeSelector = (id: string) => {
     if (selectedapes.includes(id)) {
-      setSelectedapes(selectedapes.filter((n) => n !== id)); // removing a number
+      setSelectedapes(selectedapes.filter((n) => n !== id));
     } else {
-      setSelectedapes([...selectedapes, id]); // adding a new number
+      setSelectedapes([...selectedapes, id]);
     }
   };
 
@@ -268,7 +268,7 @@ const StakingPage: FC = () => {
                               <ApeboxWrapper
                                 key={id}
                                 className={`${selectedapes.includes(id) ? "selected" : ""}`}
-                                onClick={() => id && toggleApeSelector(parseInt(id))}
+                                onClick={() => id && toggleApeSelector(id)}
                               >
                                 <img
                                   src={

@@ -7,7 +7,7 @@ interface TribeItem {
   contract: string;
   tokenId: string;
   is_staked: boolean;
-  id?: string;
+  id: string;
 }
 
 const useOwnTribes = (trigger: number) => {
