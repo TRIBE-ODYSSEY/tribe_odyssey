@@ -12,17 +12,17 @@ const useUserStaked = () => {
   const [userStaked, setUserStaked] = useState<UserStakedData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { address } = useAccount();
+  const { account } = useAccount();
 
   useEffect(() => {
     const fetchStakedTokens = async () => {
-      if (!address) return;
+      if (!account) return;
       
       setIsLoading(true);
       setError(null);
       
       try {
-        const response = await fetch(`/api/staking/userStaked?address=${address}`);
+        const response = await fetch(`/staking/userStaked`);
         if (!response.ok) throw new Error('Failed to fetch staked tokens');
         
         const data = await response.json();
@@ -36,7 +36,7 @@ const useUserStaked = () => {
     };
 
     fetchStakedTokens();
-  }, [address]);
+  }, [account]);
 
   return {
     data: userStaked,
