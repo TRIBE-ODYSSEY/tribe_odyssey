@@ -12,7 +12,6 @@ import { useAccount } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { getStakingAddress } from "@src/utils/address";
 import useOwnTribes from "@src/lib/hooks/useOwnTribes";
-import useUserStaked from "@src/lib/hooks/useUserStaked";
 
 const customStyles = {
   content: {
@@ -35,7 +34,6 @@ const StakingPage: FC = () => {
   const { openConnectModal } = useConnectModal();
   const { signMessageAsync } = useSignMessage();
   const { tribes: ownTribes, stakedTribes } = useOwnTribes(refreshTrigger);
-  const { userStaked } = useUserStaked(refreshTrigger);
   
   const stakingAddress = getStakingAddress();
 
@@ -48,12 +46,12 @@ const StakingPage: FC = () => {
   const [waiting, setWaiting] = useState(false);
 
   const tribes = useMemo(() => {
-    const allTribes = [...ownTribes, ...stakedTribes];
-    return allTribes.map(tribe => ({
-      ...tribe,
-      is_staked: userStaked.some(staked => staked.id === tribe.id)
-    }));
-  }, [ownTribes, stakedTribes, userStaked]);
+    if (activetab === 0) {
+      return ownTribes;
+    } else {
+      return stakedTribes;
+    }
+  }, [ownTribes, stakedTribes, activetab]);
 
   const selectAll = () => {
     if (!allselected) {

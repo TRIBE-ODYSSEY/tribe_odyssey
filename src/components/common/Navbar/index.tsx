@@ -10,7 +10,7 @@ import CustomButton from './button';
 import { IoClose } from 'react-icons/io5';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import '@rainbow-me/rainbowkit/styles.css';
-import ProfileDropdown from '@src/components/ProfileDropdwon';
+import ProfileDropdown from '@src/components/ProfileDropdown';
 import { useAccount } from 'wagmi';
 
 const MenuDropdown: React.FC<{ title: string; items: Array<{ name: string; path: string }> }> = ({ 

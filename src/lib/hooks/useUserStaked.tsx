@@ -2,29 +2,37 @@ import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import axios from "axios";
 
+interface UserStakedData {
+  staked_count: number;
+  daily_points: number;
+  points: number;
+}
+
 const useUserStaked = (trigger: number) => {
-  const [userStaked, setUserStaked] = useState<any[]>([]);
+  const [data, setData] = useState<UserStakedData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { address: account } = useAccount();
 
-  useEffect(() => {
-    const fetchStaked = async () => {
-      if (!account) return;
-      
-      try {
-        const response = await axios.get("/staking/userStaked", { 
-          params: { address: account } 
-        });
-        setUserStaked(response.data);
-      } catch (error) {
-        console.error("Error fetching staked tokens:", error);
-        setUserStaked([]);
-      }
-    };
+  const refetch = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get("/staking/userStaked", { 
+        params: { address: account } 
+      });
+      setData(response.data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unknown error');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    fetchStaked();
+  useEffect(() => {
+    refetch();
   }, [account, trigger]);
 
-  return { userStaked };
+  return { data, isLoading, error, refetch };
 };
 
 export default useUserStaked;

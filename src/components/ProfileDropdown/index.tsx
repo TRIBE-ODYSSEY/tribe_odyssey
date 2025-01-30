@@ -23,7 +23,7 @@ const ProfileDropdown: FC = () => {
   const { logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  const { data: userStaked } = useUserStaked() as { 
+  const { data: userStaked } = useUserStaked(0) as { 
     data: UserStakedData | null; 
     isLoading: boolean; 
     error: string | null; 
