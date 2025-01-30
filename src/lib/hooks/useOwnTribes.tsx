@@ -1,10 +1,19 @@
 import { useEffect, useState } from "react";
 import { useWeb3React } from "./useWeb3React";
 import axios from "axios";
+import { useAxios } from "./useAxios";
+
+interface TribeItem {
+  contract: string;
+  tokenId: string;
+  is_staked: boolean;
+  id?: string;
+}
 
 const useOwnTribes = (trigger: number) => {
-  const [tribes, setTribes] = useState<any[]>([]);
-  const [stakedTribes, setStakedTribes] = useState<any[]>([]);
+  useAxios(); // Initialize axios interceptors
+  const [tribes, setTribes] = useState<TribeItem[]>([]);
+  const [stakedTribes, setStakedTribes] = useState<TribeItem[]>([]);
   const { account } = useWeb3React();
 
   useEffect(() => {
@@ -12,7 +21,6 @@ const useOwnTribes = (trigger: number) => {
       if (!account) return;
 
       try {
-        // Using relative URL with Vite proxy
         const response = await axios.get("/item", {
           params: {
             owner: account.toLowerCase(),
@@ -21,13 +29,13 @@ const useOwnTribes = (trigger: number) => {
           },
         });
 
-        const items = (response?.data?.items || []).map((item: any) => ({
+        const items = (response?.data?.items || []).map((item: TribeItem) => ({
           ...item,
           id: `${item.contract}-${item.tokenId}`,
         }));
 
-        setTribes(items.filter((item: any) => !item.is_staked));
-        setStakedTribes(items.filter((item: any) => item.is_staked));
+        setTribes(items.filter((item: TribeItem) => !item.is_staked));
+        setStakedTribes(items.filter((item: TribeItem) => item.is_staked));
       } catch (error) {
         console.error('Error fetching tribes:', error);
         setTribes([]);
@@ -43,5 +51,5 @@ const useOwnTribes = (trigger: number) => {
     stakedTribes,
   };
 };
-  
+
 export default useOwnTribes;

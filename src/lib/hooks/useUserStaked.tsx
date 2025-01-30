@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import axios from "axios";
+import { useAxios } from "./useAxios";
 
 interface UserStakedData {
   staked_count: number;
@@ -9,6 +10,7 @@ interface UserStakedData {
 }
 
 const useUserStaked = (trigger: number) => {
+  useAxios(); // Initialize axios interceptors
   const [data, setData] = useState<UserStakedData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

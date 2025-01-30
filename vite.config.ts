@@ -17,29 +17,12 @@ export default defineConfig(({ mode }) => {
       'process.env': env,
       'import.meta.env': JSON.stringify(process.env),
     },
+    
     server: {
       host: '0.0.0.0',
       port: parseInt(process.env.PORT || '5172'),
-      proxy: {
-        '/api': {
-          target: process.env.VITE_API_URL || 'http://localhost:3000',
-          changeOrigin: true,
-          secure: false,
-          rewrite: (path) => path.replace(/^\/api/, '')
-        },
-        '/item': {
-          target: process.env.VITE_API_URL || 'http://localhost:3000',
-          changeOrigin: true,
-          secure: false
-        }
-      },
-      allowedHosts: ['tribe-odyssey-web.onrender.com', 'www.tribeodyssey.net', 'www.tribeodyssey.com']
     },
-    preview: {
-      host: '0.0.0.0',
-      port: parseInt(process.env.PORT || '5172'),
-      allowedHosts: ['tribe-odyssey-web.onrender.com', 'www.tribeodyssey.net', 'www.tribeodyssey.com']
-    },
+    
     resolve: {
       alias: {
         '@src': path.resolve(__dirname, 'src'),
@@ -53,7 +36,7 @@ export default defineConfig(({ mode }) => {
         '@types': path.resolve(__dirname, 'src/types'),
       },
     },
-    assetsInclude: ['**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.svg', '**/*.gif'],
+    
     build: {
       outDir: 'dist',
       emptyOutDir: true,
@@ -74,20 +57,10 @@ export default defineConfig(({ mode }) => {
         }
       }
     },
-    publicDir: 'public',
+    
     optimizeDeps: {
       include: ['react', 'react-dom', 'react-router-dom'],
       exclude: ['@web3modal/ethereum', '@web3modal/react']
-    },
-    security: {
-      headers: {
-        'Content-Security-Policy': "default-src 'self'",
-        'X-XSS-Protection': '1; mode=block'
-      }
-    },
-    test: {
-      globals: true,
-      environment: 'jsdom'
     }
   };
 });
