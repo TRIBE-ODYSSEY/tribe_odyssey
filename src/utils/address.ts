@@ -6,23 +6,23 @@ export const getAddress = (address: any) => {
 };
 
 export const getMulticallAddress = () => {
-  return getAddress(addresses.MULTI_CALL);
+  return getAddress(addresses.multiCall);
 };
 
 export const getTribeAddress = () => {
-  return getAddress(addresses.TRIBE);
+  return getAddress(addresses.tribe);
 };
 
 export const getApeAddress = () => {
-  return getAddress(addresses.APE);
+  return getAddress(addresses.ape);
 };
 
 export const getEnsRegistrarAddress = () => {
-  return getAddress(addresses.ENS_REGISTRAR);
+  return getAddress(addresses.ensRegistrar);
 };
 
 export const getStakingAddress = () => {
-  return getAddress(addresses.STAKING);
+  return getAddress(addresses.staking);
 };
 
 export const shortenAddress = (address: string): string => {
@@ -36,7 +36,7 @@ export const shortenBtcAddress = (address: string): string => {
 };
 
 export const getSubgraphEndpoint = () => {
-  const chainId = "1";
+  const chainId = import.meta.env.VITE_CHAIN_ID || "1";
   if (+chainId === 1) {
     return "https://api.thegraph.com/subgraphs/name/0xapes/tribe-subgraph-mainnet";
   } else {

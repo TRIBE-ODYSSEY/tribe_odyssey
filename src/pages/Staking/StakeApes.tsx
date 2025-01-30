@@ -1,18 +1,17 @@
 /* eslint-disable */
-import { FC, useState, useRef, useContext, useEffect } from "react";
+import { FC, useState, useRef, useContext, useMemo, useEffect } from "react";
 import Button from "@src/components/common/Button";
 import styled from "styled-components";
 import Modal from "react-modal";
 import { toast } from "react-toastify";
 import { ClockLoader } from "react-spinners";
 import axios from "axios";
-import { getStakingAddress } from "@src/utils/address";
 import { useSignMessage } from "wagmi";
 import GlobalContext from "@src/lib/context/GlobalContext";
 import { useAccount } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import PageLayout from '@src/components/common/layout/PageLayout';
-import PageTitle from '@src/components/common/PageTitle';
+import { getStakingAddress } from "@src/utils/address";
+import useOwnTribes from "@src/lib/hooks/useOwnTribes";
 
 const customStyles = {
   content: {
@@ -26,42 +25,17 @@ const customStyles = {
   },
 };
 
-interface ClaimPageProps {}
-
-interface TribeItem {
-  id: string;
-  tokenId: string;
-  contract: string;
-  is_staked: boolean;
-  image: string;
-}
-
-const API_ENDPOINT = 'https://www.tribeodyssey.net';
-
-const fetchTribeItems = async (address: string): Promise<TribeItem[]> => {
-  try {
-    const response = await axios.get(`${API_ENDPOINT}/item`, {
-      params: {
-        owner: address,
-        limit: 1000
-      }
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching tribe items:', error);
-    return [];
-  }
-};
-
-const StakingPage: FC<ClaimPageProps> = () => {
+const StakingPage: FC = () => {
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   const context: any = useContext(GlobalContext);
   const setState = context.setState;
 
-  const { account } = useAccount();
+  const { address: account } = useAccount();
   const { openConnectModal } = useConnectModal();
   const { signMessageAsync } = useSignMessage();
+  const {tribes: ownTribes, stakedTribes} = useOwnTribes(refreshTrigger);
   
-  const [stakingAddress, setStakingAddress] = useState("");
+  const stakingAddress = getStakingAddress();
 
   const [selectedapes, setSelectedapes] = useState<any[]>([]);
   const [activetab, setActivetab] = useState(0);
@@ -71,7 +45,9 @@ const StakingPage: FC<ClaimPageProps> = () => {
 
   const [waiting, setWaiting] = useState(false);
 
-  const [tribes, setTribes] = useState<TribeItem[]>([]);
+  const tribes = useMemo(() => {
+    return activetab === 0 ? ownTribes : stakedTribes;
+  }, [ownTribes, stakedTribes, activetab]);
 
   const selectAll = () => {
     if (!allselected) {
@@ -133,6 +109,7 @@ const StakingPage: FC<ClaimPageProps> = () => {
           ...prevState,
           trigger: (prevState.trigger || 0) + 1,
         }));
+        setRefreshTrigger(prev => prev + 1);
       });
   };
 
@@ -177,49 +154,47 @@ const StakingPage: FC<ClaimPageProps> = () => {
           ...prevState,
           trigger: (prevState.trigger || 0) + 1,
         }));
+        setRefreshTrigger(prev => prev + 1);
       });
   };
 
   const stakeref = useRef(null);
+  const [apebxwidth, setApebxwidth] = useState(0);
 
   useEffect(() => {
-    const loadTribeItems = async () => {
-      if (!account) return;
-      
-      try {
-        const items = await fetchTribeItems(account);
-        if (Array.isArray(items)) {
-          setTribes(items);
-        } else {
-          console.error('Fetched items is not an array:', items);
-          setTribes([]);
+    const handleResize = () => {
+      if (stakeref.current) {
+        const current = stakeref.current as HTMLElement;
+        if (current) {
+          const stakwwidth =
+            current.clientWidth -
+            parseFloat(getComputedStyle(current).paddingLeft) -
+            parseFloat(getComputedStyle(current).paddingRight);
+          let tempwidth;
+          if (window.innerWidth >= 1200) {
+            tempwidth = stakwwidth / 8 - 2;
+            setApebxwidth(tempwidth);
+          } else if (window.innerWidth >= 800) {
+            tempwidth = stakwwidth / 6 - 2;
+            setApebxwidth(tempwidth);
+          } else if (window.innerWidth >= 400) {
+            tempwidth = stakwwidth / 4 - 2;
+            setApebxwidth(tempwidth);
+          } else {
+            tempwidth = stakwwidth / 2 - 2;
+            setApebxwidth(tempwidth);
+          }
         }
-      } catch (error) {
-        console.error('Error loading tribe items:', error);
-        setTribes([]);
       }
     };
 
-    loadTribeItems();
-  }, [account]);
-
-  useEffect(() => {
-    if (account) {
-      try {
-        const addr = getStakingAddress();
-        setStakingAddress(addr);
-      } catch (error) {
-        console.error('Error getting staking address:', error);
-        setStakingAddress("");
-      }
-    }
-  }, [account]);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
-    <PageLayout>
-      <div className="container mx-auto px-4 py-8">
-        <PageTitle>Stake Your Apes</PageTitle>
-        
+    <>
         <StakeWrapper>
           <div className="flex flex-col lg:flex-row gap-8">
             <div className="flex-grow">
@@ -272,12 +247,13 @@ const StakingPage: FC<ClaimPageProps> = () => {
                           <div
                             className="stakeboxwrapper inpool px-[20px]"
                             ref={stakeref}
+                            style={{width: apebxwidth}}
                           >
-                            {Array.isArray(tribes) && tribes.map(({ tokenId, contract, id, is_staked }: TribeItem) => (
+                            {tribes.map(({ tokenId, contract, id, is_staked }) => (
                               <ApeboxWrapper
                                 key={id}
                                 className={`${selectedapes.includes(id) ? "selected" : ""}`}
-                                onClick={() => toggleApeSelector(parseInt(id))}
+                                onClick={() => toggleApeSelector(id)}
                               >
                                 <img
                                   src={
@@ -413,8 +389,7 @@ const StakingPage: FC<ClaimPageProps> = () => {
             </div>
           </div>
         </Modal>
-      </div>
-    </PageLayout>
+    </>
   );
 };
 
@@ -532,6 +507,7 @@ const CloseIcon = () => {
     </svg>
   );
 };
+
 const LockIcon = (props: { color: string }) => {
   return (
     <svg
@@ -550,4 +526,3 @@ const LockIcon = (props: { color: string }) => {
 };
 
 export default StakingPage;
-

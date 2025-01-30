@@ -2,16 +2,10 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
-interface TribeItem {
-  id: string;
-  contract: string;
-  tokenId: string;
-  is_staked: boolean;
-}
-
 const useOwnTribes = (trigger: number) => {
-  const [tribes, setTribes] = useState<TribeItem[]>([]);
-  const [stakedTribes, setStakedTribes] = useState<TribeItem[]>([]);
+  const [tribes, setTribes] = useState<any[]>([]);
+  const [stakedTribes, setStakedTribes] = useState<any[]>([]);
+  const [slowRefresh] = useState(false);
   const { address: account } = useAccount();
 
   useEffect(() => {
@@ -34,13 +28,13 @@ const useOwnTribes = (trigger: number) => {
         })
         .catch((error) => {
           console.error(error);
-        });
+        })
     };
 
     if (account) {
       fetch();
     }
-  }, [account, trigger]);
+  }, [account, trigger, slowRefresh]);
 
   return {
     tribes,
