@@ -30,14 +30,7 @@ export default defineConfig(({ mode }) => {
         '/item': {
           target: process.env.VITE_API_URL || 'http://localhost:3000',
           changeOrigin: true,
-          secure: false,
-          rewrite: (path) => path
-        },
-        '/staking': {
-          target: 'http://localhost:3000/api',
-          changeOrigin: true,
-          secure: false,
-          rewrite: (path) => path
+          secure: false
         }
       },
       allowedHosts: ['tribe-odyssey-web.onrender.com', 'www.tribeodyssey.net', 'www.tribeodyssey.com']

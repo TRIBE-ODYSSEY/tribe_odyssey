@@ -12,6 +12,8 @@ import { useAccount } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { getStakingAddress } from "@src/utils/address";
 import useOwnTribes from "@src/lib/hooks/useOwnTribes";
+import PageLayout from "@src/components/common/layout/PageLayout";
+import PageTitle from "@src/components/common/PageTitle";
 
 const customStyles = {
   content: {
@@ -24,15 +26,6 @@ const customStyles = {
     maxWidth: "500px",
   },
 };
-
-// Create axios instance with base URL and headers
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'https://api.tribeodyssey.net',
-  headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-  }
-});
 
 const StakingPage: FC = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -55,12 +48,11 @@ const StakingPage: FC = () => {
   const [waiting, setWaiting] = useState(false);
 
   const tribes = useMemo(() => {
-    if (activetab === 0) {
-      return ownTribes;
-    } else {
-      return stakedTribes;
-    }
-  }, [ownTribes, stakedTribes, activetab]);
+    const allTribes = [...ownTribes, ...stakedTribes];
+    return allTribes.map(tribe => ({
+      ...tribe,
+    }));
+  }, [ownTribes, stakedTribes]);
 
   const selectAll = () => {
     if (!allselected) {
@@ -91,39 +83,39 @@ const StakingPage: FC = () => {
       return;
     }
 
-    try {
-      setWaiting(true);
-      const msg = JSON.stringify({
-        ids: selectedapes,
-        address: account.toLowerCase(),
-      });
+    const msg = JSON.stringify({
+      ids: selectedapes,
+      address: account.toLowerCase(),
+    });
 
-      const signature = await signMessageAsync({
-        message: msg,
-      });
-
-      const response = await api.post("/staking/stake", {
+    setWaiting(true);
+    const signature = await signMessageAsync({
+      message: msg,
+    });
+    axios
+      .post("/staking/stake", {
         address: account,
         signature,
         ids: selectedapes,
+      })
+      .then((response) => {
+        toast.success(
+          `${response.data.staked.length} nft(s) have been staked successfully!!`
+        );
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {
+        setWaiting(false);
+        setConfirmmodal(false);
+        setSelectedapes([]);
+        setState((prevState: any) => ({
+          ...prevState,
+          trigger: (prevState.trigger || 0) + 1,
+        }));
+        setRefreshTrigger(prev => prev + 1);
       });
-
-      toast.success(
-        `${response.data.staked.length} nft(s) have been staked successfully!!`
-      );
-    } catch (error) {
-      console.error('Staking error:', error);
-      toast.error(error instanceof Error ? error.message : 'Failed to stake NFTs');
-    } finally {
-      setWaiting(false);
-      setConfirmmodal(false);
-      setSelectedapes([]);
-      setState((prevState: any) => ({
-        ...prevState,
-        trigger: (prevState.trigger || 0) + 1,
-      }));
-      setRefreshTrigger(prev => prev + 1);
-    }
   };
 
   const onUnStake = async () => {
@@ -136,39 +128,39 @@ const StakingPage: FC = () => {
       return;
     }
 
-    try {
-      setWaiting(true);
-      const msg = JSON.stringify({
-        ids: selectedapes,
-        address: account.toLowerCase(),
-      });
+    const msg = JSON.stringify({
+      ids: selectedapes,
+      address: account.toLowerCase(),
+    });
 
-      const signature = await signMessageAsync({
-        message: msg,
-      });
-
-      const response = await api.post("/staking/unstake", {
+    setWaiting(true);
+    const signature = await signMessageAsync({
+      message: msg,
+    });
+    axios
+      .post("/staking/unstake", {
         address: account,
         signature,
         ids: selectedapes,
+      })
+      .then((response) => {
+        toast.success(
+          `${response.data.unstaked.length} nft(s) have been unstaked successfully!!`
+        );
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {
+        setWaiting(false);
+        setUnstakemodal(false);
+        setSelectedapes([]);
+        setState((prevState: any) => ({
+          ...prevState,
+          trigger: (prevState.trigger || 0) + 1,
+        }));
+        setRefreshTrigger(prev => prev + 1);
       });
-
-      toast.success(
-        `${response.data.unstaked.length} nft(s) have been unstaked successfully!!`
-      );
-    } catch (error) {
-      console.error('Unstaking error:', error);
-      toast.error(error instanceof Error ? error.message : 'Failed to unstake NFTs');
-    } finally {
-      setWaiting(false);
-      setUnstakemodal(false);
-      setSelectedapes([]);
-      setState((prevState: any) => ({
-        ...prevState,
-        trigger: (prevState.trigger || 0) + 1,
-      }));
-      setRefreshTrigger(prev => prev + 1);
-    }
   };
 
   const stakeref = useRef(null);
@@ -207,7 +199,9 @@ const StakingPage: FC = () => {
   }, []);
 
   return (
-    <>
+    <PageLayout>
+      <PageTitle>Staking</PageTitle>
+      <>
         <StakeWrapper>
           <div className="flex flex-col lg:flex-row gap-8">
             <div className="flex-grow">
@@ -271,9 +265,7 @@ const StakingPage: FC = () => {
                               <ApeboxWrapper
                                 key={id}
                                 className={`${selectedapes.includes(id) ? "selected" : ""}`}
-                                onClick={() => {
-                                  toggleApeSelector(id);
-                                }}
+                                onClick={() => toggleApeSelector(id)}
                               >
                                 <img
                                   src={
@@ -400,7 +392,8 @@ const StakingPage: FC = () => {
             </div>
           </div>
         </Modal>
-    </>
+      </>
+    </PageLayout>
   );
 };
 
