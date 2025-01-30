@@ -12,6 +12,7 @@ import { useAccount } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { getStakingAddress } from "@src/utils/address";
 import useOwnTribes from "@src/lib/hooks/useOwnTribes";
+import useUserStaked from "@src/lib/hooks/useUserStaked";
 
 const customStyles = {
   content: {
@@ -33,7 +34,8 @@ const StakingPage: FC = () => {
   const { address: account } = useAccount();
   const { openConnectModal } = useConnectModal();
   const { signMessageAsync } = useSignMessage();
-  const {tribes: ownTribes, stakedTribes} = useOwnTribes(refreshTrigger);
+  const { tribes: ownTribes, stakedTribes } = useOwnTribes(refreshTrigger);
+  const { userStaked } = useUserStaked(refreshTrigger);
   
   const stakingAddress = getStakingAddress();
 
@@ -46,8 +48,12 @@ const StakingPage: FC = () => {
   const [waiting, setWaiting] = useState(false);
 
   const tribes = useMemo(() => {
-    return activetab === 0 ? ownTribes : stakedTribes;
-  }, [ownTribes, stakedTribes, activetab]);
+    const allTribes = [...ownTribes, ...stakedTribes];
+    return allTribes.map(tribe => ({
+      ...tribe,
+      is_staked: userStaked.some(staked => staked.id === tribe.id)
+    }));
+  }, [ownTribes, stakedTribes, userStaked]);
 
   const selectAll = () => {
     if (!allselected) {
@@ -204,7 +210,12 @@ const StakingPage: FC = () => {
                     <div className="flex flex-col items-center justify-center h-full">
                       <p className="mb-[40px]">Staking Live Soon</p>
                     </div>
-                  ) : account ? (
+                  ) : !account ? (
+                    <div className="flex flex-col items-center justify-center h-full">
+                      <p className="mb-[40px]">Connect wallet to view your tribes</p>
+                      <Button onClick={openConnectModal}>Connect Wallet</Button>
+                    </div>
+                  ) : (
                     <div className="h-full">
                       <div className="p-[20px]">
                         <h4 className="font-medium text-[20px] mb-6">
@@ -314,15 +325,6 @@ const StakingPage: FC = () => {
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center justify-center h-full">
-                      <p className="mb-[40px]">
-                        To stake you need to connect your wallet.
-                      </p>
-                      <Button onClick={openConnectModal} className="">
-                        Connect Wallet
-                      </Button>
                     </div>
                   )}
                 </div>

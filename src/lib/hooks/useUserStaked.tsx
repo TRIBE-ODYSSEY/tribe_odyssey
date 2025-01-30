@@ -1,52 +1,30 @@
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
+import axios from "axios";
 
-interface UserStakedData {
-  stakedTokens: any[];
-  totalStaked: number;
-  rewards: bigint;
-  lastUpdate: number;
-}
-
-const useUserStaked = () => {
-  const [userStaked, setUserStaked] = useState<UserStakedData | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const { account } = useAccount();
+const useUserStaked = (trigger: number) => {
+  const [userStaked, setUserStaked] = useState<any[]>([]);
+  const { address: account } = useAccount();
 
   useEffect(() => {
-    const fetchStakedTokens = async () => {
+    const fetchStaked = async () => {
       if (!account) return;
       
-      setIsLoading(true);
-      setError(null);
-      
       try {
-        const response = await fetch(`/staking/userStaked`);
-        if (!response.ok) throw new Error('Failed to fetch staked tokens');
-        
-        const data = await response.json();
-        setUserStaked(data);
-      } catch (err) {
-        console.error('Error fetching staked tokens:', err);
-        setError(err instanceof Error ? err.message : 'Failed to fetch staked tokens');
-      } finally {
-        setIsLoading(false);
+        const response = await axios.get("/staking/userStaked", { 
+          params: { address: account } 
+        });
+        setUserStaked(response.data);
+      } catch (error) {
+        console.error("Error fetching staked tokens:", error);
+        setUserStaked([]);
       }
     };
 
-    fetchStakedTokens();
-  }, [account]);
+    fetchStaked();
+  }, [account, trigger]);
 
-  return {
-    data: userStaked,
-    isLoading,
-    error,
-    refetch: () => {
-      setUserStaked(null);
-      setIsLoading(true);
-    }
-  };
+  return { userStaked };
 };
 
 export default useUserStaked;
