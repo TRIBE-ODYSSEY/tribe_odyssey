@@ -1,40 +1,69 @@
 import { useState, useEffect } from 'react';
 
+interface ErrorState {
+  hasError: boolean;
+  message: string;
+  type: 'network' | 'general' | null;
+}
+
 const ErrorBoundary: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [hasError, setHasError] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
+  const [errorState, setErrorState] = useState<ErrorState>({
+    hasError: false,
+    message: '',
+    type: null
+  });
 
   useEffect(() => {
     const handleError = (error: Error) => {
       console.error('Global error:', error);
-      setError(error);
-      setHasError(true);
+      
+      // Handle network errors specifically
+      if (error.message.includes('NetworkError') || error.message.includes('Failed to fetch')) {
+        setErrorState({
+          hasError: true,
+          message: 'Network connection error. Please check your internet connection.',
+          type: 'network'
+        });
+        return;
+      }
+
+      setErrorState({
+        hasError: true,
+        message: error.message || 'An unexpected error occurred',
+        type: 'general'
+      });
     };
 
-    window.addEventListener('error', (event) => handleError(event.error));
-    window.addEventListener('unhandledrejection', (event) => handleError(event.reason));
+    const errorListener = (event: ErrorEvent) => handleError(event.error);
+    const rejectionListener = (event: PromiseRejectionEvent) => handleError(event.reason);
+
+    window.addEventListener('error', errorListener);
+    window.addEventListener('unhandledrejection', rejectionListener);
 
     return () => {
-      window.removeEventListener('error', (event) => handleError(event.error));
-      window.removeEventListener('unhandledrejection', (event) => handleError(event.reason));
+      window.removeEventListener('error', errorListener);
+      window.removeEventListener('unhandledrejection', rejectionListener);
     };
   }, []);
 
-  if (hasError) {
+  if (errorState.hasError) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[var(--color-background)]">
         <div className="text-center p-8">
           <h1 className="text-2xl font-bold text-[var(--color-text-primary)] mb-4">
-            Something went wrong
+            {errorState.type === 'network' ? 'Network Error' : 'Something went wrong'}
           </h1>
           <p className="text-[var(--color-text-secondary)] mb-4">
-            {error?.message || 'An unexpected error occurred'}
+            {errorState.message}
           </p>
           <button
-            onClick={() => window.location.reload()}
+            onClick={() => {
+              setErrorState({ hasError: false, message: '', type: null });
+              window.location.reload();
+            }}
             className="btn-primary"
           >
-            Reload Page
+            Try Again
           </button>
         </div>
       </div>

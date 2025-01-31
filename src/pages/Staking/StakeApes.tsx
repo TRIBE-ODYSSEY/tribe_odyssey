@@ -35,8 +35,8 @@ const StakingPage: FC = () => {
   const { address: account } = useAccount();
   const { openConnectModal } = useConnectModal();
   const { signMessageAsync } = useSignMessage();
-  const { tribes: ownTribes, stakedTribes } = useOwnTribes(refreshTrigger);
-  
+  const { tribes: ownTribes, stakedTribes} = useOwnTribes(refreshTrigger);
+
   const stakingAddress = getStakingAddress();
 
   const [selectedapes, setSelectedapes] = useState<string[]>([]);

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useWeb3React } from "./useWeb3React";
 import axios from "axios";
-import { useAxios } from "./useAxios";
 
 interface TribeItem {
   contract: string;
@@ -11,7 +10,6 @@ interface TribeItem {
 }
 
 const useOwnTribes = (trigger: number) => {
-  useAxios(); // Initialize axios interceptors
   const [tribes, setTribes] = useState<TribeItem[]>([]);
   const [stakedTribes, setStakedTribes] = useState<TribeItem[]>([]);
   const { account } = useWeb3React();
