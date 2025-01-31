@@ -1,6 +1,7 @@
 import { getDefaultConfig } from '@rainbow-me/rainbowkit';
 import { mainnet, sepolia } from 'wagmi/chains';
 import { http } from 'wagmi';
+import { injectedWallet } from '@rainbow-me/rainbowkit/wallets';
 
 const ALCHEMY_KEY = import.meta.env.VITE_ALCHEMY_KEY;
 const WALLET_CONNECT_ID = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID;
@@ -17,5 +18,6 @@ export const rainbowKitConfig = getDefaultConfig({
     [mainnet.id]: http(`https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`),
     [sepolia.id]: http(`https://eth-sepolia.g.alchemy.com/v2/${ALCHEMY_KEY}`)
   },
-  ssr: false
+  ssr: false,
+  wallets: [{ groupName: 'Popular', wallets: [injectedWallet] }]
 }); 
