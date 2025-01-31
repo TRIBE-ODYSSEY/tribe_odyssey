@@ -2,12 +2,10 @@ import axios, { AxiosHeaders, InternalAxiosRequestConfig } from 'axios';
 
 // Create axios instance with base configuration
 const axiosInstance = axios.create({
-  baseURL: 'https://tribeodyssey.net/api', // localhost:5172    
+  baseURL: '/api',  // This will be proxied through Vite
   timeout: 10000,
   headers: {
-    'Cache-Control': 'no-cache',
-    'Pragma': 'no-cache',
-    'Expires': '0',
+    'Content-Type': 'application/json',
   }
 });
 

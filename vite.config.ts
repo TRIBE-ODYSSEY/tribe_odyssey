@@ -27,14 +27,14 @@ export default defineConfig(({ mode }) => {
           target: 'https://tribeodyssey.net',
           changeOrigin: true,
           secure: false,
-          rewrite: (path) => path.replace(/^\/api/, '')
+          rewrite: (path) => path.replace(/^\/api/, '/api')
         }
       }
     },
     
     resolve: {
       alias: {
-        '@src': path.resolve(__dirname, 'src'),
+        '@src': path.resolve(__dirname, './src'),
         '@assets': path.resolve(__dirname, 'src/assets'),
         '@components': path.resolve(__dirname, 'src/components'),
         '@config': path.resolve(__dirname, 'src/lib/config'),
