@@ -14,7 +14,6 @@ import { getStakingAddress } from "@src/utils/address";
 import useOwnTribes from "@src/lib/hooks/useOwnTribes";
 import PageLayout from "@src/components/common/layout/PageLayout";
 import PageTitle from "@src/components/common/PageTitle";
-import { useAxios } from "@src/lib/hooks/useAxios";
 
 const customStyles = {
   content: {
@@ -166,8 +165,6 @@ const StakingPage: FC = () => {
 
   const stakeref = useRef(null);
   const [apebxwidth, setApebxwidth] = useState(0);
-
-  useAxios();
 
   useEffect(() => {
     const handleResize = () => {
