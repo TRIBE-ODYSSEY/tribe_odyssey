@@ -25,8 +25,8 @@ const queryClient = new QueryClient({
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <WagmiProvider config={rainbowKitConfig}>
+    <WagmiProvider config={rainbowKitConfig}>
+      <QueryClientProvider client={queryClient}>
         <RainbowKitProvider theme={darkTheme({
           accentColor: 'var(--color-button-primary)',
           borderRadius: 'large'
@@ -51,7 +51,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             </ErrorBoundary>
           </BrowserRouter>
         </RainbowKitProvider>
-      </WagmiProvider>
-    </QueryClientProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
   </React.StrictMode>
 );

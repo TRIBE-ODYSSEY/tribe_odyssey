@@ -27,9 +27,6 @@ services:
       - path: /*
         name: Strict-Transport-Security
         value: max-age=31536000; includeSubDomains
-      - path: /*
-        name: X-XSS-Protection
-        value: 1; mode=block
     routes:
       - type: rewrite
         source: /*

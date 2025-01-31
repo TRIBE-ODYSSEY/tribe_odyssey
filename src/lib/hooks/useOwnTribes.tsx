@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useWeb3React } from "./useWeb3React";
+import axiosInstance from '@src/lib/config/axios';
 import axios from "axios";
-import { getTribeAddress } from "@src/utils/address";
 
 interface TribeItem {
   contract: string;
@@ -22,17 +22,11 @@ const useOwnTribes = (trigger: number) => {
       setIsLoading(true);
 
       try {
-        const response = await axios.get("/item", {
+        const response = await axiosInstance.get("/item", {
           params: {
             owner: account.toLowerCase(),
-            contract: getTribeAddress(),
+            contract: "0x77f649385ca963859693c3d3299d36dfc7324eb9",
             limit: 1000,
-          },
-          timeout: 10000, // 10 second timeout
-          headers: {
-            'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache',
-            'Expires': '0',
           }
         });
 

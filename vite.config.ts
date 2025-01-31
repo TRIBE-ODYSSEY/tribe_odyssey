@@ -24,7 +24,7 @@ export default defineConfig(({ mode }) => {
       allowedHosts: ['tribe-odyssey-web.onrender.com', 'www.tribeodyssey.net', 'www.tribeodyssey.com'],
       proxy: {
         '/api': {
-          target: 'https://api.tribeodyssey.net',
+          target: 'https://tribeodyssey.net',
           changeOrigin: true,
           secure: false,
           rewrite: (path) => path.replace(/^\/api/, '')

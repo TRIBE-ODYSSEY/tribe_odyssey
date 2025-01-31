@@ -31,6 +31,6 @@
     "forceConsistentCasingInFileNames": true,
     "incremental": true
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts", "src/lib/hooks/index.tsz"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts", "src/lib/hooks/index.tsx"],
   "exclude": ["node_modules", "dist"]
 }
